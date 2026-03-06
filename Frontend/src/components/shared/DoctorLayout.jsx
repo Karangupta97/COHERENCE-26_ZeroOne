@@ -23,6 +23,7 @@ function TopBar() {
         if (path.includes('/trials')) return 'Trial Matches'
         if (path.includes('/chat')) return 'Messages'
         if (path.includes('/alerts')) return 'Notifications'
+        if (path.includes('/add-patient-trial')) return 'Add Patient to Trial'
         if (path.includes('/settings')) return 'Settings'
         return 'Doctor Portal'
     }

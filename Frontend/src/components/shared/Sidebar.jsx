@@ -39,6 +39,7 @@ const DOCTOR_NAV_ITEMS = [
     { key: 'trials', label: 'Trial Matches', icon: HiOutlineBeaker, path: '/doctor/trials' },
     { key: 'chat', label: 'Chat', icon: HiOutlineChatBubbleLeftRight, path: '/doctor/chat/ANON-7F3A2B1C' },
     { key: 'notifications', label: 'Notifications', icon: HiOutlineBell, path: '/doctor/alerts', badge: ALERTS.length },
+    { key: 'add-patient', label: 'Add Patient to Trial', icon: HiOutlineUserPlus, path: '/doctor/add-patient-trial' },
     { key: 'settings', label: 'Settings', icon: HiOutlineCog6Tooth, path: '/doctor/settings' },
 ]
 
@@ -63,6 +64,7 @@ export default function Sidebar({ activePage, setPage }) {
             case 'chat': return path.startsWith('/doctor/chat')
             case 'notifications': return path === '/doctor/alerts'
             case 'settings': return path === '/doctor/settings'
+            case 'add-patient': return path === '/doctor/add-patient-trial'
             default: return false
         }
     }
