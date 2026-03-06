@@ -9,7 +9,7 @@ export default function DoctorChat() {
     const { patientId } = useParams();
     const navigate = useNavigate();
     const { colors, fonts } = useTheme();
-    const [activeChat, setActiveChat] = useState(patientId || PATIENTS[0].id);
+    const [activeChat, setActiveChat] = useState(patientId || PATIENTS[0].anonymizedId);
     const [messages, setMessages] = useState({ ...CHAT_MESSAGES });
     const [input, setInput] = useState('');
     const [sendHover, setSendHover] = useState(false);
@@ -18,7 +18,7 @@ export default function DoctorChat() {
     useEffect(() => { if (patientId) setActiveChat(patientId); }, [patientId]);
     useEffect(() => { messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [messages, activeChat]);
 
-    const activePatient = PATIENTS.find(p => p.id === activeChat);
+    const activePatient = PATIENTS.find(p => p.anonymizedId === activeChat);
     const activeMessages = messages[activeChat] || [];
     const topTrialId = (PATIENT_TRIAL_MATCHES[activeChat] || [])[0];
     const topTrial = TRIALS.find(t => t.id === topTrialId);
@@ -38,17 +38,17 @@ export default function DoctorChat() {
                 <div style={{ width: '260px', borderRight: `1px solid ${colors.border}`, overflowY: 'auto', background: colors.surface, transition: 'all 0.3s ease', flexShrink: 0 }}>
                     <div style={{ padding: '20px 16px 12px', fontFamily: fonts.heading, fontSize: 18, fontWeight: 700, color: colors.textPrimary }}>Messages</div>
                     {PATIENTS.map(p => {
-                        const lastMsg = (messages[p.id] || []).slice(-1)[0];
-                        const unread = p.id !== activeChat && (messages[p.id] || []).filter(m => m.sender === 'patient').length > 0 ? 1 : 0;
-                        const active = activeChat === p.id;
+                        const lastMsg = (messages[p.anonymizedId] || []).slice(-1)[0];
+                        const unread = p.anonymizedId !== activeChat && (messages[p.anonymizedId] || []).filter(m => m.sender === 'patient').length > 0 ? 1 : 0;
+                        const active = activeChat === p.anonymizedId;
                         return (
-                            <div key={p.id} onClick={() => { setActiveChat(p.id); navigate(`/doctor/chat/${p.id}`, { replace: true }); }}
+                            <div key={p.anonymizedId} onClick={() => { setActiveChat(p.anonymizedId); navigate(`/doctor/chat/${p.anonymizedId}`, { replace: true }); }}
                                 style={{ padding: '14px 16px', cursor: 'pointer', background: active ? colors.accentGlow : 'transparent', borderLeft: active ? `3px solid ${colors.accent}` : '3px solid transparent', transition: 'all 0.2s ease', display: 'flex', gap: 12, alignItems: 'center' }}
                                 onMouseEnter={e => { if (!active) e.currentTarget.style.background = colors.card; }} onMouseLeave={e => { if (!active) e.currentTarget.style.background = 'transparent'; }}>
-                                <PatientAvatar patientId={p.id} size={40} />
+                                <PatientAvatar patientId={p.anonymizedId} size={40} />
                                 <div style={{ flex: 1, minWidth: 0 }}>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 2 }}>
-                                        <span style={{ fontFamily: fonts.mono, fontSize: 13, fontWeight: 600, color: colors.textPrimary }}>{p.id}</span>
+                                        <span style={{ fontFamily: fonts.mono, fontSize: 13, fontWeight: 600, color: colors.textPrimary }}>{p.anonymizedId}</span>
                                         {unread > 0 && <span style={{ width: 18, height: 18, borderRadius: '50%', background: colors.accent, color: '#fff', fontSize: 10, fontWeight: 700, fontFamily: fonts.mono, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{unread}</span>}
                                     </div>
                                     <div style={{ fontSize: 12, color: colors.textSecondary, fontFamily: fonts.body, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.diagnosis}</div>
@@ -64,13 +64,13 @@ export default function DoctorChat() {
                     {activePatient && (
                         <div style={{ padding: '16px 24px', borderBottom: `1px solid ${colors.border}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: colors.surface, transition: 'all 0.3s ease' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                                <PatientAvatar patientId={activePatient.id} size={38} />
+                                <PatientAvatar patientId={activePatient.anonymizedId} size={38} />
                                 <div>
-                                    <span style={{ fontFamily: fonts.mono, fontSize: 15, fontWeight: 600, color: colors.textPrimary }}>{activePatient.id}</span>
+                                    <span style={{ fontFamily: fonts.mono, fontSize: 15, fontWeight: 600, color: colors.textPrimary }}>{activePatient.anonymizedId}</span>
                                     <span style={{ marginLeft: 10, fontSize: 13, color: colors.textSecondary, fontFamily: fonts.body }}>{activePatient.diagnosis}</span>
                                 </div>
                             </div>
-                            <button onClick={() => navigate(`/doctor/patients/${activePatient.id}`)}
+                            <button onClick={() => navigate(`/doctor/patients/${activePatient.anonymizedId}`)}
                                 style={{ padding: '6px 14px', borderRadius: 8, background: 'transparent', border: `1px solid ${colors.border}`, color: colors.accent, fontFamily: fonts.body, fontSize: 13, fontWeight: 500, cursor: 'pointer', transition: 'all 0.2s ease' }}
                                 onMouseEnter={e => e.target.style.background = colors.card} onMouseLeave={e => e.target.style.background = 'transparent'}>
                                 View Profile →

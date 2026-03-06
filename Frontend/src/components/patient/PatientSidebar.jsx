@@ -1,5 +1,6 @@
 import { useTheme, radius, spacing, fontSize } from '../../theme.jsx'
 import { useLocation, useNavigate } from 'react-router-dom'
+import usePatient from '../../hooks/usePatient'
 import {
   HiOutlineHome,
   HiOutlineUserCircle,
@@ -24,6 +25,7 @@ export default function PatientSidebar() {
   const { colors, fonts } = useTheme()
   const location = useLocation()
   const navigate = useNavigate()
+  const { fullName, initials, anonymizedId } = usePatient()
 
   const sidebarBg = colors.card
   const activeBg = colors.accentGlow
@@ -132,11 +134,11 @@ export default function PatientSidebar() {
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             color: '#fff', fontSize: fontSize.sm, fontWeight: 700, fontFamily: fonts.heading,
           }}>
-            RK
+            {initials}
           </div>
           <div>
-            <div style={{ fontSize: fontSize.sm, fontWeight: 600, color: colors.textPrimary }}>Rajesh Kumar</div>
-            <div style={{ fontSize: fontSize.xs, color: colors.textSecondary }}>Patient ID: PT-0041</div>
+            <div style={{ fontSize: fontSize.sm, fontWeight: 600, color: colors.textPrimary }}>{fullName}</div>
+            <div style={{ fontSize: fontSize.xs, color: colors.textSecondary }}>Patient ID: {anonymizedId}</div>
           </div>
         </div>
       </div>

@@ -105,29 +105,29 @@ export const CLINIC_TRIALS = [
 ];
 
 export const CANDIDATES = [
-  { id: "PT-0041", age: 52, gender: "F", location: "Mumbai", score: 94, doctorStatus: "Approved", stage: "Screened", diagnosis: "Type 2 Diabetes", hba1c: 8.2, bmi: 28.4, kidneyDisease: false },
-  { id: "PT-0039", age: 38, gender: "M", location: "Pune", score: 89, doctorStatus: "Approved", stage: "Enrolled", diagnosis: "Hypertension Stage 2", hba1c: null, bmi: 26.1, kidneyDisease: false },
-  { id: "PT-0037", age: 61, gender: "F", location: "Mumbai", score: 87, doctorStatus: "Approved", stage: "Accepted", diagnosis: "Stage 2 Breast Cancer", hba1c: null, bmi: 24.8, kidneyDisease: false },
-  { id: "PT-0035", age: 45, gender: "M", location: "Thane", score: 82, doctorStatus: "Pending", stage: "Matched", diagnosis: "Type 2 Diabetes", hba1c: 9.1, bmi: 31.2, kidneyDisease: false },
-  { id: "PT-0033", age: 55, gender: "F", location: "Mumbai", score: 79, doctorStatus: "Approved", stage: "Doctor Approved", diagnosis: "Hypertension + Diabetes", hba1c: 7.8, bmi: 27.9, kidneyDisease: true },
-  { id: "PT-0031", age: 49, gender: "M", location: "Nashik", score: 76, doctorStatus: "Pending", stage: "Matched", diagnosis: "Chronic Kidney Disease", hba1c: null, bmi: 25.3, kidneyDisease: true },
-  { id: "PT-0029", age: 63, gender: "F", location: "Mumbai", score: 91, doctorStatus: "Approved", stage: "Screened", diagnosis: "Type 2 Diabetes", hba1c: 7.5, bmi: 29.0, kidneyDisease: false },
-  { id: "PT-0027", age: 41, gender: "M", location: "Pune", score: 73, doctorStatus: "Declined", stage: "Rejected", diagnosis: "Asthma + Diabetes", hba1c: 8.8, bmi: 30.5, kidneyDisease: false },
-  { id: "PT-0025", age: 57, gender: "F", location: "Navi Mumbai", score: 85, doctorStatus: "Approved", stage: "Enrolled", diagnosis: "Type 2 Diabetes", hba1c: 7.2, bmi: 26.7, kidneyDisease: false },
-  { id: "PT-0023", age: 44, gender: "M", location: "Mumbai", score: 68, doctorStatus: "Pending", stage: "Matched", diagnosis: "Metabolic Syndrome", hba1c: 6.9, bmi: 33.1, kidneyDisease: false },
-  { id: "PT-0021", age: 59, gender: "F", location: "Thane", score: 92, doctorStatus: "Approved", stage: "Accepted", diagnosis: "Type 2 Diabetes", hba1c: 8.5, bmi: 27.2, kidneyDisease: true },
-  { id: "PT-0019", age: 36, gender: "M", location: "Mumbai", score: 71, doctorStatus: "Pending", stage: "Doctor Approved", diagnosis: "Hypertension", hba1c: null, bmi: 24.0, kidneyDisease: false },
+  { id: "ANON-7F3A2B1C", age: 52, gender: "F", location: "Mumbai", score: 94, doctorStatus: "Approved", stage: "Screened", diagnosis: "Type 2 Diabetes", hba1c: 8.2, bmi: 28.4, kidneyDisease: false },
+  { id: "ANON-4D8E9C2F", age: 38, gender: "M", location: "Pune", score: 89, doctorStatus: "Approved", stage: "Enrolled", diagnosis: "Hypertension Stage 2", hba1c: null, bmi: 26.1, kidneyDisease: false },
+  { id: "ANON-1B5C8D3E", age: 61, gender: "F", location: "Mumbai", score: 87, doctorStatus: "Approved", stage: "Accepted", diagnosis: "Stage 2 Breast Cancer", hba1c: null, bmi: 24.8, kidneyDisease: false },
+  { id: "ANON-6A2F4E7B", age: 45, gender: "M", location: "Thane", score: 82, doctorStatus: "Pending", stage: "Matched", diagnosis: "Type 2 Diabetes", hba1c: 9.1, bmi: 31.2, kidneyDisease: false },
+  { id: "ANON-9C1D3F8A", age: 55, gender: "F", location: "Mumbai", score: 79, doctorStatus: "Approved", stage: "Doctor Approved", diagnosis: "Hypertension + Diabetes", hba1c: 7.8, bmi: 27.9, kidneyDisease: true },
+  { id: "ANON-2E7B5A4D", age: 49, gender: "M", location: "Nashik", score: 76, doctorStatus: "Pending", stage: "Matched", diagnosis: "Chronic Kidney Disease", hba1c: null, bmi: 25.3, kidneyDisease: true },
+  { id: "ANON-3C8D1E5F", age: 63, gender: "F", location: "Mumbai", score: 91, doctorStatus: "Approved", stage: "Screened", diagnosis: "Type 2 Diabetes", hba1c: 7.5, bmi: 29.0, kidneyDisease: false },
+  { id: "ANON-5A4B2C7E", age: 41, gender: "M", location: "Pune", score: 73, doctorStatus: "Declined", stage: "Rejected", diagnosis: "Asthma + Diabetes", hba1c: 8.8, bmi: 30.5, kidneyDisease: false },
+  { id: "ANON-8E6F3D9A", age: 57, gender: "F", location: "Navi Mumbai", score: 85, doctorStatus: "Approved", stage: "Enrolled", diagnosis: "Type 2 Diabetes", hba1c: 7.2, bmi: 26.7, kidneyDisease: false },
+  { id: "ANON-0B9A7C4D", age: 44, gender: "M", location: "Mumbai", score: 68, doctorStatus: "Pending", stage: "Matched", diagnosis: "Metabolic Syndrome", hba1c: 6.9, bmi: 33.1, kidneyDisease: false },
+  { id: "ANON-D2E5F8A1", age: 59, gender: "F", location: "Thane", score: 92, doctorStatus: "Approved", stage: "Accepted", diagnosis: "Type 2 Diabetes", hba1c: 8.5, bmi: 27.2, kidneyDisease: true },
+  { id: "ANON-F4C6B3D7", age: 36, gender: "M", location: "Mumbai", score: 71, doctorStatus: "Pending", stage: "Doctor Approved", diagnosis: "Hypertension", hba1c: null, bmi: 24.0, kidneyDisease: false },
 ];
 
 export const NOTIFICATIONS = [
   { id: 1, type: "match",    message: "47 new patient matches found for GLYCO-ADVANCE trial", time: "2 min ago",  read: false },
-  { id: 2, type: "approval", message: "Dr. Sharma approved PT-0041 for GLYCO-ADVANCE",        time: "15 min ago", read: false },
-  { id: 3, type: "schedule", message: "Screening scheduled for PT-0037 on March 12, 2024",     time: "1 hr ago",  read: false },
-  { id: 4, type: "enrolled", message: "PT-0039 successfully enrolled in CARDIO-PROTECT trial", time: "2 hrs ago", read: true  },
+  { id: 2, type: "approval", message: "Dr. Sharma approved ANON-7F3A2B1C for GLYCO-ADVANCE",        time: "15 min ago", read: false },
+  { id: 3, type: "schedule", message: "Screening scheduled for ANON-1B5C8D3E on March 12, 2024",     time: "1 hr ago",  read: false },
+  { id: 4, type: "enrolled", message: "ANON-4D8E9C2F successfully enrolled in CARDIO-PROTECT trial", time: "2 hrs ago", read: true  },
   { id: 5, type: "match",    message: "12 new matches for ONCO-TARGET study",                  time: "3 hrs ago", read: true  },
-  { id: 6, type: "approval", message: "Dr. Verma declined PT-0027 — see notes",                time: "5 hrs ago", read: true  },
+  { id: 6, type: "approval", message: "Dr. Verma declined ANON-5A4B2C7E — see notes",                time: "5 hrs ago", read: true  },
   { id: 7, type: "schedule", message: "Reminder: 3 screenings scheduled for tomorrow",         time: "6 hrs ago", read: false },
-  { id: 8, type: "enrolled", message: "PT-0025 completed enrollment in META-RESET trial",      time: "1 day ago", read: true  },
+  { id: 8, type: "enrolled", message: "ANON-8E6F3D9A completed enrollment in META-RESET trial",      time: "1 day ago", read: true  },
 ];
 
 export const FUNNEL_DATA = [
@@ -140,11 +140,11 @@ export const FUNNEL_DATA = [
 ];
 
 export const RECENT_ACTIVITY = [
-  { id: 1, action: "New trial posted",        detail: "GLYCO-ADVANCE Phase III",           time: "10 min ago", icon: "📋" },
-  { id: 2, action: "Patient matched",         detail: "PT-0041 matched with 94% score",    time: "25 min ago", icon: "🔗" },
-  { id: 3, action: "Doctor approved",         detail: "Dr. Sharma approved PT-0029",       time: "1 hr ago",   icon: "✅" },
-  { id: 4, action: "Screening completed",     detail: "PT-0037 passed screening",          time: "2 hrs ago",  icon: "🏥" },
-  { id: 5, action: "Patient enrolled",        detail: "PT-0039 enrolled in CARDIO-PROTECT",time: "3 hrs ago",  icon: "🎉" },
+  { id: 1, action: "New trial posted",        detail: "GLYCO-ADVANCE Phase III",               time: "10 min ago", icon: "📋" },
+  { id: 2, action: "Patient matched",         detail: "ANON-7F3A2B1C matched with 94% score",  time: "25 min ago", icon: "🔗" },
+  { id: 3, action: "Doctor approved",         detail: "Dr. Sharma approved ANON-3C8D1E5F",     time: "1 hr ago",   icon: "✅" },
+  { id: 4, action: "Screening completed",     detail: "ANON-1B5C8D3E passed screening",        time: "2 hrs ago",  icon: "🏥" },
+  { id: 5, action: "Patient enrolled",        detail: "ANON-4D8E9C2F enrolled in CARDIO-PROTECT",time: "3 hrs ago",  icon: "🎉" },
 ];
 
 export const AI_INSIGHTS = [

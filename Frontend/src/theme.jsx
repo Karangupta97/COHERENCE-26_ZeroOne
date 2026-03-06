@@ -359,12 +359,12 @@ export function ThemeSwitcher() {
 // ─────────────────────────────────────────────
 
 export const PATIENTS = [
-  { id: "PT-0041", age: 52, gender: "F", diagnosis: "Type 2 Diabetes", meds: "Metformin 500mg", location: "Mumbai", hba1c: "8.2%", bmi: "28.4", matches: 3, status: "awaiting" },
-  { id: "PT-0039", age: 38, gender: "M", diagnosis: "Hypertension Stage 2", meds: "Lisinopril 10mg", location: "Pune", hba1c: "N/A", bmi: "26.1", matches: 1, status: "referred" },
-  { id: "PT-0037", age: 61, gender: "F", diagnosis: "Stage 2 Breast Cancer", meds: "Tamoxifen 20mg", location: "Mumbai", hba1c: "N/A", bmi: "24.8", matches: 2, status: "enrolled" },
-  { id: "PT-0035", age: 45, gender: "M", diagnosis: "Type 2 Diabetes", meds: "Metformin 1000mg", location: "Thane", hba1c: "9.1%", bmi: "31.2", matches: 2, status: "awaiting" },
-  { id: "PT-0033", age: 55, gender: "F", diagnosis: "Hypertension + Diabetes", meds: "Amlodipine 5mg", location: "Mumbai", hba1c: "7.8%", bmi: "27.9", matches: 4, status: "screening" },
-  { id: "PT-0031", age: 49, gender: "M", diagnosis: "Chronic Kidney Disease", meds: "Losartan 50mg", location: "Nashik", hba1c: "N/A", bmi: "25.3", matches: 1, status: "referred" },
+  { id: "PT-0041", anonymizedId: "ANON-7F3A2B1C", age: 52, gender: "F", diagnosis: "Type 2 Diabetes", meds: "Metformin 500mg", location: "Mumbai", hba1c: "8.2%", bmi: "28.4", matches: 3, status: "awaiting" },
+  { id: "PT-0039", anonymizedId: "ANON-4D8E9C2F", age: 38, gender: "M", diagnosis: "Hypertension Stage 2", meds: "Lisinopril 10mg", location: "Pune", hba1c: "N/A", bmi: "26.1", matches: 1, status: "referred" },
+  { id: "PT-0037", anonymizedId: "ANON-1B5C8D3E", age: 61, gender: "F", diagnosis: "Stage 2 Breast Cancer", meds: "Tamoxifen 20mg", location: "Mumbai", hba1c: "N/A", bmi: "24.8", matches: 2, status: "enrolled" },
+  { id: "PT-0035", anonymizedId: "ANON-6A2F4E7B", age: 45, gender: "M", diagnosis: "Type 2 Diabetes", meds: "Metformin 1000mg", location: "Thane", hba1c: "9.1%", bmi: "31.2", matches: 2, status: "awaiting" },
+  { id: "PT-0033", anonymizedId: "ANON-9C1D3F8A", age: 55, gender: "F", diagnosis: "Hypertension + Diabetes", meds: "Amlodipine 5mg", location: "Mumbai", hba1c: "7.8%", bmi: "27.9", matches: 4, status: "screening" },
+  { id: "PT-0031", anonymizedId: "ANON-2E7B5A4D", age: 49, gender: "M", diagnosis: "Chronic Kidney Disease", meds: "Losartan 50mg", location: "Nashik", hba1c: "N/A", bmi: "25.3", matches: 1, status: "referred" },
 ];
 
 export const TRIALS = [

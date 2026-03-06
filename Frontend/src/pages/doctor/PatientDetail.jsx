@@ -16,7 +16,7 @@ export default function PatientDetail() {
     const [backHover, setBackHover] = useState(false);
     const [chatHover, setChatHover] = useState(false);
 
-    const patient = PATIENTS.find(p => p.id === id);
+    const patient = PATIENTS.find(p => p.anonymizedId === id);
     const matchedTrialIds = PATIENT_TRIAL_MATCHES[id] || [];
     const matchedTrials = matchedTrialIds.map(tid => TRIALS.find(t => t.id === tid)).filter(Boolean);
 
@@ -54,7 +54,7 @@ export default function PatientDetail() {
                 <div style={{ display: 'grid', gridTemplateColumns: '38% 1fr', gap: 24, alignItems: 'start' }}>
                     {/* LEFT: Patient Profile */}
                     <div style={{ background: colors.card, borderRadius: 14, padding: 28, border: `1px solid ${colors.border}`, boxShadow: colors.shadow, position: 'sticky', top: 24, transition: 'all 0.3s ease' }}>
-                        <div style={{ fontFamily: fonts.mono, fontSize: 24, fontWeight: 700, color: colors.accent, marginBottom: 20 }}>{patient.id}</div>
+                        <div style={{ fontFamily: fonts.mono, fontSize: 24, fontWeight: 700, color: colors.accent, marginBottom: 20 }}>{patient.anonymizedId}</div>
                         <div style={{ display: 'flex', gap: 16, marginBottom: 20, flexWrap: 'wrap' }}>
                             {[`${patient.age} yrs`, patient.gender, `📍 ${patient.location}`].map((item, i) => (
                                 <span key={i} style={{ padding: '4px 12px', borderRadius: 9999, fontSize: 13, fontFamily: fonts.body, background: `${colors.accent}10`, color: colors.textSecondary }}>{item}</span>
@@ -65,7 +65,7 @@ export default function PatientDetail() {
                         <InfoRow label="HbA1c" value={patient.hba1c} />
                         <InfoRow label="BMI" value={patient.bmi} />
                         <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '6px 14px', borderRadius: 9999, background: colors.greenGlow, color: colors.green, fontFamily: fonts.mono, fontSize: 12, fontWeight: 500, marginTop: 20 }}>🔒 Anonymized</div>
-                        <button onClick={() => navigate(`/doctor/chat/${patient.id}`)} onMouseEnter={() => setChatHover(true)} onMouseLeave={() => setChatHover(false)}
+                        <button onClick={() => navigate(`/doctor/chat/${patient.anonymizedId}`)} onMouseEnter={() => setChatHover(true)} onMouseLeave={() => setChatHover(false)}
                             style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, width: '100%', padding: 12, borderRadius: 10, border: `1px solid ${colors.accent}30`, background: chatHover ? colors.accent : colors.accentGlow, color: chatHover ? '#fff' : colors.accent, fontFamily: fonts.body, fontSize: 14, fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s ease', marginTop: 16 }}>
                             💬 Chat with Patient
                         </button>

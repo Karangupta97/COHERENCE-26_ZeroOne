@@ -5,9 +5,9 @@ import { HiOutlineRocketLaunch, HiOutlineCheckCircle } from 'react-icons/hi2'
 const PIPELINE_FLOW = ['Matched', 'Under Review', 'Approved', 'Screening', 'Enrolled', 'Active']
 
 const PATIENTS_PIPELINE = [
-    { patient: 'Rajesh Kumar', id: 'PT-0041', step: 3, score: 94 },
-    { patient: 'Anita Desai', id: 'PT-0039', step: 4, score: 88 },
-    { patient: 'Vikram Mehta', id: 'PT-0037', step: 1, score: 81 },
+    { id: 'ANON-7F3A2B1C', step: 3, score: 94 },
+    { id: 'ANON-4D8E9C2F', step: 4, score: 88 },
+    { id: 'ANON-1B5C8D3E', step: 1, score: 81 },
 ]
 
 export default function PatientPipeline() {
@@ -57,15 +57,7 @@ export default function PatientPipeline() {
                         {/* Patient header */}
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                                <span style={{ fontSize: '14px', fontWeight: 700, fontFamily: fonts.heading, color: colors.textPrimary }}>{p.patient}</span>
-                                <span style={{
-                                    fontSize: '10px', fontWeight: 600, padding: '2px 8px',
-                                    borderRadius: '20px',
-                                    background: colors.accentGlow, color: colors.accent,
-                                    fontFamily: fonts.mono || fonts.body,
-                                }}>
-                                    {p.id}
-                                </span>
+                                <span style={{ fontSize: '14px', fontWeight: 700, fontFamily: fonts.heading, color: colors.textPrimary }}>{p.id}</span>
                                 <span style={{
                                     fontSize: '10px', fontWeight: 700, padding: '2px 8px',
                                     borderRadius: '20px',

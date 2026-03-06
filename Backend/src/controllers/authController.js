@@ -46,6 +46,10 @@ async function signup(req, res, next) {
       responseUser.clinicName = user.clinicName;
     }
 
+    if (role === "patient" && user.anonymizedId) {
+      responseUser.anonymizedId = user.anonymizedId;
+    }
+
     return res.status(201).json({
       ok: true,
       message: "Account created successfully",
@@ -90,6 +94,10 @@ async function login(req, res, next) {
 
     if (user.role === "clinic" && user.clinicName) {
       loginUser.clinicName = user.clinicName;
+    }
+
+    if (user.role === "patient" && user.anonymizedId) {
+      loginUser.anonymizedId = user.anonymizedId;
     }
 
     return res.status(200).json({

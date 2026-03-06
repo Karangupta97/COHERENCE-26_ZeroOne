@@ -1,6 +1,7 @@
 import { useTheme, radius, spacing, fontSize, PATIENTS } from '../../theme.jsx'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
+import usePatient from '../../hooks/usePatient'
 import {
   HiOutlineSparkles,
   HiOutlineLightBulb,
@@ -29,6 +30,7 @@ const TIPS = [
 export default function WelcomeBanner() {
   const { colors, fonts } = useTheme()
   const navigate = useNavigate()
+  const { firstName } = usePatient()
   const greet = getGreeting()
   const GreetIcon = greet.Icon
   const tip = TIPS[Math.floor(Date.now() / 86400000) % TIPS.length]
@@ -55,7 +57,7 @@ export default function WelcomeBanner() {
           <GreetIcon style={{ width: 16, height: 16, color: colors.accent }} /> {greet.text}
         </div>
         <h2 style={{ margin: 0, fontSize: '22px', fontFamily: fonts.heading, fontWeight: 700, color: colors.textPrimary, lineHeight: 1.3, display: 'flex', alignItems: 'center', gap: spacing.sm }}>
-          Welcome back, <span style={{ background: `linear-gradient(90deg, ${colors.accent}, ${colors.green})`, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Rajesh</span>
+          Welcome back, <span style={{ background: `linear-gradient(90deg, ${colors.accent}, ${colors.green})`, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>{firstName}</span>
           <HiOutlineHandRaised style={{ width: 22, height: 22, color: colors.accent }} />
         </h2>
         <p style={{ margin: `${spacing.xs} 0 0`, fontSize: fontSize.sm, color: colors.textSecondary, fontFamily: fonts.body, lineHeight: 1.5, display: 'flex', alignItems: 'center', gap: spacing.xs }}>

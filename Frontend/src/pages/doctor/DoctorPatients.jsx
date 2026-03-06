@@ -24,7 +24,7 @@ export default function DoctorPatients() {
     const filtered = useMemo(() => {
         return PATIENTS.filter(p => {
             const matchesSearch = !search ||
-                p.id.toLowerCase().includes(search.toLowerCase()) ||
+                p.anonymizedId.toLowerCase().includes(search.toLowerCase()) ||
                 p.diagnosis.toLowerCase().includes(search.toLowerCase());
             const matchesFilter = activeFilter === 'all' || p.status === activeFilter;
             return matchesSearch && matchesFilter;
@@ -60,12 +60,12 @@ export default function DoctorPatients() {
                 {/* Patient cards */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                     {filtered.map((patient, i) => (
-                        <div key={patient.id} onMouseEnter={() => setHoveredCard(i)} onMouseLeave={() => setHoveredCard(null)} onClick={() => navigate(`/doctor/patients/${patient.id}`)}
+                        <div key={patient.anonymizedId} onMouseEnter={() => setHoveredCard(i)} onMouseLeave={() => setHoveredCard(null)} onClick={() => navigate(`/doctor/patients/${patient.anonymizedId}`)}
                             style={{ background: colors.card, borderRadius: '14px', padding: '20px 24px', border: `1px solid ${hoveredCard === i ? colors.accent + '40' : colors.border}`, boxShadow: colors.shadow, cursor: 'pointer', transition: 'all 0.3s ease', transform: hoveredCard === i ? 'translateY(-1px)' : 'none', display: 'flex', alignItems: 'center', gap: '20px' }}>
-                            <PatientAvatar patientId={patient.id} size={48} />
+                            <PatientAvatar patientId={patient.anonymizedId} size={48} />
                             <div style={{ flex: 1, minWidth: 0 }}>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '6px', flexWrap: 'wrap' }}>
-                                    <span style={{ fontFamily: fonts.mono, fontSize: '15px', fontWeight: 600, color: colors.textPrimary }}>{patient.id}</span>
+                                    <span style={{ fontFamily: fonts.mono, fontSize: '15px', fontWeight: 600, color: colors.textPrimary }}>{patient.anonymizedId}</span>
                                     <StatusBadge status={patient.status} />
                                 </div>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px', color: colors.textSecondary, fontFamily: fonts.body, flexWrap: 'wrap' }}>
@@ -81,7 +81,7 @@ export default function DoctorPatients() {
                             <div style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 14px', borderRadius: '9999px', background: colors.accentGlow, color: colors.accent, fontFamily: fonts.mono, fontSize: '13px', fontWeight: 600, flexShrink: 0 }}>
                                 {patient.matches} matches
                             </div>
-                            <button onClick={(e) => { e.stopPropagation(); navigate(`/doctor/patients/${patient.id}`); }}
+                            <button onClick={(e) => { e.stopPropagation(); navigate(`/doctor/patients/${patient.anonymizedId}`); }}
                                 style={{ padding: '8px 18px', borderRadius: '8px', background: 'transparent', color: colors.accent, fontFamily: fonts.body, fontSize: '13px', fontWeight: 600, border: `1px solid ${colors.accent}30`, cursor: 'pointer', transition: 'all 0.2s ease', whiteSpace: 'nowrap', flexShrink: 0 }}
                                 onMouseEnter={(e) => { e.target.style.background = colors.accent; e.target.style.color = '#fff'; }}
                                 onMouseLeave={(e) => { e.target.style.background = 'transparent'; e.target.style.color = colors.accent; }}>

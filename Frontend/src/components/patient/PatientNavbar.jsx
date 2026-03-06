@@ -1,10 +1,12 @@
 import { useTheme, radius, spacing, fontSize } from '../../theme.jsx'
 import { useNavigate } from 'react-router-dom'
 import { HiOutlineBell } from 'react-icons/hi2'
+import usePatient from '../../hooks/usePatient'
 
 export default function PatientNavbar() {
   const { colors, fonts, mode, toggleMode } = useTheme()
   const navigate = useNavigate()
+  const { initials } = usePatient()
 
   return (
     <header
@@ -90,7 +92,7 @@ export default function PatientNavbar() {
           onMouseEnter={(e) => { e.currentTarget.style.transform = 'scale(1.08)' }}
           onMouseLeave={(e) => { e.currentTarget.style.transform = 'scale(1)' }}
         >
-          RK
+          {initials}
         </div>
       </div>
     </header>

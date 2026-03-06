@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react'
 import { useTheme, radius, spacing, fontSize, PATIENTS } from '../../theme.jsx'
 import { motion, AnimatePresence } from 'framer-motion'
+import usePatient from '../../hooks/usePatient'
 import {
   HiOutlineUserCircle,
   HiOutlineDocumentText,
@@ -27,17 +28,18 @@ const INITIAL_RECORDS = [
 export default function MyProfilePage() {
   const { colors, fonts } = useTheme()
   const fileInputRef = useRef(null)
+  const { patient, fullName: patientFullName, anonymizedId } = usePatient()
 
   // ── Edit Profile state ──
   const [editing, setEditing] = useState(false)
   const [profile, setProfile] = useState({
-    fullName: 'Rajesh Kumar',
+    fullName: patientFullName || 'Patient',
     age: `${PATIENT.age}`,
     gender: PATIENT.gender === 'F' ? 'Female' : 'Male',
     location: PATIENT.location,
-    phone: '+91 98765 43210',
-    email: 'rajesh.kumar@email.com',
-    address: '42, Andheri West, Mumbai, Maharashtra 400058',
+    phone: patient?.phone || '',
+    email: patient?.email || '',
+    address: patient?.address || '',
     diagnosis: PATIENT.diagnosis,
     medications: PATIENT.meds,
     hba1c: PATIENT.hba1c,
@@ -203,7 +205,7 @@ export default function MyProfilePage() {
             {profile.fullName}
           </h2>
           <p style={{ margin: '4px 0 0', fontSize: fontSize.sm, color: colors.textSecondary, fontFamily: fonts.body }}>
-            {PATIENT.id} • {profile.age} yrs • {profile.gender} • 📍 {profile.location}
+            {anonymizedId} • {profile.age} yrs • {profile.gender} • 📍 {profile.location}
           </p>
           <div style={{ marginTop: spacing.sm, display: 'flex', gap: spacing.sm, flexWrap: 'wrap' }}>
             <span style={{ fontSize: fontSize.xs, padding: '3px 10px', borderRadius: radius.full, background: colors.accentGlow, color: colors.accent, fontWeight: 600 }}>{profile.diagnosis}</span>

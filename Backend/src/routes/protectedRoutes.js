@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const { authenticate, authorize } = require("../middlewares/auth");
+const Patient = require("../models/Patient");
 
 // All protected routes require a valid JWT
 router.use(authenticate);
@@ -109,6 +110,48 @@ router.get("/me/role-info", (req, res) => {
     role: req.user.role,
     dashboardPath: `/api/v1/${req.user.role}/dashboard`,
   });
+});
+
+// ─── Anonymized Patient Data (for doctors & clinics) ─────
+// GET /api/v1/patients/anonymized
+// Returns all patients with PII stripped — only anonymizedId + medical data
+router.get("/patients/anonymized", authorize("doctor", "clinic"), async (req, res, next) => {
+  try {
+    const patients = await Patient.find({ isActive: true })
+      .select("anonymizedId dateOfBirth bloodGroup medicalHistory role createdAt updatedAt")
+      .lean();
+
+    const anonymized = patients.map((p) => ({
+      anonymizedId: p.anonymizedId,
+      dateOfBirth: p.dateOfBirth,
+      bloodGroup: p.bloodGroup,
+      medicalHistory: p.medicalHistory,
+      createdAt: p.createdAt,
+    }));
+
+    return res.json({ ok: true, count: anonymized.length, data: anonymized });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// GET /api/v1/patients/anonymized/:anonymizedId
+// Returns a single patient's anonymized data
+router.get("/patients/anonymized/:anonymizedId", authorize("doctor", "clinic"), async (req, res, next) => {
+  try {
+    const patient = await Patient.findOne({
+      anonymizedId: req.params.anonymizedId,
+      isActive: true,
+    }).select("anonymizedId dateOfBirth bloodGroup medicalHistory role createdAt updatedAt");
+
+    if (!patient) {
+      return res.status(404).json({ ok: false, message: "Patient not found" });
+    }
+
+    return res.json({ ok: true, data: patient.toAnonymizedJSON() });
+  } catch (err) {
+    next(err);
+  }
 });
 
 module.exports = router;

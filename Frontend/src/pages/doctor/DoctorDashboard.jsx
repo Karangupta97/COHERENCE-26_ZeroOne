@@ -38,9 +38,9 @@ const STATS = [
 
 const ACTIVITY = [
     { icon: HiOutlineDocumentText, iconType: 'green', title: 'New trial posted', desc: 'GLYCO-ADVANCE Phase III', time: '10 min ago' },
-    { icon: HiOutlineSparkles, iconType: 'accent', title: 'Patient matched', desc: 'PT-0041 matched with 94% score', time: '25 min ago' },
-    { icon: HiOutlineCheckCircle, iconType: 'green', title: 'Doctor approved', desc: 'PT-0039 approved for trial', time: '1 hr ago' },
-    { icon: HiOutlineBuildingOffice2, iconType: 'accent', title: 'Screening completed', desc: 'PT-0037 passed screening', time: '2 hrs ago' },
+    { icon: HiOutlineSparkles, iconType: 'accent', title: 'Patient matched', desc: 'ANON-7F3A2B1C matched with 94% score', time: '25 min ago' },
+    { icon: HiOutlineCheckCircle, iconType: 'green', title: 'Doctor approved', desc: 'ANON-4D8E9C2F approved for trial', time: '1 hr ago' },
+    { icon: HiOutlineBuildingOffice2, iconType: 'accent', title: 'Screening completed', desc: 'ANON-1B5C8D3E passed screening', time: '2 hrs ago' },
 ]
 
 const INSIGHTS = [
