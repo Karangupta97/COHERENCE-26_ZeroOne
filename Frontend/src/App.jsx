@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from './theme';
 
-// ── Doctor Portal Imports ──
+// ── Public Pages ──
+import HomePage from './pages/HomePage';
 import LoginPage from './Auth/LoginPage';
 import SignupPage from './Auth/Signup';
 import DoctorDashboard from './pages/doctor/DoctorDashboard';
@@ -108,7 +109,7 @@ export default function App() {
     <ThemeProvider>
       <Routes>
         {/* Landing / Login */}
-        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
 
