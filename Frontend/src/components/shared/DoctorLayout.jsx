@@ -5,7 +5,7 @@ import Sidebar from './Sidebar';
 import { ALERTS } from '../../doctor/data/mockData';
 
 function TopBar() {
-    const { colors, fonts, mode, toggleMode } = useTheme();
+    const { colors, fonts, mode, toggleMode, spacing, radius, fontSize } = useTheme();
     const navigate = useNavigate();
     const location = useLocation();
     const [toggleHover, setToggleHover] = useState(false);
@@ -30,8 +30,8 @@ function TopBar() {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            padding: '0 28px',
-            height: '56px',
+            padding: `${spacing.md} ${spacing.xl}`,
+            minHeight: 64,
             background: colors.surface,
             borderBottom: `1px solid ${colors.border}`,
             position: 'sticky',
@@ -40,7 +40,7 @@ function TopBar() {
         }}>
             <h1 style={{
                 fontFamily: fonts.heading,
-                fontSize: '18px',
+                fontSize: fontSize.lg,
                 fontWeight: 700,
                 color: colors.textPrimary,
                 margin: 0,
@@ -56,12 +56,12 @@ function TopBar() {
                     onMouseLeave={() => setToggleHover(false)}
                     style={{
                         padding: '5px 14px',
-                        borderRadius: '9999px',
+                        borderRadius: radius.full,
                         background: toggleHover ? colors.card : colors.surface,
                         border: `1px solid ${colors.border}`,
                         color: colors.textSecondary,
-                        fontFamily: fonts.body,
-                        fontSize: '12px',
+                        fontFamily: fonts.mono || fonts.body,
+                        fontSize: fontSize.xs,
                         fontWeight: 500,
                         cursor: 'pointer',
                         display: 'flex',
@@ -86,10 +86,10 @@ function TopBar() {
                     onMouseLeave={() => setBellHover(false)}
                     style={{
                         position: 'relative',
-                        fontSize: '16px',
-                        padding: '6px',
-                        borderRadius: '8px',
-                        background: bellHover ? `${colors.accent}08` : 'transparent',
+                        fontSize: 18,
+                        padding: 6,
+                        borderRadius: radius.md,
+                        background: bellHover ? colors.card : 'transparent',
                         border: 'none',
                         cursor: 'pointer',
                         transition: 'all 0.2s ease',
@@ -99,14 +99,14 @@ function TopBar() {
                     {alertCount > 0 && (
                         <span style={{
                             position: 'absolute',
-                            top: '0px',
-                            right: '0px',
-                            width: '16px',
-                            height: '16px',
-                            borderRadius: '50%',
+                            top: 0,
+                            right: 0,
+                            width: 16,
+                            height: 16,
+                            borderRadius: radius.full,
                             background: colors.red,
                             color: '#fff',
-                            fontSize: '9px',
+                            fontSize: 9,
                             fontWeight: 700,
                             fontFamily: fonts.mono,
                             display: 'flex',
@@ -121,14 +121,14 @@ function TopBar() {
 
                 {/* Avatar */}
                 <div style={{
-                    width: '32px',
-                    height: '32px',
-                    borderRadius: '50%',
+                    width: 36,
+                    height: 36,
+                    borderRadius: radius.full,
                     background: `linear-gradient(135deg, ${colors.accent}, #7C3AED)`,
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    fontSize: '11px',
+                    fontSize: fontSize.sm,
                     fontFamily: fonts.mono,
                     fontWeight: 700,
                     color: '#fff',
@@ -142,7 +142,7 @@ function TopBar() {
 }
 
 export default function DoctorLayout({ children }) {
-    const { colors } = useTheme();
+    const { colors, spacing } = useTheme();
 
     return (
         <div style={{
@@ -153,13 +153,13 @@ export default function DoctorLayout({ children }) {
             <Sidebar />
             <div style={{
                 flex: 1,
-                marginLeft: '220px',
+                marginLeft: 240,
                 minHeight: '100vh',
                 display: 'flex',
                 flexDirection: 'column',
             }}>
                 <TopBar />
-                <main style={{ flex: 1 }}>
+                <main style={{ flex: 1, padding: spacing.lg, overflow: 'auto' }}>
                     {children}
                 </main>
             </div>

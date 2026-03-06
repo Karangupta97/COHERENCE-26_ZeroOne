@@ -3,7 +3,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider } from './theme';
 
 // ── Doctor Portal Imports ──
-import LoginPage from './doctor/LoginPage';
+import LoginPage from './Auth/LoginPage';
 import DoctorDashboard from './doctor/DoctorDashboard';
 import DoctorPatients from './doctor/DoctorPatients';
 import PatientDetail from './doctor/PatientDetail';
@@ -78,7 +78,7 @@ function ClinicLayout() {
   return (
     <div style={{ display: 'flex', minHeight: '100vh', overflow: 'hidden' }}>
       <Sidebar activePage={activePage} setPage={setActivePage} />
-      <div style={{ flex: 1, marginLeft: '260px', display: 'flex', flexDirection: 'column', minHeight: '100vh', width: 'calc(100vw - 260px)', maxWidth: 'calc(100vw - 260px)', overflow: 'hidden' }}>
+      <div style={{ flex: 1, marginLeft: 240, display: 'flex', flexDirection: 'column', minHeight: '100vh', width: 'calc(100vw - 240px)', maxWidth: 'calc(100vw - 240px)', overflow: 'hidden' }}>
         <NavBar
           title={PAGE_TITLES[activePage] || 'Clinic Portal'}
           unreadCount={unreadCount}

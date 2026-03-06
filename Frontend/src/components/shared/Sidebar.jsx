@@ -27,7 +27,7 @@ const DOCTOR_NAV_ITEMS = [
 ];
 
 export default function Sidebar({ activePage, setPage }) {
-    const { colors, fonts } = useTheme();
+    const { colors, fonts, spacing, radius, fontSize } = useTheme();
     const navigate = useNavigate();
     const location = useLocation();
     const [hoveredItem, setHoveredItem] = useState(null);
@@ -57,9 +57,9 @@ export default function Sidebar({ activePage, setPage }) {
 
     return (
         <aside style={{
-            width: '220px',
+            width: 240,
             minHeight: '100vh',
-            background: colors.surface,
+            background: colors.card,
             borderRight: `1px solid ${colors.border}`,
             display: 'flex',
             flexDirection: 'column',
@@ -67,36 +67,37 @@ export default function Sidebar({ activePage, setPage }) {
             top: 0,
             left: 0,
             zIndex: 100,
+            fontFamily: fonts.body,
         }}>
             {/* Logo */}
             <div
                 onClick={() => isClinicMode ? null : navigate('/doctor/dashboard')}
                 style={{
-                    padding: '20px 18px 16px',
+                    padding: `${spacing.lg} ${spacing.lg} ${spacing.md}`,
                     cursor: isClinicMode ? 'default' : 'pointer',
                 }}
             >
                 <div style={{
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '10px',
-                    marginBottom: '2px',
+                    gap: spacing.sm,
+                    marginBottom: spacing.xs,
                 }}>
                     <div style={{
-                        width: '32px',
-                        height: '32px',
-                        borderRadius: '8px',
+                        width: 36,
+                        height: 36,
+                        borderRadius: radius.md,
                         background: `linear-gradient(135deg, ${colors.accent}, #7C3AED)`,
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        fontSize: '16px',
+                        fontSize: fontSize.lg,
                     }}>
                         🧬
                     </div>
                     <span style={{
                         fontFamily: fonts.heading,
-                        fontSize: '16px',
+                        fontSize: fontSize.base,
                         fontWeight: 700,
                         color: colors.textPrimary,
                     }}>
@@ -105,18 +106,18 @@ export default function Sidebar({ activePage, setPage }) {
                 </div>
                 <span style={{
                     fontFamily: fonts.mono,
-                    fontSize: '9px',
+                fontSize: fontSize.xs,
                     color: colors.textSecondary,
                     textTransform: 'uppercase',
-                    letterSpacing: '1.5px',
-                    marginLeft: '42px',
+                letterSpacing: '1.5px',
+                marginLeft: 42,
                 }}>
                     {portalLabel}
                 </span>
             </div>
 
             {/* Nav items */}
-            <nav style={{ flex: 1, padding: '8px 10px', display: 'flex', flexDirection: 'column', gap: '2px' }}>
+            <nav style={{ flex: 1, padding: `0 ${spacing.sm}`, display: 'flex', flexDirection: 'column', gap: 2 }}>
                 {navItems.map((item) => {
                     const active = isClinicMode ? activePage === item.key : isDoctorActive(item);
                     const hovered = hoveredItem === item.key;
@@ -129,31 +130,35 @@ export default function Sidebar({ activePage, setPage }) {
                             style={{
                                 display: 'flex',
                                 alignItems: 'center',
-                                gap: '10px',
-                                padding: '9px 12px',
-                                borderRadius: '8px',
-                                fontSize: '13px',
+                                gap: spacing.md,
+                                padding: `10px ${spacing.md}`,
+                                borderRadius: radius.md,
+                                fontSize: fontSize.sm,
                                 fontWeight: active ? 600 : 400,
                                 fontFamily: fonts.body,
-                                color: active ? '#FFFFFF' : hovered ? '#FFFFFF' : colors.textSecondary,
-                                background: active ? colors.accent : hovered ? `${colors.accent}cc` : 'transparent',
+                                color: active ? colors.accent : colors.textSecondary,
+                                background: active ? colors.accentGlow : hovered ? `${colors.border}80` : 'transparent',
                                 border: 'none',
                                 cursor: 'pointer',
                                 transition: 'all 0.2s ease',
                                 width: '100%',
                                 textAlign: 'left',
+                                position: 'relative',
                             }}
                         >
-                            <span style={{ fontSize: '14px', width: '18px', textAlign: 'center', filter: (active || hovered) ? 'brightness(10)' : 'none' }}>{item.icon}</span>
+                            {active && (
+                                <div style={{ position: 'absolute', left: 0, top: '20%', bottom: '20%', width: 3, borderRadius: 2, background: colors.accent }} />
+                            )}
+                            <span style={{ fontSize: fontSize.base, width: 18, textAlign: 'center' }}>{item.icon}</span>
                             <span style={{ flex: 1 }}>{item.label}</span>
                             {isClinicMode && item.key === 'notifications' && unreadCount > 0 && (
                                 <span style={{
-                                    minWidth: '18px',
-                                    height: '18px',
-                                    borderRadius: '9999px',
+                                    minWidth: 18,
+                                    height: 18,
+                                    borderRadius: radius.full,
                                     background: (active || hovered) ? 'rgba(255,255,255,0.25)' : colors.red,
                                     color: '#fff',
-                                    fontSize: '10px',
+                                    fontSize: 10,
                                     fontWeight: 700,
                                     fontFamily: fonts.mono,
                                     display: 'flex',
@@ -166,12 +171,12 @@ export default function Sidebar({ activePage, setPage }) {
                             )}
                             {!isClinicMode && item.badge && (
                                 <span style={{
-                                    minWidth: '18px',
-                                    height: '18px',
-                                    borderRadius: '9999px',
+                                    minWidth: 18,
+                                    height: 18,
+                                    borderRadius: radius.full,
                                     background: (active || hovered) ? 'rgba(255,255,255,0.25)' : colors.red,
                                     color: '#fff',
-                                    fontSize: '10px',
+                                    fontSize: 10,
                                     fontWeight: 700,
                                     fontFamily: fonts.mono,
                                     display: 'flex',
