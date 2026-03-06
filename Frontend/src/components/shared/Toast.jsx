@@ -1,18 +1,98 @@
-// ============================================================
-//  Toast — Slide-in notification with auto-dismiss
-// ============================================================
-
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, createContext, useContext } from 'react';
 import { useTheme } from '../../theme';
 
+// ── Context-based Toast (used by doctor portal) ──────────────
+const ToastContext = createContext(null);
+
+export function useToast() {
+    const ctx = useContext(ToastContext);
+    if (!ctx) throw new Error('useToast must be used inside <ToastProvider>');
+    return ctx;
+}
+
+export function ToastProvider({ children }) {
+    const [toasts, setToasts] = useState([]);
+
+    const addToast = useCallback((message, type = 'success') => {
+        const id = Date.now();
+        setToasts(prev => [...prev, { id, message, type, exiting: false }]);
+        setTimeout(() => {
+            setToasts(prev => prev.map(t => t.id === id ? { ...t, exiting: true } : t));
+            setTimeout(() => {
+                setToasts(prev => prev.filter(t => t.id !== id));
+            }, 300);
+        }, 3000);
+    }, []);
+
+    return (
+        <ToastContext.Provider value={{ addToast }}>
+            {children}
+            <ToastContainer toasts={toasts} />
+        </ToastContext.Provider>
+    );
+}
+
+function ToastContainer({ toasts }) {
+    const { colors, fonts } = useTheme();
+
+    const typeConfig = {
+        success: { icon: '✅', border: colors.green },
+        error: { icon: '❌', border: colors.red },
+        info: { icon: 'ℹ️', border: colors.accent },
+        warning: { icon: '⚠️', border: colors.yellow },
+    };
+
+    return (
+        <div style={{
+            position: 'fixed',
+            top: '80px',
+            right: '24px',
+            zIndex: 9999,
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '10px',
+        }}>
+            {toasts.map(toast => {
+                const cfg = typeConfig[toast.type] || typeConfig.success;
+                return (
+                    <div
+                        key={toast.id}
+                        className={toast.exiting ? 'toast-exit' : 'toast-enter'}
+                        style={{
+                            background: colors.surface,
+                            border: `1px solid ${colors.border}`,
+                            borderLeft: `4px solid ${cfg.border}`,
+                            borderRadius: '10px',
+                            padding: '14px 20px',
+                            boxShadow: colors.shadow,
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '10px',
+                            minWidth: '280px',
+                            fontFamily: fonts.body,
+                            fontSize: '14px',
+                            color: colors.textPrimary,
+                            transition: 'all 0.3s ease',
+                        }}
+                    >
+                        <span style={{ fontSize: '16px' }}>{cfg.icon}</span>
+                        {toast.message}
+                    </div>
+                );
+            })}
+        </div>
+    );
+}
+
+// ── Standalone Toast (used by clinic portal) ─────────────────
 const VARIANTS = {
-    success: { icon: '✅', bgKey: 'greenGlow', colorKey: 'green' },
-    error: { icon: '❌', bgKey: 'red', colorKey: 'red' },
-    info: { icon: 'ℹ️', bgKey: 'accentGlow', colorKey: 'accent' },
+    success: { icon: '✅', colorKey: 'green' },
+    error: { icon: '❌', colorKey: 'red' },
+    info: { icon: 'ℹ️', colorKey: 'accent' },
 };
 
 export default function Toast({ message, variant = 'success', isVisible, onClose, duration = 3000 }) {
-    const { colors, radius, fontSize, spacing, fonts } = useTheme();
+    const { colors, fonts } = useTheme();
     const [show, setShow] = useState(false);
 
     useEffect(() => {
@@ -38,11 +118,11 @@ export default function Toast({ message, variant = 'success', isVisible, onClose
             zIndex: 2000,
             background: colors.surface,
             border: `1px solid ${colors[v.colorKey]}40`,
-            borderRadius: radius.lg,
-            padding: `${spacing.md} ${spacing.lg}`,
+            borderRadius: '10px',
+            padding: '14px 20px',
             display: 'flex',
             alignItems: 'center',
-            gap: spacing.md,
+            gap: '10px',
             boxShadow: `0 8px 32px rgba(0,0,0,0.3)`,
             transform: show ? 'translateX(0)' : 'translateX(120%)',
             opacity: show ? 1 : 0,
@@ -51,7 +131,7 @@ export default function Toast({ message, variant = 'success', isVisible, onClose
         }}>
             <span style={{ fontSize: '18px' }}>{v.icon}</span>
             <span style={{
-                fontSize: fontSize.sm,
+                fontSize: '14px',
                 color: colors.textPrimary,
                 fontFamily: fonts.body,
                 fontWeight: 500,
