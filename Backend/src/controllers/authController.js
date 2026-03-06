@@ -17,22 +17,40 @@ async function signup(req, res, next) {
     }
 
     const Model = getModel(role);
-    const user = new Model({ firstName, lastName, email, password, phone });
+    const userData = { firstName, lastName, email, password, phone };
+
+    // Clinic-specific fields from signup
+    if (role === "clinic") {
+      const clinicFields = ["clinicName", "contactEmail", "addressLine1", "addressLine2", "city", "district", "state", "pincode"];
+      for (const field of clinicFields) {
+        if (req.body[field] !== undefined) {
+          userData[field] = req.body[field];
+        }
+      }
+    }
+
+    const user = new Model(userData);
     await user.save();
 
     const token = generateToken({ id: user._id, role: user.role });
+
+    const responseUser = {
+      id: user._id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      role: user.role,
+    };
+
+    if (role === "clinic" && user.clinicName) {
+      responseUser.clinicName = user.clinicName;
+    }
 
     return res.status(201).json({
       ok: true,
       message: "Account created successfully",
       token,
-      user: {
-        id: user._id,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-        role: user.role,
-      },
+      user: responseUser,
     });
   } catch (err) {
     next(err);
@@ -62,17 +80,23 @@ async function login(req, res, next) {
 
     const token = generateToken({ id: user._id, role: user.role });
 
+    const loginUser = {
+      id: user._id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      role: user.role,
+    };
+
+    if (user.role === "clinic" && user.clinicName) {
+      loginUser.clinicName = user.clinicName;
+    }
+
     return res.status(200).json({
       ok: true,
       message: "Login successful",
       token,
-      user: {
-        id: user._id,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-        role: user.role,
-      },
+      user: loginUser,
     });
   } catch (err) {
     next(err);

@@ -17,6 +17,7 @@ import {
     HiOutlinePencilSquare,
 } from 'react-icons/hi2'
 import useDoctor from '../../hooks/useDoctor'
+import useClinic from '../../hooks/useClinic'
 
 const CLINIC_NAV_ITEMS = [
     { key: 'dashboard', label: 'Dashboard', icon: HiOutlineHome, path: null },
@@ -64,8 +65,10 @@ export default function Sidebar({ activePage, setPage }) {
 
     const navItems = isClinicMode ? CLINIC_NAV_ITEMS : DOCTOR_NAV_ITEMS
     const portalLabel = isClinicMode ? 'Clinic Portal' : 'Doctor Portal'
-    const { fullName, initials: doctorInitials } = useDoctor()
-    const profileName = isClinicMode ? fullName : fullName
+    const { fullName: doctorFullName, initials: doctorInitials } = useDoctor()
+    const { clinicName, initials: clinicInitials } = useClinic()
+    const profileName = isClinicMode ? clinicName : doctorFullName
+    const profileInitials = isClinicMode ? clinicInitials : doctorInitials
     const profileSub = isClinicMode ? 'Clinic Admin' : 'Lead Investigator'
 
     return (
@@ -193,7 +196,7 @@ export default function Sidebar({ activePage, setPage }) {
                         color: '#fff', fontSize: '13px', fontWeight: 700, fontFamily: fonts.heading,
                         flexShrink: 0,
                     }}>
-                        {doctorInitials}
+                        {profileInitials}
                     </div>
                     <div style={{ minWidth: 0 }}>
                         <div style={{ fontSize: '13px', fontWeight: 600, color: colors.textPrimary, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{profileName}</div>

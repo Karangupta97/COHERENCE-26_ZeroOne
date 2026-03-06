@@ -52,7 +52,7 @@ async function updateMe(req, res, next) {
 
     // Clinic-specific
     if (user.role === "clinic" && req.body.clinicProfile) {
-      const allowed = ["clinicName", "registrationNumber", "address", "contactEmail", "operatingHours", "specialties"];
+      const allowed = ["clinicName", "registrationNumber", "addressLine1", "addressLine2", "city", "district", "state", "pincode", "contactEmail", "operatingHours", "specialties"];
       for (const field of allowed) {
         if (req.body.clinicProfile[field] !== undefined) {
           user[field] = req.body.clinicProfile[field];

@@ -28,6 +28,7 @@ import TrialPieChart from '../../components/clinic/TrialPieChart'
 import MonthlyEnrollmentChart from '../../components/clinic/MonthlyEnrollmentChart'
 import CandidateBreakdown from '../../components/clinic/CandidateBreakdown'
 import { CLINIC, CLINIC_TRIALS, CANDIDATES, RECENT_ACTIVITY, AI_INSIGHTS } from './data/mockData'
+import useClinic from '../../hooks/useClinic'
 
 // ── Stats ───────────────────────────────────────────────
 const getStats = (candidates, trials) => {
@@ -118,6 +119,7 @@ function TrialsTable({ trials, colors, fonts }) {
 
 export default function ClinicDashboard({ setPage }) {
     const { colors, fonts } = useTheme()
+    const { clinicName, location: clinicLocation } = useClinic()
     const greet = getGreeting()
     const GreetIcon = greet.Icon
     const stats = getStats(CANDIDATES, CLINIC_TRIALS)
@@ -147,11 +149,11 @@ export default function ClinicDashboard({ setPage }) {
                         <GreetIcon style={{ width: 16, height: 16, color: colors.accent }} /> {greet.text}
                     </div>
                     <h2 style={{ margin: 0, fontSize: '22px', fontFamily: fonts.heading, fontWeight: 700, color: colors.textPrimary, lineHeight: 1.3, display: 'flex', alignItems: 'center', gap: spacing.sm, flexWrap: 'wrap' }}>
-                        Welcome back, <span style={{ color: colors.accent }}>{CLINIC.name}</span>
+                        Welcome back, <span style={{ color: colors.accent }}>{clinicName}</span>
                         <HiOutlineBuildingOffice2 style={{ width: 22, height: 22, color: colors.accent, flexShrink: 0 }} />
                     </h2>
                     <p style={{ margin: `${spacing.xs} 0 0`, fontSize: fontSize.sm, color: colors.textSecondary, fontFamily: fonts.body, lineHeight: 1.5, display: 'flex', alignItems: 'center', gap: spacing.sm }}>
-                        <HiOutlineMapPin style={{ width: 14, height: 14, flexShrink: 0 }} /> {CLINIC.location}
+                        <HiOutlineMapPin style={{ width: 14, height: 14, flexShrink: 0 }} /> {clinicLocation || CLINIC.location}
                         <span style={{ margin: '0 4px' }}>·</span>
                         <HiOutlineUserCircle style={{ width: 14, height: 14, flexShrink: 0 }} /> {CLINIC.leadDoctor}
                         <span style={{ margin: '0 4px' }}>·</span>

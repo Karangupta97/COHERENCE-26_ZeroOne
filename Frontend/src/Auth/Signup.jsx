@@ -187,6 +187,18 @@ export default function SignupPage() {
     const [showConfirm, setShowConfirm] = useState(false);
     const [agreeTerms, setAgreeTerms] = useState(false);
 
+    // Clinic-specific fields
+    const [clinicName, setClinicName] = useState('');
+    const [clinicEmail, setClinicEmail] = useState('');
+    const [addressLine1, setAddressLine1] = useState('');
+    const [addressLine2, setAddressLine2] = useState('');
+    const [city, setCity] = useState('');
+    const [district, setDistrict] = useState('');
+    const [clinicState, setClinicState] = useState('');
+    const [pincode, setPincode] = useState('');
+    const [agreeAccurate, setAgreeAccurate] = useState(false);
+    const [agreeVerification, setAgreeVerification] = useState(false);
+
     const [hoveredRole, setHoveredRole] = useState(null);
     const [submitHover, setSubmitHover] = useState(false);
     const [mounted, setMounted] = useState(false);
@@ -221,8 +233,12 @@ export default function SignupPage() {
         { value: '50K+', label: 'Patients Matched' },
     ];
 
+    const isClinic = selectedRole === 'clinic';
+    const totalSteps = isClinic ? 3 : 2;
     const canProceed = firstName.trim() && lastName.trim() && selectedRole;
-    const canSubmit = email.trim() && password && password === confirmPassword && strength.level >= 3 && agreeTerms;
+    const canProceedClinic = clinicName.trim() && clinicEmail.trim() && addressLine1.trim() && city.trim() && clinicState.trim() && pincode.trim();
+    const canSubmit = email.trim() && password && password === confirmPassword && strength.level >= 3 &&
+        (isClinic ? (agreeTerms && agreeAccurate && agreeVerification) : agreeTerms);
 
     const handleSubmit = async () => {
         if (!canSubmit) return;
@@ -239,6 +255,16 @@ export default function SignupPage() {
                     password,
                     role: selectedRole,
                     ...(phone.trim() && { phone: phone.trim() }),
+                    ...(isClinic && {
+                        clinicName: clinicName.trim(),
+                        contactEmail: clinicEmail.trim(),
+                        addressLine1: addressLine1.trim(),
+                        ...(addressLine2.trim() && { addressLine2: addressLine2.trim() }),
+                        city: city.trim(),
+                        ...(district.trim() && { district: district.trim() }),
+                        state: clinicState.trim(),
+                        pincode: pincode.trim(),
+                    }),
                 }),
             });
             const data = await res.json();
@@ -512,7 +538,9 @@ export default function SignupPage() {
                             }}>
                                 {step === 1
                                     ? 'Choose your role and tell us your name.'
-                                    : 'Set up your login credentials to get started.'}
+                                    : (isClinic && step === 2)
+                                        ? 'Enter your clinic details.'
+                                        : 'Set up your login credentials to get started.'}
                             </p>
                         </div>
 
@@ -520,7 +548,7 @@ export default function SignupPage() {
                         <div style={{
                             display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '24px',
                         }}>
-                            {[1, 2].map(s => (
+                            {Array.from({ length: totalSteps }, (_, i) => i + 1).map(s => (
                                 <React.Fragment key={s}>
                                     <div style={{
                                         width: '28px', height: '28px', borderRadius: '50%',
@@ -533,10 +561,10 @@ export default function SignupPage() {
                                     }}>
                                         {step > s ? <CheckIcon size={13} color="#fff" /> : s}
                                     </div>
-                                    {s < 2 && (
+                                    {s < totalSteps && (
                                         <div style={{
                                             flex: 1, height: '2px', borderRadius: '1px',
-                                            background: step > 1 ? colors.accent : colors.border,
+                                            background: step > s ? colors.accent : colors.border,
                                             transition: 'background 0.3s ease',
                                         }} />
                                     )}
@@ -663,13 +691,156 @@ export default function SignupPage() {
                             </div>
                         )}
 
-                        {/* ── STEP 2: Credentials ── */}
-                        {step === 2 && (
+                        {/* ── STEP 2 (clinic only): Clinic Details ── */}
+                        {isClinic && step === 2 && (
+                            <div style={{ animation: 'fadeSlideIn 0.35s ease forwards' }}>
+                                {/* Back button */}
+                                <button onClick={() => setStep(1)} style={{
+                                    background: 'none', border: 'none', color: colors.textSecondary,
+                                    fontFamily: fonts.body, fontSize: '13px', fontWeight: 500,
+                                    cursor: 'pointer', padding: 0, marginBottom: '16px',
+                                    display: 'flex', alignItems: 'center', gap: '4px',
+                                    transition: 'color 0.2s ease',
+                                }}
+                                    onMouseEnter={(e) => e.currentTarget.style.color = colors.accent}
+                                    onMouseLeave={(e) => e.currentTarget.style.color = colors.textSecondary}
+                                >
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="m15 18-6-6 6-6" />
+                                    </svg>
+                                    Back
+                                </button>
+
+                                {/* Section 1: Clinic Name */}
+                                <div style={{ marginBottom: '20px' }}>
+                                    <div style={{
+                                        fontSize: '12px', fontWeight: 600, color: colors.accent, textTransform: 'uppercase',
+                                        letterSpacing: '0.5px', fontFamily: fonts.body, marginBottom: '10px',
+                                        display: 'flex', alignItems: 'center', gap: '6px',
+                                    }}>
+                                        <ClinicIcon size={14} color={colors.accent} />
+                                        1. Clinic Name
+                                    </div>
+                                    {renderInput({
+                                        id: 'clinicName', label: 'Clinic Name', value: clinicName,
+                                        onChange: (e) => setClinicName(e.target.value),
+                                        placeholder: 'Enter the official name of your clinic',
+                                        icon: ClinicIcon, autoComplete: 'organization',
+                                    })}
+                                </div>
+
+                                {/* Section 2: Contact Details */}
+                                <div style={{ marginBottom: '20px' }}>
+                                    <div style={{
+                                        fontSize: '12px', fontWeight: 600, color: colors.accent, textTransform: 'uppercase',
+                                        letterSpacing: '0.5px', fontFamily: fonts.body, marginBottom: '10px',
+                                        display: 'flex', alignItems: 'center', gap: '6px',
+                                    }}>
+                                        <EmailIcon size={14} color={colors.accent} />
+                                        2. Clinic Contact Details
+                                    </div>
+                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }} className="signup-name-grid">
+                                        {renderInput({
+                                            id: 'clinicEmail', label: 'Clinic Email Address', type: 'email',
+                                            value: clinicEmail, onChange: (e) => setClinicEmail(e.target.value),
+                                            placeholder: 'clinic@example.com', icon: EmailIcon, autoComplete: 'email',
+                                        })}
+                                        {renderInput({
+                                            id: 'clinicPhone', label: 'Phone Number', type: 'tel',
+                                            value: phone, onChange: (e) => setPhone(e.target.value),
+                                            placeholder: '+91 98765 43210', icon: PhoneIcon, autoComplete: 'tel',
+                                        })}
+                                    </div>
+                                </div>
+
+                                {/* Section 3: Address */}
+                                <div style={{ marginBottom: '20px' }}>
+                                    <div style={{
+                                        fontSize: '12px', fontWeight: 600, color: colors.accent, textTransform: 'uppercase',
+                                        letterSpacing: '0.5px', fontFamily: fonts.body, marginBottom: '10px',
+                                        display: 'flex', alignItems: 'center', gap: '6px',
+                                    }}>
+                                        <GlobeIcon size={14} color={colors.accent} />
+                                        3. Clinic Address
+                                    </div>
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                                        {renderInput({
+                                            id: 'addressLine1', label: 'Address Line 1', value: addressLine1,
+                                            onChange: (e) => setAddressLine1(e.target.value),
+                                            placeholder: 'Building name, street address',
+                                        })}
+                                        {renderInput({
+                                            id: 'addressLine2', label: 'Address Line 2 (Optional)', value: addressLine2,
+                                            onChange: (e) => setAddressLine2(e.target.value),
+                                            placeholder: 'Floor, suite, landmark',
+                                        })}
+                                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }} className="signup-name-grid">
+                                            {renderInput({
+                                                id: 'city', label: 'City', value: city,
+                                                onChange: (e) => setCity(e.target.value),
+                                                placeholder: 'Mumbai',
+                                            })}
+                                            {renderInput({
+                                                id: 'district', label: 'District', value: district,
+                                                onChange: (e) => setDistrict(e.target.value),
+                                                placeholder: 'District name',
+                                            })}
+                                        </div>
+                                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }} className="signup-name-grid">
+                                            {renderInput({
+                                                id: 'clinicState', label: 'State', value: clinicState,
+                                                onChange: (e) => setClinicState(e.target.value),
+                                                placeholder: 'Maharashtra',
+                                            })}
+                                            {renderInput({
+                                                id: 'pincode', label: 'Pincode', value: pincode,
+                                                onChange: (e) => setPincode(e.target.value),
+                                                placeholder: '400001',
+                                            })}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Continue to credentials */}
+                                <button
+                                    onClick={() => canProceedClinic && setStep(3)}
+                                    disabled={!canProceedClinic}
+                                    style={{
+                                        width: '100%', padding: '13px', borderRadius: '10px',
+                                        background: canProceedClinic ? colors.accent : (isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)'),
+                                        color: canProceedClinic ? '#fff' : colors.textSecondary,
+                                        fontFamily: fonts.body, fontSize: '15px', fontWeight: 600,
+                                        border: 'none',
+                                        cursor: canProceedClinic ? 'pointer' : 'not-allowed',
+                                        transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+                                        display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
+                                        boxShadow: canProceedClinic ? `0 2px 8px ${colors.accentGlow}` : 'none',
+                                        opacity: canProceedClinic ? 1 : 0.7,
+                                    }}
+                                    onMouseEnter={(e) => {
+                                        if (canProceedClinic) {
+                                            e.currentTarget.style.boxShadow = `0 8px 30px ${colors.accentGlow}`;
+                                            e.currentTarget.style.transform = 'translateY(-1px)';
+                                        }
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        e.currentTarget.style.boxShadow = canProceedClinic ? `0 2px 8px ${colors.accentGlow}` : 'none';
+                                        e.currentTarget.style.transform = 'translateY(0)';
+                                    }}
+                                >
+                                    Continue
+                                    <ArrowIcon />
+                                </button>
+                            </div>
+                        )}
+
+                        {/* ── Credentials Step ── */}
+                        {step === (isClinic ? 3 : 2) && (
                             <div style={{
                                 animation: 'fadeSlideIn 0.35s ease forwards',
                             }}>
                                 {/* Back button */}
-                                <button onClick={() => setStep(1)} style={{
+                                <button onClick={() => setStep(isClinic ? 2 : 1)} style={{
                                     background: 'none', border: 'none', color: colors.textSecondary,
                                     fontFamily: fonts.body, fontSize: '13px', fontWeight: 500,
                                     cursor: 'pointer', padding: 0, marginBottom: '16px',
@@ -785,33 +956,69 @@ export default function SignupPage() {
                                     )}
                                 </div>
 
-                                {/* Terms checkbox */}
-                                <label style={{
-                                    display: 'flex', alignItems: 'flex-start', gap: '10px',
-                                    marginBottom: '24px', cursor: 'pointer',
-                                }}>
-                                    <div
-                                        onClick={() => setAgreeTerms(!agreeTerms)}
-                                        style={{
-                                            width: '18px', height: '18px', borderRadius: '5px', flexShrink: 0,
-                                            border: `1.5px solid ${agreeTerms ? colors.accent : colors.border}`,
-                                            background: agreeTerms ? colors.accent : 'transparent',
-                                            display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                            transition: 'all 0.2s ease', marginTop: '1px',
-                                        }}
-                                    >
-                                        {agreeTerms && <CheckIcon size={11} color="#fff" />}
+                                {/* Terms & Agreement */}
+                                {isClinic ? (
+                                    <div style={{ marginBottom: '24px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                                        <div style={{
+                                            fontSize: '12px', fontWeight: 600, color: colors.accent, textTransform: 'uppercase',
+                                            letterSpacing: '0.5px', fontFamily: fonts.body,
+                                            display: 'flex', alignItems: 'center', gap: '6px',
+                                        }}>
+                                            <ShieldCheckIcon size={14} color={colors.accent} />
+                                            Terms & Agreement
+                                        </div>
+                                        {[
+                                            { checked: agreeAccurate, toggle: () => setAgreeAccurate(!agreeAccurate), text: 'I confirm that the information provided is accurate.' },
+                                            { checked: agreeTerms, toggle: () => setAgreeTerms(!agreeTerms), text: <>I agree to the <span style={{ color: colors.accent, fontWeight: 500 }}>Terms of Service</span> and <span style={{ color: colors.accent, fontWeight: 500 }}>Privacy Policy</span>.</> },
+                                            { checked: agreeVerification, toggle: () => setAgreeVerification(!agreeVerification), text: 'I agree to allow verification of clinic credentials.' },
+                                        ].map((item, i) => (
+                                            <label key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', cursor: 'pointer' }}>
+                                                <div
+                                                    onClick={item.toggle}
+                                                    style={{
+                                                        width: '18px', height: '18px', borderRadius: '5px', flexShrink: 0,
+                                                        border: `1.5px solid ${item.checked ? colors.accent : colors.border}`,
+                                                        background: item.checked ? colors.accent : 'transparent',
+                                                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                                        transition: 'all 0.2s ease', marginTop: '1px',
+                                                    }}
+                                                >
+                                                    {item.checked && <CheckIcon size={11} color="#fff" />}
+                                                </div>
+                                                <span style={{ fontFamily: fonts.body, fontSize: '13px', color: colors.textSecondary, lineHeight: 1.5 }}>
+                                                    {item.text}
+                                                </span>
+                                            </label>
+                                        ))}
                                     </div>
-                                    <span style={{
-                                        fontFamily: fonts.body, fontSize: '13px',
-                                        color: colors.textSecondary, lineHeight: 1.5,
+                                ) : (
+                                    <label style={{
+                                        display: 'flex', alignItems: 'flex-start', gap: '10px',
+                                        marginBottom: '24px', cursor: 'pointer',
                                     }}>
-                                        I agree to the{' '}
-                                        <span style={{ color: colors.accent, fontWeight: 500 }}>Terms of Service</span>
-                                        {' '}and{' '}
-                                        <span style={{ color: colors.accent, fontWeight: 500 }}>Privacy Policy</span>
-                                    </span>
-                                </label>
+                                        <div
+                                            onClick={() => setAgreeTerms(!agreeTerms)}
+                                            style={{
+                                                width: '18px', height: '18px', borderRadius: '5px', flexShrink: 0,
+                                                border: `1.5px solid ${agreeTerms ? colors.accent : colors.border}`,
+                                                background: agreeTerms ? colors.accent : 'transparent',
+                                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                                transition: 'all 0.2s ease', marginTop: '1px',
+                                            }}
+                                        >
+                                            {agreeTerms && <CheckIcon size={11} color="#fff" />}
+                                        </div>
+                                        <span style={{
+                                            fontFamily: fonts.body, fontSize: '13px',
+                                            color: colors.textSecondary, lineHeight: 1.5,
+                                        }}>
+                                            I agree to the{' '}
+                                            <span style={{ color: colors.accent, fontWeight: 500 }}>Terms of Service</span>
+                                            {' '}and{' '}
+                                            <span style={{ color: colors.accent, fontWeight: 500 }}>Privacy Policy</span>
+                                        </span>
+                                    </label>
+                                )}
 
                                 {/* Error message */}
                                 {error && (
