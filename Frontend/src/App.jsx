@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 import { ThemeProvider } from './theme';
 
 // ── Public Pages ──
@@ -13,6 +13,7 @@ import DoctorChat from './pages/doctor/DoctorChat';
 import DoctorAlerts from './pages/doctor/DoctorAlerts';
 import DoctorTrials from './pages/doctor/DoctorTrials';
 import DoctorSettings from './pages/doctor/DoctorSettings';
+import DoctorProfilePage from './pages/doctor/DoctorProfilePage';
 
 // ── Patient Portal Imports ──
 import PatientDashboard from './pages/patients/PatientDashboard';
@@ -28,7 +29,9 @@ import EnrollmentFunnel from './pages/clinic/EnrollmentFunnel';
 import TrialsManagement from './pages/clinic/TrialsManagement';
 import Notifications from './pages/clinic/Notifications';
 import Settings from './pages/clinic/Settings';
+import ClinicProfilePage from './pages/clinic/ClinicProfilePage';
 import { NOTIFICATIONS, CANDIDATES } from './pages/clinic/data/mockData';
+import useClinic from './hooks/useClinic';
 
 import './App.css';
 import {
@@ -40,6 +43,7 @@ import {
   HiOutlineBeaker,
   HiOutlineBellAlert,
   HiOutlineCog6Tooth,
+  HiOutlineUserCircle,
 } from 'react-icons/hi2'
 
 // ── Coming Soon placeholder ──
@@ -57,6 +61,7 @@ function ComingSoon({ role }) {
 
 const PAGE_TITLES = {
   'dashboard': { icon: HiOutlineChartBar, text: 'Clinic Dashboard' },
+  'profile': { icon: HiOutlineUserCircle, text: 'Account Profile' },
   'post-trial': { icon: HiOutlinePencilSquare, text: 'Post New Trial' },
   'candidates': { icon: HiOutlineUserGroup, text: 'Matched Candidates' },
   'workflow': { icon: HiOutlineArrowPath, text: 'Candidate Workflow' },
@@ -68,6 +73,8 @@ const PAGE_TITLES = {
 
 // ── Clinic Layout (Sidebar + NavBar + pages) ──
 function ClinicLayout() {
+  const navigate = useNavigate();
+  const { initials } = useClinic();
   const [activePage, setActivePage] = useState('dashboard');
   const [candidates, setCandidates] = useState(CANDIDATES);
   const unreadCount = NOTIFICATIONS.filter(n => !n.read).length;
@@ -75,6 +82,7 @@ function ClinicLayout() {
   const renderPage = () => {
     switch (activePage) {
       case 'dashboard': return <ClinicDashboard setPage={setActivePage} />;
+      case 'profile': return <ClinicProfilePage />;
       case 'post-trial': return <PostTrial setPage={setActivePage} />;
       case 'candidates': return <MatchedCandidates candidates={candidates} setCandidates={setCandidates} />;
       case 'workflow': return <CandidateWorkflow candidates={candidates} setCandidates={setCandidates} />;
@@ -94,6 +102,14 @@ function ClinicLayout() {
           titleData={PAGE_TITLES[activePage] || { text: 'Clinic Portal' }}
           unreadCount={unreadCount}
           onBellClick={() => setActivePage('notifications')}
+          initials={initials}
+          onAccountProfile={() => setActivePage('profile')}
+          onSettings={() => setActivePage('settings')}
+          onSignOut={() => {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            navigate('/');
+          }}
         />
         <div style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden', position: 'relative', padding: '24px' }}>
           <div key={activePage} style={{ animation: 'pageTransition 0.3s ease' }}>
@@ -129,6 +145,7 @@ export default function App() {
         <Route path="/doctor/chat/:patientId" element={<DoctorChat />} />
         <Route path="/doctor/alerts" element={<DoctorAlerts />} />
         <Route path="/doctor/trials" element={<DoctorTrials />} />
+        <Route path="/doctor/profile" element={<DoctorProfilePage />} />
         <Route path="/doctor/settings" element={<DoctorSettings />} />
 
         {/* Clinic Portal */}

@@ -1,9 +1,10 @@
 import React from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
-import { useTheme, radius, spacing, fontSize } from '../../theme.jsx'
+import { useTheme } from '../../theme.jsx'
 import Sidebar from './Sidebar'
+import UserProfileDropdown from './UserProfileDropdown'
 import { ALERTS } from '../../pages/doctor/data/mockData'
-import { HiOutlineBell, HiOutlineMagnifyingGlass, HiOutlineSun, HiOutlineMoon } from 'react-icons/hi2'
+import { HiOutlineBell, HiOutlineSun, HiOutlineMoon } from 'react-icons/hi2'
 import useDoctor from '../../hooks/useDoctor'
 
 function TopBar() {
@@ -109,22 +110,17 @@ function TopBar() {
                     )}
                 </button>
 
-                {/* Profile avatar */}
-                <div
-                    onClick={() => navigate('/doctor/settings')}
-                    style={{
-                        width: 38, height: 38, borderRadius: '10px',
-                        background: `linear-gradient(135deg, ${colors.accent}, ${colors.green || colors.accent})`,
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        color: '#fff', fontSize: '13px', fontWeight: 700, fontFamily: fonts.heading,
-                        cursor: 'pointer', transition: 'all 0.2s',
-                        boxShadow: `0 2px 8px ${colors.accent}30`,
+                {/* Profile avatar with dropdown */}
+                <UserProfileDropdown
+                    initials={initials}
+                    onAccountProfile={() => navigate('/doctor/profile')}
+                    onSettings={() => navigate('/doctor/settings')}
+                    onSignOut={() => {
+                        localStorage.removeItem('token')
+                        localStorage.removeItem('user')
+                        navigate('/')
                     }}
-                    onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.06)'}
-                    onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
-                >
-                    {initials}
-                </div>
+                />
             </div>
         </header>
     )

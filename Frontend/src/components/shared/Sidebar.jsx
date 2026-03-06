@@ -5,6 +5,7 @@ import { ALERTS } from '../../pages/doctor/data/mockData'
 import { NOTIFICATIONS } from '../../pages/clinic/data/mockData'
 import {
     HiOutlineHome,
+    HiOutlineUserCircle,
     HiOutlineUserGroup,
     HiOutlineBeaker,
     HiOutlineChatBubbleLeftRight,
@@ -21,6 +22,7 @@ import useClinic from '../../hooks/useClinic'
 
 const CLINIC_NAV_ITEMS = [
     { key: 'dashboard', label: 'Dashboard', icon: HiOutlineHome, path: null },
+    { key: 'profile', label: 'My Profile', icon: HiOutlineUserCircle, path: null },
     { key: 'post-trial', label: 'Post Trial', icon: HiOutlinePencilSquare, path: null },
     { key: 'candidates', label: 'Matched Candidates', icon: HiOutlineUserGroup, path: null },
     { key: 'workflow', label: 'Candidate Workflow', icon: HiOutlineArrowPath, path: null },
@@ -32,6 +34,7 @@ const CLINIC_NAV_ITEMS = [
 
 const DOCTOR_NAV_ITEMS = [
     { key: 'dashboard', label: 'Dashboard', icon: HiOutlineHome, path: '/doctor/dashboard' },
+    { key: 'profile', label: 'My Profile', icon: HiOutlineUserCircle, path: '/doctor/profile' },
     { key: 'patients', label: 'Patients', icon: HiOutlineUserGroup, path: '/doctor/patients' },
     { key: 'trials', label: 'Trial Matches', icon: HiOutlineBeaker, path: '/doctor/trials' },
     { key: 'chat', label: 'Chat', icon: HiOutlineChatBubbleLeftRight, path: '/doctor/chat/ANON-7F3A2B1C' },
@@ -54,6 +57,7 @@ export default function Sidebar({ activePage, setPage }) {
         const path = location.pathname
         switch (item.key) {
             case 'dashboard': return path === '/doctor/dashboard'
+            case 'profile': return path === '/doctor/profile'
             case 'patients': return path === '/doctor/patients' || path.startsWith('/doctor/patients/')
             case 'trials': return path === '/doctor/trials'
             case 'chat': return path.startsWith('/doctor/chat')

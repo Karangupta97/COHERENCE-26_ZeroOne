@@ -2,6 +2,7 @@ import { useTheme, radius, spacing, fontSize } from '../../theme.jsx'
 import { useNavigate } from 'react-router-dom'
 import { HiOutlineBell } from 'react-icons/hi2'
 import usePatient from '../../hooks/usePatient'
+import UserProfileDropdown from '../shared/UserProfileDropdown'
 
 export default function PatientNavbar() {
   const { colors, fonts, mode, toggleMode } = useTheme()
@@ -79,21 +80,17 @@ export default function PatientNavbar() {
           </span>
         </button>
 
-        {/* Profile avatar — navigates to profile page */}
-        <div
-          onClick={() => navigate('/patient/profile')}
-          style={{
-            width: 38, height: 38, borderRadius: radius.full,
-            background: `linear-gradient(135deg, ${colors.accent}, ${colors.green})`,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            color: '#fff', fontSize: fontSize.sm, fontWeight: 700, fontFamily: fonts.heading,
-            cursor: 'pointer', transition: 'all 0.2s',
+        {/* Profile avatar with dropdown */}
+        <UserProfileDropdown
+          initials={initials}
+          onAccountProfile={() => navigate('/patient/profile')}
+          onSettings={() => navigate('/patient/settings')}
+          onSignOut={() => {
+            localStorage.removeItem('token')
+            localStorage.removeItem('user')
+            navigate('/')
           }}
-          onMouseEnter={(e) => { e.currentTarget.style.transform = 'scale(1.08)' }}
-          onMouseLeave={(e) => { e.currentTarget.style.transform = 'scale(1)' }}
-        >
-          {initials}
-        </div>
+        />
       </div>
     </header>
   )

@@ -1,11 +1,10 @@
 import React from 'react'
-import { useNavigate } from 'react-router-dom'
 import { useTheme, radius, spacing, fontSize } from '../../theme.jsx'
 import { HiOutlineBell, HiOutlineSun, HiOutlineMoon } from 'react-icons/hi2'
+import UserProfileDropdown from './UserProfileDropdown'
 
-export default function NavBar({ title, titleData, unreadCount, onBellClick }) {
+export default function NavBar({ title, titleData, unreadCount, onBellClick, initials = 'PS', onAccountProfile, onSettings, onSignOut }) {
     const { colors, fonts, mode, toggleMode } = useTheme()
-    const navigate = useNavigate()
 
     // Support both old string title and new {icon, text} titleData
     const TitleIcon = titleData?.icon
@@ -90,20 +89,13 @@ export default function NavBar({ title, titleData, unreadCount, onBellClick }) {
                     )}
                 </button>
 
-                {/* Profile avatar */}
-                <div
-                    style={{
-                        width: 38, height: 38, borderRadius: radius.full,
-                        background: `linear-gradient(135deg, ${colors.accent}, ${colors.green})`,
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        color: '#fff', fontSize: fontSize.sm, fontWeight: 700, fontFamily: fonts.heading,
-                        cursor: 'pointer', transition: 'all 0.2s',
-                    }}
-                    onMouseEnter={(e) => { e.currentTarget.style.transform = 'scale(1.08)' }}
-                    onMouseLeave={(e) => { e.currentTarget.style.transform = 'scale(1)' }}
-                >
-                    PS
-                </div>
+                {/* Profile avatar with dropdown */}
+                <UserProfileDropdown
+                    initials={initials}
+                    onAccountProfile={onAccountProfile}
+                    onSettings={onSettings}
+                    onSignOut={onSignOut}
+                />
             </div>
         </header>
     )
