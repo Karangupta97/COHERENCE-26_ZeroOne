@@ -34,7 +34,7 @@ const DOCTOR_NAV_ITEMS = [
     { key: 'dashboard', label: 'Dashboard', icon: HiOutlineHome, path: '/doctor/dashboard' },
     { key: 'patients', label: 'Patients', icon: HiOutlineUserGroup, path: '/doctor/patients' },
     { key: 'trials', label: 'Trial Matches', icon: HiOutlineBeaker, path: '/doctor/trials' },
-    { key: 'chat', label: 'Chat', icon: HiOutlineChatBubbleLeftRight, path: '/doctor/chat/PT-0041' },
+    { key: 'chat', label: 'Chat', icon: HiOutlineChatBubbleLeftRight, path: '/doctor/chat/ANON-7F3A2B1C' },
     { key: 'notifications', label: 'Notifications', icon: HiOutlineBell, path: '/doctor/alerts', badge: ALERTS.length },
     { key: 'settings', label: 'Settings', icon: HiOutlineCog6Tooth, path: '/doctor/settings' },
 ]
