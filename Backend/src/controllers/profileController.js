@@ -38,8 +38,10 @@ async function updateMe(req, res, next) {
         "diagnosis", "medications", "hba1c", "bmi", "allergies",
       ];
       for (const field of allowed) {
-        if (req.body.patientProfile[field] !== undefined) {
-          user[field] = req.body.patientProfile[field];
+        const val = req.body.patientProfile[field];
+        if (val !== undefined) {
+          // Treat empty strings as "unset" so enum fields don't fail validation
+          user[field] = val === "" ? undefined : val;
         }
       }
     }

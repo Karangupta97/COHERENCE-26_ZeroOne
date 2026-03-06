@@ -18,7 +18,7 @@ const updateProfileValidation = [
 
   // Patient profile
   body("patientProfile.bloodGroup")
-    .optional()
+    .optional({ values: "falsy" })
     .isIn(["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"])
     .withMessage("Invalid blood group"),
 
@@ -31,7 +31,7 @@ const updateProfileValidation = [
     .isInt({ min: 0, max: 150 }).withMessage("Age must be between 0 and 150"),
 
   body("patientProfile.gender")
-    .optional()
+    .optional({ values: "falsy" })
     .isIn(["Male", "Female", "Other"]).withMessage("Gender must be Male, Female, or Other"),
 
   body("patientProfile.location")
