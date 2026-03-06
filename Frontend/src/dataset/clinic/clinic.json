@@ -1,1 +1,544 @@
-data
+[
+    {
+        "trial_id": "IND001",
+        "disease": "Duchenne Muscular Dystrophy",
+        "drug": "DystroGene-IN",
+        "phase": "Phase II",
+        "status": "Recruiting",
+        "location": "Mumbai",
+        "hospital": "AIIMS Mumbai",
+        "eligibility_age": "5-15",
+        "required_conditions": [
+            "Confirmed DMD mutation",
+            "Male patient",
+            "Ambulatory"
+        ],
+        "excluded_conditions": [
+            "Severe cardiac failure",
+            "Kidney disease"
+        ],
+        "symptoms": [
+            "Muscle weakness",
+            "Frequent falls",
+            "Difficulty climbing stairs"
+        ]
+    },
+    {
+        "trial_id": "IND002",
+        "disease": "Spinal Muscular Atrophy",
+        "drug": "SpinCare",
+        "phase": "Phase III",
+        "status": "Recruiting",
+        "location": "Delhi",
+        "hospital": "AIIMS Delhi",
+        "eligibility_age": "0-12",
+        "required_conditions": [
+            "Genetic confirmation of SMA",
+            "Reduced motor function"
+        ],
+        "excluded_conditions": [
+            "Ventilator dependency",
+            "Severe infection"
+        ],
+        "symptoms": [
+            "Muscle weakness",
+            "Poor muscle tone",
+            "Difficulty breathing"
+        ]
+    },
+    {
+        "trial_id": "IND003",
+        "disease": "Fabry Disease",
+        "drug": "FabraHeal",
+        "phase": "Phase II",
+        "status": "Recruiting",
+        "location": "Bangalore",
+        "hospital": "NIMHANS",
+        "eligibility_age": "18-60",
+        "required_conditions": [
+            "Low alpha-galactosidase enzyme",
+            "Confirmed diagnosis"
+        ],
+        "excluded_conditions": [
+            "Advanced kidney failure",
+            "Pregnancy"
+        ],
+        "symptoms": [
+            "Burning pain in hands",
+            "Skin rash",
+            "Kidney problems"
+        ]
+    },
+    {
+        "trial_id": "IND004",
+        "disease": "Pompe Disease",
+        "drug": "Pompezyme-IN",
+        "phase": "Phase I",
+        "status": "Recruiting",
+        "location": "Hyderabad",
+        "hospital": "Apollo Hospital",
+        "eligibility_age": "1-40",
+        "required_conditions": [
+            "GAA enzyme deficiency",
+            "Muscle weakness"
+        ],
+        "excluded_conditions": [
+            "Severe respiratory failure"
+        ],
+        "symptoms": [
+            "Muscle weakness",
+            "Breathing difficulty",
+            "Fatigue"
+        ]
+    },
+    {
+        "trial_id": "IND005",
+        "disease": "Huntington's Disease",
+        "drug": "NeuroGuard",
+        "phase": "Phase II",
+        "status": "Active",
+        "location": "Chennai",
+        "hospital": "SRM Medical College",
+        "eligibility_age": "18-65",
+        "required_conditions": [
+            "Genetic mutation HTT",
+            "Early stage disease"
+        ],
+        "excluded_conditions": [
+            "Severe psychiatric illness"
+        ],
+        "symptoms": [
+            "Uncontrolled movements",
+            "Memory loss",
+            "Mood swings"
+        ]
+    },
+    {
+        "trial_id": "IND006",
+        "disease": "Wilson Disease",
+        "drug": "CopperClean",
+        "phase": "Phase III",
+        "status": "Recruiting",
+        "location": "Delhi",
+        "hospital": "AIIMS Delhi",
+        "eligibility_age": "8-40",
+        "required_conditions": [
+            "High copper accumulation",
+            "Confirmed diagnosis"
+        ],
+        "excluded_conditions": [
+            "Severe liver failure"
+        ],
+        "symptoms": [
+            "Fatigue",
+            "Liver problems",
+            "Tremors"
+        ]
+    },
+    {
+        "trial_id": "IND007",
+        "disease": "Marfan Syndrome",
+        "drug": "AortaShield",
+        "phase": "Phase II",
+        "status": "Recruiting",
+        "location": "Pune",
+        "hospital": "Ruby Hall Clinic",
+        "eligibility_age": "12-50",
+        "required_conditions": [
+            "FBN1 mutation",
+            "Aortic dilation"
+        ],
+        "excluded_conditions": [
+            "Recent heart surgery"
+        ],
+        "symptoms": [
+            "Tall stature",
+            "Long limbs",
+            "Heart valve problems"
+        ]
+    },
+    {
+        "trial_id": "IND008",
+        "disease": "Niemann-Pick Disease",
+        "drug": "LipoClear",
+        "phase": "Phase I",
+        "status": "Recruiting",
+        "location": "Mumbai",
+        "hospital": "Tata Memorial Hospital",
+        "eligibility_age": "2-18",
+        "required_conditions": [
+            "NPC1 mutation"
+        ],
+        "excluded_conditions": [
+            "Severe neurological decline"
+        ],
+        "symptoms": [
+            "Liver enlargement",
+            "Difficulty walking",
+            "Learning problems"
+        ]
+    },
+    {
+        "trial_id": "IND009",
+        "disease": "Angelman Syndrome",
+        "drug": "NeuroAngel",
+        "phase": "Phase I",
+        "status": "Recruiting",
+        "location": "Bangalore",
+        "hospital": "Manipal Hospital",
+        "eligibility_age": "3-20",
+        "required_conditions": [
+            "UBE3A gene mutation"
+        ],
+        "excluded_conditions": [
+            "Severe epilepsy"
+        ],
+        "symptoms": [
+            "Speech impairment",
+            "Frequent laughter",
+            "Motor problems"
+        ]
+    },
+    {
+        "trial_id": "IND010",
+        "disease": "Gaucher Disease",
+        "drug": "Glucerase-IN",
+        "phase": "Phase III",
+        "status": "Active",
+        "location": "Ahmedabad",
+        "hospital": "Zydus Research Center",
+        "eligibility_age": "5-60",
+        "required_conditions": [
+            "Glucocerebrosidase deficiency"
+        ],
+        "excluded_conditions": [
+            "Advanced organ failure"
+        ],
+        "symptoms": [
+            "Bone pain",
+            "Enlarged spleen",
+            "Fatigue"
+        ]
+    },
+    {
+        "trial_id": "IND011",
+        "disease": "Amyloidosis",
+        "drug": "AmyloBlock",
+        "phase": "Phase II",
+        "status": "Recruiting",
+        "location": "Delhi",
+        "hospital": "Fortis Research Institute",
+        "eligibility_age": "30-70",
+        "required_conditions": [
+            "Protein deposits confirmed"
+        ],
+        "excluded_conditions": [
+            "Heart failure stage IV"
+        ],
+        "symptoms": [
+            "Fatigue",
+            "Swelling",
+            "Heart issues"
+        ]
+    },
+    {
+        "trial_id": "IND012",
+        "disease": "Alport Syndrome",
+        "drug": "RenalGuard",
+        "phase": "Phase II",
+        "status": "Recruiting",
+        "location": "Chennai",
+        "hospital": "Apollo Hospital",
+        "eligibility_age": "10-40",
+        "required_conditions": [
+            "COL4A5 mutation"
+        ],
+        "excluded_conditions": [
+            "Kidney transplant history"
+        ],
+        "symptoms": [
+            "Blood in urine",
+            "Hearing loss",
+            "Kidney problems"
+        ]
+    },
+    {
+        "trial_id": "IND013",
+        "disease": "Prader-Willi Syndrome",
+        "drug": "MetaboCare",
+        "phase": "Phase II",
+        "status": "Recruiting",
+        "location": "Bangalore",
+        "hospital": "NIMHANS",
+        "eligibility_age": "5-25",
+        "required_conditions": [
+            "Chromosome 15 deletion"
+        ],
+        "excluded_conditions": [
+            "Severe obesity complications"
+        ],
+        "symptoms": [
+            "Excessive hunger",
+            "Low muscle tone",
+            "Development delay"
+        ]
+    },
+    {
+        "trial_id": "IND014",
+        "disease": "Ehlers-Danlos Syndrome",
+        "drug": "CollagenFix",
+        "phase": "Phase I",
+        "status": "Recruiting",
+        "location": "Pune",
+        "hospital": "Jehangir Hospital",
+        "eligibility_age": "18-50",
+        "required_conditions": [
+            "Connective tissue disorder diagnosis"
+        ],
+        "excluded_conditions": [
+            "Recent joint surgery"
+        ],
+        "symptoms": [
+            "Joint hypermobility",
+            "Skin elasticity",
+            "Frequent injuries"
+        ]
+    },
+    {
+        "trial_id": "IND015",
+        "disease": "Tay-Sachs Disease",
+        "drug": "NeuroRestore",
+        "phase": "Phase I",
+        "status": "Recruiting",
+        "location": "Mumbai",
+        "hospital": "Tata Memorial Hospital",
+        "eligibility_age": "0-10",
+        "required_conditions": [
+            "HexA enzyme deficiency"
+        ],
+        "excluded_conditions": [
+            "Severe organ failure"
+        ],
+        "symptoms": [
+            "Vision loss",
+            "Seizures",
+            "Muscle weakness"
+        ]
+    },
+    {
+        "trial_id": "IND016",
+        "disease": "Myasthenia Gravis",
+        "drug": "NeuroFlex",
+        "phase": "Phase III",
+        "status": "Recruiting",
+        "location": "Delhi",
+        "hospital": "AIIMS Delhi",
+        "eligibility_age": "18-65",
+        "required_conditions": [
+            "Acetylcholine receptor antibodies"
+        ],
+        "excluded_conditions": [
+            "Thymoma cancer"
+        ],
+        "symptoms": [
+            "Muscle fatigue",
+            "Drooping eyelids",
+            "Difficulty speaking"
+        ]
+    },
+    {
+        "trial_id": "IND017",
+        "disease": "Primary Ciliary Dyskinesia",
+        "drug": "RespiraHeal",
+        "phase": "Phase II",
+        "status": "Recruiting",
+        "location": "Hyderabad",
+        "hospital": "Care Hospitals",
+        "eligibility_age": "5-40",
+        "required_conditions": [
+            "Ciliary function defect"
+        ],
+        "excluded_conditions": [
+            "Severe lung infection"
+        ],
+        "symptoms": [
+            "Chronic cough",
+            "Breathing issues",
+            "Sinus infections"
+        ]
+    },
+    {
+        "trial_id": "IND018",
+        "disease": "Lesch-Nyhan Syndrome",
+        "drug": "PurineBlock",
+        "phase": "Phase I",
+        "status": "Recruiting",
+        "location": "Chennai",
+        "hospital": "SRM Medical College",
+        "eligibility_age": "2-18",
+        "required_conditions": [
+            "HPRT deficiency"
+        ],
+        "excluded_conditions": [
+            "Kidney failure"
+        ],
+        "symptoms": [
+            "Self-injury",
+            "Movement disorders",
+            "High uric acid"
+        ]
+    },
+    {
+        "trial_id": "IND019",
+        "disease": "Charcot-Marie-Tooth Disease",
+        "drug": "NeuroPath-IN",
+        "phase": "Phase II",
+        "status": "Recruiting",
+        "location": "Pune",
+        "hospital": "Ruby Hall Clinic",
+        "eligibility_age": "10-60",
+        "required_conditions": [
+            "Peripheral neuropathy confirmed"
+        ],
+        "excluded_conditions": [
+            "Severe diabetes"
+        ],
+        "symptoms": [
+            "Muscle weakness",
+            "Foot deformity",
+            "Balance problems"
+        ]
+    },
+    {
+        "trial_id": "IND020",
+        "disease": "Addison Disease",
+        "drug": "AdrenoCare",
+        "phase": "Phase III",
+        "status": "Recruiting",
+        "location": "Kolkata",
+        "hospital": "AMRI Hospital",
+        "eligibility_age": "18-65",
+        "required_conditions": [
+            "Low cortisol levels"
+        ],
+        "excluded_conditions": [
+            "Severe heart disease"
+        ],
+        "symptoms": [
+            "Fatigue",
+            "Weight loss",
+            "Low blood pressure"
+        ]
+    }
+[
+        {
+            "trial_id": "IND021",
+            "disease": "Friedreich's Ataxia",
+            "drug": "AtaxiHeal",
+            "phase": "Phase II",
+            "status": "Recruiting",
+            "location": "Bangalore",
+            "hospital": "NIMHANS Research Center",
+            "eligibility_age": "10-35",
+            "required_conditions": [
+                "Confirmed FXN gene mutation",
+                "Difficulty in coordination"
+            ],
+            "excluded_conditions": [
+                "Severe cardiomyopathy",
+                "Advanced neurological damage"
+            ],
+            "symptoms": [
+                "Poor balance",
+                "Difficulty walking",
+                "Speech problems"
+            ]
+        },
+        {
+            "trial_id": "IND022",
+            "disease": "Lambert-Eaton Myasthenic Syndrome",
+            "drug": "NeuroStim-IN",
+            "phase": "Phase II",
+            "status": "Recruiting",
+            "location": "Delhi",
+            "hospital": "AIIMS Delhi",
+            "eligibility_age": "18-65",
+            "required_conditions": [
+                "Autoimmune neuromuscular disorder confirmed"
+            ],
+            "excluded_conditions": [
+                "Active lung cancer",
+                "Severe respiratory failure"
+            ],
+            "symptoms": [
+                "Muscle weakness",
+                "Dry mouth",
+                "Difficulty climbing stairs"
+            ]
+        },
+        {
+            "trial_id": "IND023",
+            "disease": "Gitelman Syndrome",
+            "drug": "ElectroBalance",
+            "phase": "Phase I",
+            "status": "Recruiting",
+            "location": "Chennai",
+            "hospital": "Apollo Hospital Research Unit",
+            "eligibility_age": "12-50",
+            "required_conditions": [
+                "Electrolyte imbalance confirmed",
+                "Low potassium levels"
+            ],
+            "excluded_conditions": [
+                "Severe kidney failure"
+            ],
+            "symptoms": [
+                "Muscle cramps",
+                "Fatigue",
+                "Low blood pressure"
+            ]
+        },
+        {
+            "trial_id": "IND024",
+            "disease": "Multiple Endocrine Neoplasia",
+            "drug": "EndoBlock",
+            "phase": "Phase II",
+            "status": "Recruiting",
+            "location": "Mumbai",
+            "hospital": "Tata Memorial Hospital",
+            "eligibility_age": "18-60",
+            "required_conditions": [
+                "MEN1 gene mutation",
+                "Endocrine tumor diagnosis"
+            ],
+            "excluded_conditions": [
+                "Metastatic cancer stage IV"
+            ],
+            "symptoms": [
+                "Hormonal imbalance",
+                "Tumor growth",
+                "Abdominal pain"
+            ]
+        },
+        {
+            "trial_id": "IND025",
+            "disease": "Hypophosphatasia",
+            "drug": "BoneRestore-IN",
+            "phase": "Phase II",
+            "status": "Recruiting",
+            "location": "Hyderabad",
+            "hospital": "Apollo Research Institute",
+            "eligibility_age": "5-40",
+            "required_conditions": [
+                "Low alkaline phosphatase levels",
+                "Bone mineralization disorder"
+            ],
+            "excluded_conditions": [
+                "Severe skeletal deformity requiring surgery"
+            ],
+            "symptoms": [
+                "Bone weakness",
+                "Frequent fractures",
+                "Dental problems"
+            ]
+        }
