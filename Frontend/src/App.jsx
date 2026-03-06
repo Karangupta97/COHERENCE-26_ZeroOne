@@ -12,6 +12,9 @@ import DoctorAlerts from './doctor/DoctorAlerts';
 import DoctorTrials from './doctor/DoctorTrials';
 import DoctorSettings from './doctor/DoctorSettings';
 
+// ── Patient Portal Imports ──
+import PatientDashboard from './pages/patients/PatientDashboard';
+
 // ── Clinic Portal Imports ──
 import Sidebar from './components/shared/Sidebar';
 import NavBar from './components/shared/NavBar';
@@ -119,8 +122,8 @@ export default function App() {
         {/* Clinic Portal */}
         <Route path="/clinic/*" element={<ClinicLayout />} />
 
-        {/* Patient Portal (Coming Soon) */}
-        <Route path="/patient/*" element={<ComingSoon role="Patient" />} />
+        {/* Patient Portal */}
+        <Route path="/patient/*" element={<PatientDashboard />} />
       </Routes>
     </ThemeProvider>
   );

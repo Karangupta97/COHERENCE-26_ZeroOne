@@ -1,0 +1,98 @@
+import { useTheme, radius, spacing, fontSize } from '../../theme.jsx'
+import { useNavigate } from 'react-router-dom'
+import { HiOutlineBell } from 'react-icons/hi2'
+
+export default function PatientNavbar() {
+  const { colors, fonts, mode, toggleMode } = useTheme()
+  const navigate = useNavigate()
+
+  return (
+    <header
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        padding: `${spacing.md} ${spacing.xl}`,
+        borderBottom: `1px solid ${colors.border}`,
+        background: colors.surface,
+        fontFamily: fonts.body,
+        minHeight: 64,
+      }}
+    >
+      {/* Title */}
+      <h1 style={{ margin: 0, fontSize: fontSize.xl, fontFamily: fonts.heading, fontWeight: 700, color: colors.textPrimary }}>
+        Patient Dashboard
+      </h1>
+
+      {/* Right actions */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: spacing.md }}>
+        {/* Dark/Light toggle */}
+        <button
+          onClick={toggleMode}
+          title={`Switch to ${mode === 'dark' ? 'light' : 'dark'} mode`}
+          style={{
+            background: colors.card,
+            border: `1px solid ${colors.border}`,
+            borderRadius: radius.full,
+            padding: '5px 12px',
+            cursor: 'pointer',
+            color: colors.textSecondary,
+            fontFamily: fonts.mono || fonts.body,
+            fontSize: '12px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            transition: 'all 0.2s ease',
+          }}
+        >
+          {mode === 'dark' ? '☀️ Light' : '🌙 Dark'}
+        </button>
+
+        {/* Notification bell — navigates to notifications page */}
+        <button
+          onClick={() => navigate('/patient/notifications')}
+          style={{
+            position: 'relative',
+            background: colors.card,
+            border: `1px solid ${colors.border}`,
+            borderRadius: radius.full,
+            width: 38, height: 38,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            cursor: 'pointer',
+            color: colors.textSecondary,
+            transition: 'all 0.2s',
+          }}
+          onMouseEnter={(e) => { e.currentTarget.style.borderColor = colors.accent }}
+          onMouseLeave={(e) => { e.currentTarget.style.borderColor = colors.border }}
+        >
+          <HiOutlineBell style={{ width: 18, height: 18 }} />
+          <span style={{
+            position: 'absolute', top: -2, right: -2,
+            width: 16, height: 16, borderRadius: '50%',
+            background: colors.red || '#EF4444', color: '#fff',
+            fontSize: '9px', fontWeight: 700,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}>
+            3
+          </span>
+        </button>
+
+        {/* Profile avatar — navigates to profile page */}
+        <div
+          onClick={() => navigate('/patient/profile')}
+          style={{
+            width: 38, height: 38, borderRadius: radius.full,
+            background: `linear-gradient(135deg, ${colors.accent}, ${colors.green})`,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            color: '#fff', fontSize: fontSize.sm, fontWeight: 700, fontFamily: fonts.heading,
+            cursor: 'pointer', transition: 'all 0.2s',
+          }}
+          onMouseEnter={(e) => { e.currentTarget.style.transform = 'scale(1.08)' }}
+          onMouseLeave={(e) => { e.currentTarget.style.transform = 'scale(1)' }}
+        >
+          RK
+        </div>
+      </div>
+    </header>
+  )
+}
