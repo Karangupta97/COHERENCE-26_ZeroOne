@@ -275,6 +275,94 @@ function UploadModal({ open, onClose, onUploadSuccess, colors, fonts }) {
 }
 
 /* ═══════════════════════════════════════════════ */
+/*  View Modal — image/PDF in current tab + close  */
+/* ═══════════════════════════════════════════════ */
+function ViewModal({ report, open, onClose, colors, fonts }) {
+    if (!open || !report?.reportUrl) return null
+    const isImage = report.mimeType?.startsWith('image/')
+    const isPdf = report.mimeType === 'application/pdf'
+
+    return (
+        <motion.div
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            style={{
+                position: 'fixed', inset: 0, zIndex: 999,
+                background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(8px)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                padding: 24,
+            }}
+            onClick={onClose}
+        >
+            <motion.div
+                initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.96 }}
+                transition={{ type: 'spring', damping: 28, stiffness: 300 }}
+                onClick={e => e.stopPropagation()}
+                style={{
+                    position: 'relative',
+                    width: '100%', maxWidth: '95vw',
+                    height: '100%', maxHeight: '95vh',
+                    background: colors.surface,
+                    borderRadius: '16px',
+                    border: `1px solid ${colors.border}`,
+                    boxShadow: '0 24px 60px rgba(0,0,0,0.4)',
+                    overflow: 'hidden',
+                    display: 'flex', flexDirection: 'column',
+                }}
+            >
+                {/* Header with title + close */}
+                <div style={{
+                    flexShrink: 0, padding: '14px 20px',
+                    borderBottom: `1px solid ${colors.border}`,
+                    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                    background: colors.card,
+                }}>
+                    <span style={{ fontSize: '14px', fontWeight: 600, color: colors.textPrimary, fontFamily: fonts.body, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        {report.originalFileName}
+                    </span>
+                    <button
+                        onClick={onClose}
+                        style={{
+                            flexShrink: 0, width: 40, height: 40, borderRadius: '10px',
+                            background: colors.surface, border: `1px solid ${colors.border}`,
+                            color: colors.textPrimary, cursor: 'pointer',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            transition: 'all 0.2s',
+                        }}
+                        onMouseEnter={e => { e.currentTarget.style.background = colors.accent; e.currentTarget.style.color = '#fff'; e.currentTarget.style.borderColor = colors.accent; }}
+                        onMouseLeave={e => { e.currentTarget.style.background = colors.surface; e.currentTarget.style.color = colors.textPrimary; e.currentTarget.style.borderColor = colors.border; }}
+                        title="Close"
+                    >
+                        <HiOutlineXMark style={{ width: 22, height: 22 }} />
+                    </button>
+                </div>
+                {/* Content */}
+                <div style={{ flex: 1, minHeight: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
+                    {isImage && (
+                        <img
+                            src={report.reportUrl}
+                            alt={report.originalFileName}
+                            style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
+                        />
+                    )}
+                    {isPdf && (
+                        <iframe
+                            src={report.reportUrl}
+                            title={report.originalFileName}
+                            style={{ width: '100%', height: '100%', minHeight: '70vh', border: 'none', borderRadius: '8px' }}
+                        />
+                    )}
+                    {!isImage && !isPdf && (
+                        <p style={{ color: colors.textSecondary, fontFamily: fonts.body, fontSize: '14px' }}>
+                            Preview not available for this file type.
+                        </p>
+                    )}
+                </div>
+            </motion.div>
+        </motion.div>
+    )
+}
+
+/* ═══════════════════════════════════════════════ */
 /*  Analyze Modal                                 */
 /* ═══════════════════════════════════════════════ */
 function AnalyzeModal({ report, open, onClose, colors, fonts }) {
@@ -429,6 +517,7 @@ export default function PatientReports() {
     const [viewMode, setViewMode] = useState('grid')
     const [showUpload, setShowUpload] = useState(false)
     const [analyzeReport, setAnalyzeReport] = useState(null)
+    const [viewReport, setViewReport] = useState(null)
     const [hoveredCard, setHoveredCard] = useState(null)
 
     useEffect(() => {
@@ -702,21 +791,50 @@ export default function PatientReports() {
                                         Uploaded on {formatDate(report.createdAt)}
                                     </div>
 
-                                    {/* Analyze button */}
-                                    <button onClick={() => setAnalyzeReport(report)}
-                                        style={{
-                                            width: '100%', padding: '8px', borderRadius: '8px',
-                                            background: colors.accentGlow, color: colors.accent,
-                                            border: `1px solid ${colors.accent}30`, fontSize: '11px',
-                                            fontWeight: 600, fontFamily: fonts.body, cursor: 'pointer',
-                                            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5,
-                                            transition: 'all 0.2s',
-                                        }}
-                                        onMouseEnter={e => { e.currentTarget.style.background = colors.accent; e.currentTarget.style.color = '#fff'; }}
-                                        onMouseLeave={e => { e.currentTarget.style.background = colors.accentGlow; e.currentTarget.style.color = colors.accent; }}
-                                    >
-                                        <HiOutlineSparkles style={{ width: 13, height: 13 }} /> Analyze
-                                    </button>
+                                    {/* View + Analyze buttons */}
+                                    <div style={{ display: 'flex', gap: 8 }}>
+                                        {report.reportUrl ? (
+                                            <button type="button" onClick={() => setViewReport(report)}
+                                                style={{
+                                                    flex: 1, padding: '8px', borderRadius: '8px',
+                                                    background: 'transparent', color: colors.textSecondary,
+                                                    border: `1px solid ${colors.border}`, fontSize: '11px',
+                                                    fontWeight: 600, fontFamily: fonts.body, cursor: 'pointer',
+                                                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5,
+                                                    transition: 'all 0.2s',
+                                                }}
+                                                onMouseEnter={e => { e.currentTarget.style.borderColor = colors.accent; e.currentTarget.style.color = colors.accent; }}
+                                                onMouseLeave={e => { e.currentTarget.style.borderColor = colors.border; e.currentTarget.style.color = colors.textSecondary; }}
+                                            >
+                                                <HiOutlineEye style={{ width: 13, height: 13 }} /> View
+                                            </button>
+                                        ) : (
+                                            <span style={{
+                                                flex: 1, padding: '8px', borderRadius: '8px',
+                                                background: colors.card, color: colors.textSecondary,
+                                                border: `1px solid ${colors.border}`, fontSize: '11px',
+                                                fontWeight: 600, fontFamily: fonts.body,
+                                                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5,
+                                                opacity: 0.7,
+                                            }}>
+                                                <HiOutlineEye style={{ width: 13, height: 13 }} /> View
+                                            </span>
+                                        )}
+                                        <button onClick={() => setAnalyzeReport(report)}
+                                            style={{
+                                                flex: 1, padding: '8px', borderRadius: '8px',
+                                                background: colors.accentGlow, color: colors.accent,
+                                                border: `1px solid ${colors.accent}30`, fontSize: '11px',
+                                                fontWeight: 600, fontFamily: fonts.body, cursor: 'pointer',
+                                                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5,
+                                                transition: 'all 0.2s',
+                                            }}
+                                            onMouseEnter={e => { e.currentTarget.style.background = colors.accent; e.currentTarget.style.color = '#fff'; }}
+                                            onMouseLeave={e => { e.currentTarget.style.background = colors.accentGlow; e.currentTarget.style.color = colors.accent; }}
+                                        >
+                                            <HiOutlineSparkles style={{ width: 13, height: 13 }} /> Analyse
+                                        </button>
+                                    </div>
                                 </div>
                             </motion.div>
                         )
@@ -775,21 +893,34 @@ export default function PatientReports() {
                                     onMouseEnter={e => { e.currentTarget.style.background = colors.accent; e.currentTarget.style.color = '#fff'; }}
                                     onMouseLeave={e => { e.currentTarget.style.background = colors.accentGlow; e.currentTarget.style.color = colors.accent; }}
                                 >
-                                    <HiOutlineSparkles style={{ width: 12, height: 12 }} /> Analyze
+                                    <HiOutlineSparkles style={{ width: 12, height: 12 }} /> Analyse
                                 </button>
-                                {report.reportUrl && (
-                                    <a href={report.reportUrl} target="_blank" rel="noopener noreferrer"
+                                {report.reportUrl ? (
+                                    <button type="button" onClick={() => setViewReport(report)}
                                         style={{
                                             padding: '7px 12px', borderRadius: '8px',
                                             background: 'transparent', color: colors.textSecondary,
                                             border: `1px solid ${colors.border}`, fontSize: '11px',
                                             fontWeight: 600, fontFamily: fonts.body, cursor: 'pointer',
                                             display: 'flex', alignItems: 'center', gap: 4,
-                                            textDecoration: 'none', transition: 'all 0.2s', flexShrink: 0,
+                                            transition: 'all 0.2s', flexShrink: 0,
                                         }}
+                                        onMouseEnter={e => { e.currentTarget.style.borderColor = colors.accent; e.currentTarget.style.color = colors.accent; }}
+                                        onMouseLeave={e => { e.currentTarget.style.borderColor = colors.border; e.currentTarget.style.color = colors.textSecondary; }}
                                     >
                                         <HiOutlineEye style={{ width: 12, height: 12 }} /> View
-                                    </a>
+                                    </button>
+                                ) : (
+                                    <span style={{
+                                        padding: '7px 12px', borderRadius: '8px',
+                                        background: colors.card, color: colors.textSecondary,
+                                        border: `1px solid ${colors.border}`, fontSize: '11px',
+                                        fontWeight: 600, fontFamily: fonts.body,
+                                        display: 'flex', alignItems: 'center', gap: 4,
+                                        opacity: 0.7, flexShrink: 0,
+                                    }}>
+                                        <HiOutlineEye style={{ width: 12, height: 12 }} /> View
+                                    </span>
                                 )}
                             </motion.div>
                         )
@@ -800,6 +931,11 @@ export default function PatientReports() {
             {/* Modals */}
             <UploadModal open={showUpload} onClose={() => setShowUpload(false)} onUploadSuccess={handleUploadSuccess} colors={colors} fonts={fonts} />
             <AnalyzeModal report={analyzeReport} open={!!analyzeReport} onClose={() => setAnalyzeReport(null)} colors={colors} fonts={fonts} />
+            {viewReport && (
+                <AnimatePresence>
+                    <ViewModal report={viewReport} open onClose={() => setViewReport(null)} colors={colors} fonts={fonts} />
+                </AnimatePresence>
+            )}
         </div>
     )
 }
