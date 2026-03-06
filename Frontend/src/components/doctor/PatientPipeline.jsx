@@ -1,6 +1,6 @@
 import { useTheme, radius, spacing, fontSize } from '../../theme.jsx'
 import { motion } from 'framer-motion'
-import { HiOutlineRocketLaunch } from 'react-icons/hi2'
+import { HiOutlineRocketLaunch, HiOutlineCheckCircle } from 'react-icons/hi2'
 
 const PIPELINE_FLOW = ['Matched', 'Under Review', 'Approved', 'Screening', 'Enrolled', 'Active']
 
@@ -15,52 +15,67 @@ export default function PatientPipeline() {
 
     return (
         <motion.div
-            initial={{ opacity: 0, y: 12 }}
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.15 }}
+            transition={{ delay: 0.1, duration: 0.4 }}
             style={{
                 background: colors.surface,
                 border: `1px solid ${colors.border}`,
-                borderRadius: radius.lg,
+                borderRadius: '16px',
                 boxShadow: colors.shadow,
-                padding: spacing.lg,
+                padding: '24px',
+                display: 'flex', flexDirection: 'column',
             }}
         >
-            <h2 style={{ margin: `0 0 ${spacing.lg}`, fontSize: fontSize.lg, fontFamily: fonts.heading, fontWeight: 700, color: colors.textPrimary, display: 'flex', alignItems: 'center', gap: spacing.sm }}>
-                <HiOutlineRocketLaunch style={{ width: 22, height: 22, color: colors.accent }} />
-                Patient Pipeline Tracker
-            </h2>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: '22px' }}>
+                <div style={{
+                    width: 36, height: 36, borderRadius: '10px',
+                    background: colors.accentGlow,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                }}>
+                    <HiOutlineRocketLaunch style={{ width: 18, height: 18, color: colors.accent }} />
+                </div>
+                <h3 style={{ margin: 0, fontSize: '16px', fontFamily: fonts.heading, fontWeight: 700, color: colors.textPrimary }}>
+                    Patient Pipeline
+                </h3>
+            </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.xl }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', flex: 1 }}>
                 {PATIENTS_PIPELINE.map((p, ai) => (
                     <motion.div
                         key={p.id}
                         initial={{ opacity: 0, x: -16 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.2 + ai * 0.1 }}
+                        style={{
+                            background: colors.card,
+                            borderRadius: '12px',
+                            padding: '16px',
+                            border: `1px solid ${colors.border}`,
+                        }}
                     >
                         {/* Patient header */}
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: spacing.sm }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm }}>
-                                <span style={{ fontSize: fontSize.base, fontWeight: 700, fontFamily: fonts.heading, color: colors.textPrimary }}>{p.patient}</span>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                                <span style={{ fontSize: '14px', fontWeight: 700, fontFamily: fonts.heading, color: colors.textPrimary }}>{p.patient}</span>
                                 <span style={{
-                                    fontSize: fontSize.xs, fontWeight: 600, padding: '2px 8px',
-                                    borderRadius: radius.full,
+                                    fontSize: '10px', fontWeight: 600, padding: '2px 8px',
+                                    borderRadius: '20px',
                                     background: colors.accentGlow, color: colors.accent,
                                     fontFamily: fonts.mono || fonts.body,
                                 }}>
                                     {p.id}
                                 </span>
                                 <span style={{
-                                    fontSize: fontSize.xs, fontWeight: 700, padding: '2px 8px',
-                                    borderRadius: radius.full,
+                                    fontSize: '10px', fontWeight: 700, padding: '2px 8px',
+                                    borderRadius: '20px',
                                     background: p.score >= 85 ? colors.greenGlow : colors.accentGlow,
                                     color: p.score >= 85 ? colors.green : colors.accent,
                                 }}>
                                     {p.score}% match
                                 </span>
                             </div>
-                            <span style={{ fontSize: fontSize.xs, color: colors.accent, fontWeight: 600, fontFamily: fonts.body }}>
+                            <span style={{ fontSize: '11px', color: colors.textSecondary, fontWeight: 500, fontFamily: fonts.body }}>
                                 Step {p.step} of {PIPELINE_FLOW.length}
                             </span>
                         </div>
@@ -70,35 +85,35 @@ export default function PatientPipeline() {
                             {PIPELINE_FLOW.map((step, i) => {
                                 const completed = i < p.step
                                 const current = i === p.step
-                                const color = completed ? colors.green : current ? colors.accent : colors.border
+                                const color = completed ? colors.green : current ? colors.accent : `${colors.textSecondary}40`
 
                                 return (
                                     <div key={step} style={{ display: 'flex', alignItems: 'center', flex: i < PIPELINE_FLOW.length - 1 ? 1 : 0 }}>
                                         <motion.div
                                             initial={{ scale: 0 }}
                                             animate={{ scale: 1 }}
-                                            transition={{ delay: 0.4 + i * 0.08, type: 'spring' }}
+                                            transition={{ delay: 0.4 + i * 0.06, type: 'spring' }}
                                             title={step}
                                             style={{
-                                                width: current ? 28 : 20, height: current ? 28 : 20,
+                                                width: current ? 26 : 20, height: current ? 26 : 20,
                                                 borderRadius: '50%',
-                                                background: completed ? color : current ? `${color}30` : `${colors.border}40`,
+                                                background: completed ? color : current ? `${color}20` : `${colors.border}60`,
                                                 border: `2px solid ${color}`,
                                                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                                                 color: completed ? '#fff' : current ? color : colors.textSecondary,
-                                                fontSize: completed ? '10px' : '8px', fontWeight: 700,
-                                                flexShrink: 0, cursor: 'default',
+                                                fontSize: '9px', fontWeight: 700,
+                                                flexShrink: 0,
                                                 transition: 'all 0.3s',
-                                                boxShadow: current ? `0 0 10px ${color}40` : 'none',
+                                                boxShadow: current ? `0 0 8px ${color}30` : 'none',
                                             }}
                                         >
-                                            {completed ? '✓' : i + 1}
+                                            {completed ? <HiOutlineCheckCircle style={{ width: 12, height: 12 }} /> : i + 1}
                                         </motion.div>
 
                                         {i < PIPELINE_FLOW.length - 1 && (
                                             <div style={{
-                                                flex: 1, height: 3, marginLeft: -1, marginRight: -1,
-                                                background: i < p.step ? colors.green : `${colors.border}60`,
+                                                flex: 1, height: 2,
+                                                background: i < p.step ? `linear-gradient(90deg, ${colors.green}, ${colors.green}80)` : `${colors.border}60`,
                                                 borderRadius: 2, transition: 'background 0.5s',
                                             }} />
                                         )}
@@ -114,8 +129,8 @@ export default function PatientPipeline() {
                                 return (
                                     <div key={step} style={{
                                         flex: 1, textAlign: 'center',
-                                        fontSize: '9px', fontWeight: current ? 700 : 500,
-                                        color: current ? colors.accent : i < p.step ? colors.green : `${colors.textSecondary}80`,
+                                        fontSize: '8px', fontWeight: current ? 700 : 500,
+                                        color: current ? colors.accent : i < p.step ? colors.green : `${colors.textSecondary}60`,
                                         fontFamily: fonts.body, lineHeight: 1.2,
                                     }}>
                                         {step}

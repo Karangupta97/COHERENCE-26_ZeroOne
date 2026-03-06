@@ -16,8 +16,8 @@ import {
     HiOutlineChartBar,
     HiOutlinePencilSquare,
 } from 'react-icons/hi2'
+import useDoctor from '../../hooks/useDoctor'
 
-// ── Clinic Portal nav items ──
 const CLINIC_NAV_ITEMS = [
     { key: 'dashboard', label: 'Dashboard', icon: HiOutlineHome, path: null },
     { key: 'post-trial', label: 'Post Trial', icon: HiOutlinePencilSquare, path: null },
@@ -29,7 +29,6 @@ const CLINIC_NAV_ITEMS = [
     { key: 'settings', label: 'Settings', icon: HiOutlineCog6Tooth, path: null },
 ]
 
-// ── Doctor Portal nav items ──
 const DOCTOR_NAV_ITEMS = [
     { key: 'dashboard', label: 'Dashboard', icon: HiOutlineHome, path: '/doctor/dashboard' },
     { key: 'patients', label: 'Patients', icon: HiOutlineUserGroup, path: '/doctor/patients' },
@@ -44,7 +43,6 @@ export default function Sidebar({ activePage, setPage }) {
     const navigate = useNavigate()
     const location = useLocation()
 
-    // Determine portal mode based on props
     const isClinicMode = typeof setPage === 'function'
 
     const unreadCount = isClinicMode
@@ -66,23 +64,20 @@ export default function Sidebar({ activePage, setPage }) {
 
     const navItems = isClinicMode ? CLINIC_NAV_ITEMS : DOCTOR_NAV_ITEMS
     const portalLabel = isClinicMode ? 'Clinic Portal' : 'Doctor Portal'
-    const profileName = isClinicMode ? 'Dr. Priya Sharma' : 'Dr. Priya Sharma'
+    const { fullName, initials: doctorInitials } = useDoctor()
+    const profileName = isClinicMode ? fullName : fullName
     const profileSub = isClinicMode ? 'Clinic Admin' : 'Lead Investigator'
-
-    const sidebarBg = colors.card
-    const activeBg = colors.accentGlow
-    const activeColor = colors.accent
 
     return (
         <aside
             style={{
                 width: 240,
                 minHeight: '100vh',
-                background: sidebarBg,
+                background: colors.surface,
                 borderRight: `1px solid ${colors.border}`,
                 display: 'flex',
                 flexDirection: 'column',
-                padding: `${spacing.lg} 0`,
+                padding: '20px 0',
                 position: 'fixed',
                 top: 0,
                 left: 0,
@@ -91,35 +86,39 @@ export default function Sidebar({ activePage, setPage }) {
                 fontFamily: fonts.body,
             }}
         >
-            {/* ── Logo ── */}
-            <div style={{ padding: `0 ${spacing.lg}`, marginBottom: spacing.xl }}>
+            {/* Logo */}
+            <div style={{ padding: '0 20px', marginBottom: '28px' }}>
                 <div
-                    style={{ display: 'flex', alignItems: 'center', gap: spacing.sm, cursor: isClinicMode ? 'default' : 'pointer' }}
+                    style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: isClinicMode ? 'default' : 'pointer' }}
                     onClick={() => !isClinicMode && navigate('/doctor/dashboard')}
                 >
                     <span
                         style={{
                             display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-                            width: 36, height: 36, borderRadius: radius.md,
-                            background: `linear-gradient(135deg, ${colors.accent}, ${colors.green})`,
-                            color: '#fff', fontSize: fontSize.lg, fontWeight: 800, fontFamily: fonts.heading,
+                            width: 38, height: 38, borderRadius: '10px',
+                            background: `linear-gradient(135deg, ${colors.accent}, ${colors.green || colors.accent})`,
+                            color: '#fff', fontSize: '18px', fontWeight: 800, fontFamily: fonts.heading,
+                            boxShadow: `0 2px 10px ${colors.accent}30`,
                         }}
                     >
                         C
                     </span>
                     <div>
-                        <div style={{ fontSize: fontSize.base, fontWeight: 700, fontFamily: fonts.heading, color: colors.textPrimary, lineHeight: 1.2 }}>
+                        <div style={{ fontSize: '15px', fontWeight: 700, fontFamily: fonts.heading, color: colors.textPrimary, lineHeight: 1.2 }}>
                             TrialMatch AI
                         </div>
-                        <div style={{ fontSize: fontSize.xs, color: colors.textSecondary, fontFamily: fonts.mono || fonts.body, letterSpacing: '1.5px', textTransform: 'uppercase' }}>
+                        <div style={{ fontSize: '10px', color: colors.textSecondary, fontFamily: fonts.body, letterSpacing: '1.2px', textTransform: 'uppercase', fontWeight: 500 }}>
                             {portalLabel}
                         </div>
                     </div>
                 </div>
             </div>
 
-            {/* ── Navigation ── */}
-            <nav style={{ flex: 1, padding: `0 ${spacing.sm}` }}>
+            {/* Navigation */}
+            <nav style={{ flex: 1, padding: '0 10px' }}>
+                <div style={{ fontSize: '10px', fontWeight: 600, color: colors.textSecondary, textTransform: 'uppercase', letterSpacing: '1px', padding: '0 12px', marginBottom: '8px' }}>
+                    Menu
+                </div>
                 {navItems.map((item) => {
                     const Icon = item.icon
                     const isActive = isClinicMode ? activePage === item.key : isDoctorActive(item)
@@ -135,33 +134,33 @@ export default function Sidebar({ activePage, setPage }) {
                                 width: '100%',
                                 display: 'flex',
                                 alignItems: 'center',
-                                gap: spacing.md,
-                                padding: `10px ${spacing.md}`,
-                                marginBottom: 2,
-                                borderRadius: radius.md,
+                                gap: '12px',
+                                padding: '10px 14px',
+                                marginBottom: '2px',
+                                borderRadius: '10px',
                                 border: 'none',
                                 cursor: 'pointer',
                                 fontFamily: fonts.body,
-                                fontSize: fontSize.sm,
-                                fontWeight: isActive ? 600 : 400,
-                                color: isActive ? activeColor : colors.textSecondary,
-                                background: isActive ? activeBg : 'transparent',
+                                fontSize: '13px',
+                                fontWeight: isActive ? 600 : 500,
+                                color: isActive ? colors.accent : colors.textSecondary,
+                                background: isActive ? colors.accentGlow : 'transparent',
                                 transition: 'all 0.2s ease',
                                 textAlign: 'left',
                                 position: 'relative',
                             }}
-                            onMouseEnter={(e) => { if (!isActive) e.currentTarget.style.background = `${colors.border}80` }}
-                            onMouseLeave={(e) => { if (!isActive) e.currentTarget.style.background = 'transparent' }}
+                            onMouseEnter={e => { if (!isActive) e.currentTarget.style.background = colors.card }}
+                            onMouseLeave={e => { if (!isActive) e.currentTarget.style.background = 'transparent' }}
                         >
                             {isActive && (
-                                <div style={{ position: 'absolute', left: 0, top: '20%', bottom: '20%', width: 3, borderRadius: 2, background: activeColor }} />
+                                <div style={{ position: 'absolute', left: 0, top: '22%', bottom: '22%', width: 3, borderRadius: 2, background: colors.accent }} />
                             )}
                             <Icon style={{ width: 18, height: 18, flexShrink: 0 }} />
                             {item.label}
                             {badgeCount && (
                                 <span style={{
                                     marginLeft: 'auto', minWidth: 20, height: 20,
-                                    borderRadius: radius.full, background: colors.red || '#EF4444',
+                                    borderRadius: '10px', background: colors.red || '#EF4444',
                                     color: '#fff', fontSize: '10px', fontWeight: 700,
                                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                                     padding: '0 6px',
@@ -174,20 +173,31 @@ export default function Sidebar({ activePage, setPage }) {
                 })}
             </nav>
 
-            {/* ── Profile (bottom) ── */}
-            <div style={{ padding: `0 ${spacing.lg}`, borderTop: `1px solid ${colors.border}`, paddingTop: spacing.md }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm }}>
+            {/* Profile (bottom) */}
+            <div style={{ padding: '0 16px', borderTop: `1px solid ${colors.border}`, paddingTop: '16px' }}>
+                <div
+                    style={{
+                        display: 'flex', alignItems: 'center', gap: '10px',
+                        padding: '10px 12px', borderRadius: '12px',
+                        background: colors.card, cursor: 'pointer',
+                        transition: 'all 0.2s',
+                    }}
+                    onClick={() => !isClinicMode && navigate('/doctor/settings')}
+                    onMouseEnter={e => e.currentTarget.style.background = `${colors.border}`}
+                    onMouseLeave={e => e.currentTarget.style.background = colors.card}
+                >
                     <div style={{
-                        width: 36, height: 36, borderRadius: radius.full,
-                        background: `linear-gradient(135deg, ${colors.accent}, ${colors.green})`,
+                        width: 36, height: 36, borderRadius: '10px',
+                        background: `linear-gradient(135deg, ${colors.accent}, ${colors.green || colors.accent})`,
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        color: '#fff', fontSize: fontSize.sm, fontWeight: 700, fontFamily: fonts.heading,
+                        color: '#fff', fontSize: '13px', fontWeight: 700, fontFamily: fonts.heading,
+                        flexShrink: 0,
                     }}>
-                        PS
+                        {doctorInitials}
                     </div>
-                    <div>
-                        <div style={{ fontSize: fontSize.sm, fontWeight: 600, color: colors.textPrimary }}>{profileName}</div>
-                        <div style={{ fontSize: fontSize.xs, color: colors.textSecondary }}>{profileSub}</div>
+                    <div style={{ minWidth: 0 }}>
+                        <div style={{ fontSize: '13px', fontWeight: 600, color: colors.textPrimary, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{profileName}</div>
+                        <div style={{ fontSize: '11px', color: colors.textSecondary }}>{profileSub}</div>
                     </div>
                 </div>
             </div>

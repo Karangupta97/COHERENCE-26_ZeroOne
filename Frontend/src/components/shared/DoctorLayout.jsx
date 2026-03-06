@@ -3,18 +3,20 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import { useTheme, radius, spacing, fontSize } from '../../theme.jsx'
 import Sidebar from './Sidebar'
 import { ALERTS } from '../../pages/doctor/data/mockData'
-import { HiOutlineBell } from 'react-icons/hi2'
+import { HiOutlineBell, HiOutlineMagnifyingGlass } from 'react-icons/hi2'
+import useDoctor from '../../hooks/useDoctor'
 
 function TopBar() {
     const { colors, fonts, mode, toggleMode } = useTheme()
     const navigate = useNavigate()
     const location = useLocation()
+    const { initials, fullName } = useDoctor()
 
     const alertCount = ALERTS.length
 
     const getPageTitle = () => {
         const path = location.pathname
-        if (path.includes('/dashboard')) return 'Doctor Dashboard'
+        if (path.includes('/dashboard')) return 'Dashboard'
         if (path.includes('/patients/') && !path.endsWith('/patients')) return 'Patient Details'
         if (path.includes('/patients')) return 'Patients'
         if (path.includes('/trials')) return 'Trial Matches'
@@ -30,20 +32,22 @@ function TopBar() {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                padding: `${spacing.md} ${spacing.xl}`,
+                padding: '12px 28px',
                 borderBottom: `1px solid ${colors.border}`,
                 background: colors.surface,
                 fontFamily: fonts.body,
-                minHeight: 64,
+                minHeight: 60,
+                position: 'sticky', top: 0, zIndex: 30,
+                backdropFilter: 'blur(12px)',
             }}
         >
-            {/* Title */}
-            <h1 style={{ margin: 0, fontSize: fontSize.xl, fontFamily: fonts.heading, fontWeight: 700, color: colors.textPrimary }}>
-                {getPageTitle()}
-            </h1>
+            <div>
+                <h1 style={{ margin: 0, fontSize: '20px', fontFamily: fonts.heading, fontWeight: 700, color: colors.textPrimary, letterSpacing: '-0.3px' }}>
+                    {getPageTitle()}
+                </h1>
+            </div>
 
-            {/* Right actions */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: spacing.md }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                 {/* Dark/Light toggle */}
                 <button
                     onClick={toggleMode}
@@ -51,17 +55,20 @@ function TopBar() {
                     style={{
                         background: colors.card,
                         border: `1px solid ${colors.border}`,
-                        borderRadius: radius.full,
-                        padding: '5px 12px',
+                        borderRadius: '10px',
+                        padding: '6px 14px',
                         cursor: 'pointer',
                         color: colors.textSecondary,
-                        fontFamily: fonts.mono || fonts.body,
+                        fontFamily: fonts.body,
                         fontSize: '12px',
+                        fontWeight: 500,
                         display: 'flex',
                         alignItems: 'center',
                         gap: '6px',
                         transition: 'all 0.2s ease',
                     }}
+                    onMouseEnter={e => e.currentTarget.style.borderColor = colors.accent}
+                    onMouseLeave={e => e.currentTarget.style.borderColor = colors.border}
                 >
                     {mode === 'dark' ? '☀️ Light' : '🌙 Dark'}
                 </button>
@@ -73,24 +80,26 @@ function TopBar() {
                         position: 'relative',
                         background: colors.card,
                         border: `1px solid ${colors.border}`,
-                        borderRadius: radius.full,
+                        borderRadius: '10px',
                         width: 38, height: 38,
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
                         cursor: 'pointer',
                         color: colors.textSecondary,
                         transition: 'all 0.2s',
                     }}
-                    onMouseEnter={(e) => { e.currentTarget.style.borderColor = colors.accent }}
-                    onMouseLeave={(e) => { e.currentTarget.style.borderColor = colors.border }}
+                    onMouseEnter={e => e.currentTarget.style.borderColor = colors.accent}
+                    onMouseLeave={e => e.currentTarget.style.borderColor = colors.border}
                 >
-                    <HiOutlineBell style={{ width: 18, height: 18 }} />
+                    <HiOutlineBell style={{ width: 17, height: 17 }} />
                     {alertCount > 0 && (
                         <span style={{
-                            position: 'absolute', top: -2, right: -2,
-                            width: 16, height: 16, borderRadius: '50%',
+                            position: 'absolute', top: -4, right: -4,
+                            minWidth: 18, height: 18, borderRadius: '9px',
                             background: colors.red || '#EF4444', color: '#fff',
-                            fontSize: '9px', fontWeight: 700,
+                            fontSize: '10px', fontWeight: 700,
                             display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            padding: '0 4px',
+                            border: `2px solid ${colors.surface}`,
                         }}>
                             {alertCount}
                         </span>
@@ -101,16 +110,17 @@ function TopBar() {
                 <div
                     onClick={() => navigate('/doctor/settings')}
                     style={{
-                        width: 38, height: 38, borderRadius: radius.full,
-                        background: `linear-gradient(135deg, ${colors.accent}, ${colors.green})`,
+                        width: 38, height: 38, borderRadius: '10px',
+                        background: `linear-gradient(135deg, ${colors.accent}, ${colors.green || colors.accent})`,
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        color: '#fff', fontSize: fontSize.sm, fontWeight: 700, fontFamily: fonts.heading,
+                        color: '#fff', fontSize: '13px', fontWeight: 700, fontFamily: fonts.heading,
                         cursor: 'pointer', transition: 'all 0.2s',
+                        boxShadow: `0 2px 8px ${colors.accent}30`,
                     }}
-                    onMouseEnter={(e) => { e.currentTarget.style.transform = 'scale(1.08)' }}
-                    onMouseLeave={(e) => { e.currentTarget.style.transform = 'scale(1)' }}
+                    onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.06)'}
+                    onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
                 >
-                    PS
+                    {initials}
                 </div>
             </div>
         </header>
@@ -135,7 +145,7 @@ export default function DoctorLayout({ children }) {
                 flexDirection: 'column',
             }}>
                 <TopBar />
-                <main style={{ flex: 1, padding: spacing.lg, overflow: 'auto' }}>
+                <main style={{ flex: 1, padding: '20px 24px', overflow: 'auto' }}>
                     {children}
                 </main>
             </div>

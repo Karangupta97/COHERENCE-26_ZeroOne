@@ -1,7 +1,7 @@
 import { useTheme, radius, spacing, fontSize } from '../../theme.jsx'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { HiOutlineBeaker } from 'react-icons/hi2'
+import { HiOutlineBeaker, HiOutlineArrowRight } from 'react-icons/hi2'
 
 const TRIALS = [
     { name: 'GLYCO-ADVANCE', phase: 'Phase III', status: 'Recruiting', enrolled: 18, target: 30, match: 94, domain: 'Endocrinology' },
@@ -14,16 +14,19 @@ function ProgressBar({ value, max, colors }) {
     const pct = Math.round((value / max) * 100)
     const color = pct >= 80 ? colors.green : pct >= 50 ? colors.accent : (colors.yellow || '#F59E0B')
     return (
-        <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm }}>
-            <div style={{ flex: 1, height: 8, borderRadius: 4, background: `${colors.border}` }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <div style={{ flex: 1, height: 6, borderRadius: 3, background: colors.border }}>
                 <motion.div
                     initial={{ width: 0 }}
                     animate={{ width: `${pct}%` }}
                     transition={{ duration: 1, delay: 0.3 }}
-                    style={{ height: '100%', borderRadius: 4, background: color }}
+                    style={{
+                        height: '100%', borderRadius: 3,
+                        background: `linear-gradient(90deg, ${color}CC, ${color})`,
+                    }}
                 />
             </div>
-            <span style={{ fontSize: fontSize.xs, fontWeight: 700, color, fontFamily: "'Open Sans', sans-serif", minWidth: 32, textAlign: 'right' }}>
+            <span style={{ fontSize: '11px', fontWeight: 700, color, fontFamily: "'Open Sans', sans-serif", minWidth: 32, textAlign: 'right' }}>
                 {pct}%
             </span>
         </div>
@@ -36,46 +39,57 @@ export default function ActiveTrialsTable() {
 
     return (
         <motion.div
-            initial={{ opacity: 0, y: 12 }}
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
+            transition={{ delay: 0.15, duration: 0.4 }}
             style={{
                 background: colors.surface,
                 border: `1px solid ${colors.border}`,
-                borderRadius: radius.lg,
+                borderRadius: '16px',
                 boxShadow: colors.shadow,
-                padding: spacing.lg,
+                padding: '24px',
             }}
         >
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: spacing.lg }}>
-                <h2 style={{ margin: 0, fontSize: fontSize.lg, fontFamily: fonts.heading, fontWeight: 700, color: colors.textPrimary, display: 'flex', alignItems: 'center', gap: spacing.sm }}>
-                    <HiOutlineBeaker style={{ width: 22, height: 22, color: colors.accent }} />
-                    Active Trials Overview
-                </h2>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                    <div style={{
+                        width: 36, height: 36, borderRadius: '10px',
+                        background: colors.accentGlow,
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    }}>
+                        <HiOutlineBeaker style={{ width: 18, height: 18, color: colors.accent }} />
+                    </div>
+                    <h3 style={{ margin: 0, fontSize: '16px', fontFamily: fonts.heading, fontWeight: 700, color: colors.textPrimary }}>
+                        Active Trials
+                    </h3>
+                </div>
                 <button
                     onClick={() => navigate('/doctor/trials')}
                     style={{
-                        padding: `4px ${spacing.sm}`, borderRadius: radius.sm,
-                        background: 'transparent', color: colors.accent,
-                        border: 'none', fontSize: fontSize.xs, fontWeight: 600,
+                        padding: '6px 14px', borderRadius: '8px',
+                        background: colors.accentGlow, color: colors.accent,
+                        border: 'none', fontSize: '12px', fontWeight: 600,
                         fontFamily: fonts.body, cursor: 'pointer',
+                        display: 'flex', alignItems: 'center', gap: 4, transition: 'all 0.2s',
                     }}
+                    onMouseEnter={e => e.currentTarget.style.background = `${colors.accent}25`}
+                    onMouseLeave={e => e.currentTarget.style.background = colors.accentGlow}
                 >
-                    View All →
+                    View All <HiOutlineArrowRight style={{ width: 12, height: 12 }} />
                 </button>
             </div>
 
             {/* Table header */}
             <div style={{
                 display: 'grid', gridTemplateColumns: '2fr 100px 100px 1fr',
-                gap: spacing.md, padding: `${spacing.sm} 0`, marginBottom: spacing.sm,
-                borderBottom: `1px solid ${colors.border}`,
+                gap: '14px', padding: '10px 14px', marginBottom: '4px',
+                background: colors.card, borderRadius: '10px',
             }}>
                 {['Trial', 'Phase', 'Status', 'Enrollment'].map(h => (
                     <span key={h} style={{
-                        fontSize: fontSize.xs, fontWeight: 600,
+                        fontSize: '11px', fontWeight: 600,
                         color: colors.textSecondary, textTransform: 'uppercase',
-                        letterSpacing: '0.5px', fontFamily: fonts.mono || fonts.body,
+                        letterSpacing: '0.8px', fontFamily: fonts.body,
                     }}>
                         {h}
                     </span>
@@ -87,42 +101,42 @@ export default function ActiveTrialsTable() {
                 {TRIALS.map((trial, i) => (
                     <motion.div
                         key={trial.name}
-                        initial={{ opacity: 0, x: -12 }}
+                        initial={{ opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.3 + i * 0.08 }}
+                        transition={{ delay: 0.2 + i * 0.06 }}
                         style={{
                             display: 'grid', gridTemplateColumns: '2fr 100px 100px 1fr',
-                            gap: spacing.md, alignItems: 'center',
-                            padding: `${spacing.md} 0`,
-                            borderBottom: i < TRIALS.length - 1 ? `1px solid ${colors.border}40` : 'none',
-                            cursor: 'pointer', borderRadius: radius.sm, transition: 'background 0.15s',
+                            gap: '14px', alignItems: 'center',
+                            padding: '14px',
+                            borderBottom: i < TRIALS.length - 1 ? `1px solid ${colors.border}` : 'none',
+                            borderRadius: '8px', transition: 'background 0.15s', cursor: 'pointer',
                         }}
                         onClick={() => navigate('/doctor/trials')}
-                        onMouseEnter={(e) => { e.currentTarget.style.background = colors.card }}
-                        onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent' }}
+                        onMouseEnter={e => e.currentTarget.style.background = colors.card}
+                        onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                     >
                         <div>
-                            <div style={{ fontSize: fontSize.sm, fontWeight: 600, color: colors.textPrimary, fontFamily: fonts.body }}>
+                            <div style={{ fontSize: '13px', fontWeight: 600, color: colors.textPrimary, fontFamily: fonts.body }}>
                                 {trial.name}
                             </div>
-                            <div style={{ fontSize: fontSize.xs, color: colors.textSecondary, marginTop: 2, fontFamily: fonts.body }}>
-                                {trial.domain} • {trial.match}% avg match
+                            <div style={{ fontSize: '11px', color: colors.textSecondary, marginTop: 2, fontFamily: fonts.body }}>
+                                {trial.domain} · {trial.match}% avg match
                             </div>
                         </div>
 
                         <span style={{
-                            fontSize: fontSize.xs, fontWeight: 600, padding: '3px 10px',
-                            borderRadius: radius.full, background: colors.accentGlow,
+                            fontSize: '11px', fontWeight: 600, padding: '4px 10px',
+                            borderRadius: '20px', background: colors.accentGlow,
                             color: colors.accent, fontFamily: fonts.body, textAlign: 'center',
                         }}>
                             {trial.phase}
                         </span>
 
                         <span style={{
-                            fontSize: fontSize.xs, fontWeight: 600, padding: '3px 10px',
-                            borderRadius: radius.full,
-                            background: trial.status === 'Recruiting' ? colors.greenGlow : colors.accentGlow,
-                            color: trial.status === 'Recruiting' ? colors.green : colors.accent,
+                            fontSize: '11px', fontWeight: 600, padding: '4px 10px',
+                            borderRadius: '20px',
+                            background: trial.status === 'Recruiting' ? colors.greenGlow : trial.status === 'Active' ? colors.accentGlow : `${colors.yellow || '#F59E0B'}15`,
+                            color: trial.status === 'Recruiting' ? colors.green : trial.status === 'Active' ? colors.accent : (colors.yellow || '#F59E0B'),
                             fontFamily: fonts.body, textAlign: 'center',
                         }}>
                             {trial.status}
@@ -130,7 +144,7 @@ export default function ActiveTrialsTable() {
 
                         <div>
                             <ProgressBar value={trial.enrolled} max={trial.target} colors={colors} />
-                            <div style={{ fontSize: '10px', color: colors.textSecondary, marginTop: 3, fontFamily: fonts.mono || fonts.body }}>
+                            <div style={{ fontSize: '10px', color: colors.textSecondary, marginTop: 3, fontFamily: fonts.body }}>
                                 {trial.enrolled} / {trial.target} enrolled
                             </div>
                         </div>
