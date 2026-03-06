@@ -17,8 +17,8 @@ export const themes = {
     name: "Clinical White",
     icon: "🤍",
     fonts: {
-      heading: "'Fraunces', serif",
-      body: "'Poppins', sans-serif",
+      heading: "'Satoshi', sans-serif",
+      body: "'Satoshi', sans-serif",
       mono: "'Roboto Mono', monospace",
     },
     dark: {
@@ -58,8 +58,8 @@ export const themes = {
     name: "Deep Navy",
     icon: "🌊",
     fonts: {
-      heading: "'Fraunces', serif",
-      body: "'Poppins', sans-serif",
+      heading: "'Satoshi', sans-serif",
+      body: "'Satoshi', sans-serif",
       mono: "'Roboto Mono', monospace",
     },
     dark: {
@@ -99,8 +99,8 @@ export const themes = {
     name: "Forest Bio",
     icon: "🌿",
     fonts: {
-      heading: "'Fraunces', serif",
-      body: "'Poppins', sans-serif",
+      heading: "'Satoshi', sans-serif",
+      body: "'Satoshi', sans-serif",
       mono: "'Roboto Mono', monospace",
     },
     dark: {
@@ -140,8 +140,8 @@ export const themes = {
     name: "Slate Pro",
     icon: "🩶",
     fonts: {
-      heading: "'Fraunces', serif",
-      body: "'Poppins', sans-serif",
+      heading: "'Satoshi', sans-serif",
+      body: "'Satoshi', sans-serif",
       mono: "'Roboto Mono', monospace",
     },
     dark: {
@@ -181,8 +181,8 @@ export const themes = {
     name: "Aurora Medical",
     icon: "🔵",
     fonts: {
-      heading: "'Fraunces', serif",
-      body: "'Poppins', sans-serif",
+      heading: "'Satoshi', sans-serif",
+      body: "'Satoshi', sans-serif",
       mono: "'Roboto Mono', monospace",
     },
     dark: {
@@ -224,7 +224,7 @@ export const themes = {
 // ─────────────────────────────────────────────
 
 export const GOOGLE_FONTS_URL =
-  "https://fonts.googleapis.com/css2?family=Fraunces:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&family=Open+Sans:wght@400;600;700;800&family=Roboto+Mono:wght@400;500;600;700&display=swap";
+  "https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500,400&display=swap";
 
 // ─────────────────────────────────────────────
 //  SHARED SPACING & RADIUS TOKENS

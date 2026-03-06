@@ -45,7 +45,7 @@ import {
 // ── Coming Soon placeholder ──
 function ComingSoon({ role }) {
   return (
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', fontSize: 20, fontFamily: "'Source Sans 3', sans-serif" }}>
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', fontSize: 20, fontFamily: "'Satoshi', sans-serif" }}>
       <div style={{ textAlign: 'center' }}>
         <div style={{ fontSize: 48, marginBottom: 16 }}>🚧</div>
         <h2 style={{ margin: '0 0 8px' }}>{role} Portal</h2>
