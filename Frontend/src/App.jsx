@@ -84,7 +84,7 @@ function ClinicLayout() {
           unreadCount={unreadCount}
           onBellClick={() => setActivePage('notifications')}
         />
-        <div style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden', position: 'relative' }}>
+        <div style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden', position: 'relative', padding: '24px' }}>
           <div key={activePage} style={{ animation: 'pageTransition 0.3s ease' }}>
             {renderPage()}
           </div>
