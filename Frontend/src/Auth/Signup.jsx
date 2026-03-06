@@ -192,6 +192,7 @@ export default function SignupPage() {
     const [mounted, setMounted] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [focusedField, setFocusedField] = useState(null);
+    const [error, setError] = useState('');
 
     useEffect(() => {
         const t = setTimeout(() => setMounted(true), 50);
@@ -224,12 +225,39 @@ export default function SignupPage() {
     const canProceed = firstName.trim() && lastName.trim() && selectedRole;
     const canSubmit = email.trim() && password && password === confirmPassword && strength.level >= 3 && agreeTerms;
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         if (!canSubmit) return;
+        setError('');
         setIsLoading(true);
-        setTimeout(() => {
-            navigate('/login');
-        }, 800);
+        try {
+            const res = await fetch('/api/auth/signup', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    firstName: firstName.trim(),
+                    lastName: lastName.trim(),
+                    email: email.trim(),
+                    password,
+                    role: selectedRole,
+                    ...(phone.trim() && { phone: phone.trim() }),
+                }),
+            });
+            const data = await res.json();
+            if (!res.ok || !data.ok) {
+                setError(data.message || 'Signup failed. Please try again.');
+                setIsLoading(false);
+                return;
+            }
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('user', JSON.stringify(data.user));
+            const role = data.user.role;
+            if (role === 'doctor') navigate('/doctor/dashboard');
+            else if (role === 'patient') navigate('/patient/dashboard');
+            else navigate('/clinic/dashboard');
+        } catch {
+            setError('Unable to connect to server. Please try again later.');
+            setIsLoading(false);
+        }
     };
 
     /* ── Reusable input builder ── */
@@ -785,6 +813,19 @@ export default function SignupPage() {
                                         <span style={{ color: colors.accent, fontWeight: 500 }}>Privacy Policy</span>
                                     </span>
                                 </label>
+
+                                {/* Error message */}
+                                {error && (
+                                    <div style={{
+                                        padding: '10px 14px', borderRadius: '8px', marginBottom: '12px',
+                                        background: isDark ? 'rgba(239,68,68,0.12)' : 'rgba(239,68,68,0.08)',
+                                        border: '1px solid rgba(239,68,68,0.25)',
+                                        color: isDark ? '#fca5a5' : '#dc2626',
+                                        fontSize: '13px', fontFamily: fonts.body, lineHeight: 1.4,
+                                    }}>
+                                        {error}
+                                    </div>
+                                )}
 
                                 {/* Submit button */}
                                 <button

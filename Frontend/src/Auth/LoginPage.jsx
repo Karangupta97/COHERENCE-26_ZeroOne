@@ -159,6 +159,7 @@ export default function LoginPage() {
     const [passwordFocused, setPasswordFocused] = useState(false);
     const [mounted, setMounted] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState('');
 
     useEffect(() => {
         const t = setTimeout(() => setMounted(true), 50);
@@ -171,13 +172,32 @@ export default function LoginPage() {
         { key: 'clinic', label: 'Clinic', desc: 'Run & monitor trials' },
     ];
 
-    const handleLogin = () => {
+    const handleLogin = async () => {
+        if (!email.trim() || !password) return;
+        setError('');
         setIsLoading(true);
-        setTimeout(() => {
-            if (selectedRole === 'doctor') navigate('/doctor/dashboard');
-            else if (selectedRole === 'patient') navigate('/patient/dashboard');
+        try {
+            const res = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: email.trim(), password }),
+            });
+            const data = await res.json();
+            if (!res.ok || !data.ok) {
+                setError(data.message || 'Login failed. Please try again.');
+                setIsLoading(false);
+                return;
+            }
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('user', JSON.stringify(data.user));
+            const role = data.user.role;
+            if (role === 'doctor') navigate('/doctor/dashboard');
+            else if (role === 'patient') navigate('/patient/dashboard');
             else navigate('/clinic/dashboard');
-        }, 600);
+        } catch {
+            setError('Unable to connect to server. Please try again later.');
+            setIsLoading(false);
+        }
     };
 
     const isDark = mode === 'dark';
@@ -563,6 +583,19 @@ export default function LoginPage() {
                             </button>
                         </div>
                     </div>
+
+                    {/* Error message */}
+                    {error && (
+                        <div style={{
+                            padding: '10px 14px', borderRadius: '8px', marginBottom: '12px',
+                            background: isDark ? 'rgba(239,68,68,0.12)' : 'rgba(239,68,68,0.08)',
+                            border: '1px solid rgba(239,68,68,0.25)',
+                            color: isDark ? '#fca5a5' : '#dc2626',
+                            fontSize: '13px', fontFamily: fonts.body, lineHeight: 1.4,
+                        }}>
+                            {error}
+                        </div>
+                    )}
 
                     {/* Sign In Button */}
                     <button
