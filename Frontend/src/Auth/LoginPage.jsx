@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useTheme } from '../theme';
 
 /* ── Professional SVG Icon Components ── */
@@ -600,10 +600,21 @@ export default function LoginPage() {
                         )}
                     </button>
 
+                    {/* Sign up link */}
+                    <p style={{
+                        textAlign: 'center', fontSize: '13px', color: colors.textSecondary,
+                        fontFamily: fonts.body, marginTop: '20px',
+                    }}>
+                        Don't have an account?{' '}
+                        <Link to="/signup" style={{
+                            color: colors.accent, fontWeight: 600, textDecoration: 'none',
+                        }}>Sign up</Link>
+                    </p>
+
                     {/* Footer */}
                     <p style={{
                         textAlign: 'center', fontSize: '12px', color: colors.textSecondary,
-                        fontFamily: fonts.body, marginTop: '24px', opacity: 0.6,
+                        fontFamily: fonts.body, marginTop: '16px', opacity: 0.5,
                     }}>
                         &copy; {new Date().getFullYear()} TrialMatchAI. All rights reserved.
                     </p>

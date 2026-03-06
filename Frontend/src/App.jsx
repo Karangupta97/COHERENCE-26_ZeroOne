@@ -4,6 +4,7 @@ import { ThemeProvider } from './theme';
 
 // ── Doctor Portal Imports ──
 import LoginPage from './Auth/LoginPage';
+import SignupPage from './Auth/Signup';
 import DoctorDashboard from './pages/doctor/DoctorDashboard';
 import DoctorPatients from './pages/doctor/DoctorPatients';
 import PatientDetail from './pages/doctor/PatientDetail';
@@ -109,6 +110,7 @@ export default function App() {
         {/* Landing / Login */}
         <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
 
         {/* Doctor Portal */}
         <Route path="/doctor/dashboard" element={<DoctorDashboard />} />
