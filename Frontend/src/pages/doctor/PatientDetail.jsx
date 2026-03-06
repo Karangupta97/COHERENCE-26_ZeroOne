@@ -4,6 +4,17 @@ import { useTheme } from '../../theme';
 import DoctorLayout from '../../components/shared/DoctorLayout';
 import ScoreRing from '../../components/shared/ScoreRing';
 import { useToast } from '../../components/shared/Toast';
+import {
+    HiOutlineMapPin,
+    HiOutlineBuildingOffice2,
+    HiOutlineUserGroup,
+    HiOutlineBanknotes,
+    HiOutlineLockClosed,
+    HiOutlineChatBubbleLeftRight,
+    HiOutlineCheckCircle,
+    HiOutlineXCircle,
+    HiOutlineExclamationTriangle,
+} from 'react-icons/hi2';
 import { PATIENTS, TRIALS, TRIAL_CRITERIA, PATIENT_TRIAL_MATCHES, MATCH_SCORES, REJECTION_REASONS } from './data/mockData';
 
 export default function PatientDetail() {
@@ -55,19 +66,19 @@ export default function PatientDetail() {
                     {/* LEFT: Patient Profile */}
                     <div style={{ background: colors.card, borderRadius: 14, padding: 28, border: `1px solid ${colors.border}`, boxShadow: colors.shadow, position: 'sticky', top: 24, transition: 'all 0.3s ease' }}>
                         <div style={{ fontFamily: fonts.mono, fontSize: 24, fontWeight: 700, color: colors.accent, marginBottom: 20 }}>{patient.anonymizedId}</div>
-                        <div style={{ display: 'flex', gap: 16, marginBottom: 20, flexWrap: 'wrap' }}>
-                            {[`${patient.age} yrs`, patient.gender, `📍 ${patient.location}`].map((item, i) => (
-                                <span key={i} style={{ padding: '4px 12px', borderRadius: 9999, fontSize: 13, fontFamily: fonts.body, background: `${colors.accent}10`, color: colors.textSecondary }}>{item}</span>
-                            ))}
+                        <div style={{ display: 'flex', gap: 12, marginBottom: 20, flexWrap: 'wrap' }}>
+                            <span style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '4px 12px', borderRadius: 9999, fontSize: 13, fontFamily: fonts.body, background: `${colors.accent}10`, color: colors.textSecondary }}>{patient.age} yrs</span>
+                            <span style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '4px 12px', borderRadius: 9999, fontSize: 13, fontFamily: fonts.body, background: `${colors.accent}10`, color: colors.textSecondary }}>{patient.gender}</span>
+                            <span style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '4px 12px', borderRadius: 9999, fontSize: 13, fontFamily: fonts.body, background: `${colors.accent}10`, color: colors.textSecondary }}><HiOutlineMapPin style={{ width: 13, height: 13 }} /> {patient.location}</span>
                         </div>
                         <InfoRow label="Diagnosis" value={patient.diagnosis} />
                         <InfoRow label="Medications" value={patient.meds} />
                         <InfoRow label="HbA1c" value={patient.hba1c} />
                         <InfoRow label="BMI" value={patient.bmi} />
-                        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '6px 14px', borderRadius: 9999, background: colors.greenGlow, color: colors.green, fontFamily: fonts.mono, fontSize: 12, fontWeight: 500, marginTop: 20 }}>🔒 Anonymized</div>
+                        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '6px 14px', borderRadius: 9999, background: colors.greenGlow, color: colors.green, fontFamily: fonts.mono, fontSize: 12, fontWeight: 500, marginTop: 20 }}><HiOutlineLockClosed style={{ width: 13, height: 13 }} /> Anonymized</div>
                         <button onClick={() => navigate(`/doctor/chat/${patient.anonymizedId}`)} onMouseEnter={() => setChatHover(true)} onMouseLeave={() => setChatHover(false)}
                             style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, width: '100%', padding: 12, borderRadius: 10, border: `1px solid ${colors.accent}30`, background: chatHover ? colors.accent : colors.accentGlow, color: chatHover ? '#fff' : colors.accent, fontFamily: fonts.body, fontSize: 14, fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s ease', marginTop: 16 }}>
-                            💬 Chat with Patient
+                            <HiOutlineChatBubbleLeftRight style={{ width: 16, height: 16 }} /> Chat with Patient
                         </button>
                     </div>
 
@@ -87,27 +98,34 @@ export default function PatientDetail() {
                                                 <span style={{ fontFamily: fonts.heading, fontSize: 18, fontWeight: 700, color: colors.textPrimary }}>{trial.name}</span>
                                                 <span style={{ padding: '2px 10px', borderRadius: 9999, fontSize: 11, fontFamily: fonts.mono, background: `${colors.accent}18`, color: colors.accent, fontWeight: 500 }}>{trial.phase}</span>
                                             </div>
-                                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, fontSize: 13, color: colors.textSecondary, fontFamily: fonts.body }}>
-                                                <span>🏥 {trial.sponsor}</span><span>📍 {trial.location}</span><span>📏 {trial.distance}</span><span>🪑 {trial.slots} slots</span>
+                                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, fontSize: 13, color: colors.textSecondary, fontFamily: fonts.body }}>
+                                                <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><HiOutlineBuildingOffice2 style={{ width: 13, height: 13 }} /> {trial.sponsor}</span>
+                                                <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><HiOutlineMapPin style={{ width: 13, height: 13 }} /> {trial.location}</span>
+                                                <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><HiOutlineMapPin style={{ width: 13, height: 13 }} /> {trial.distance}</span>
+                                                <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><HiOutlineUserGroup style={{ width: 13, height: 13 }} /> {trial.slots} slots</span>
                                             </div>
-                                            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '4px 10px', borderRadius: 6, background: colors.greenGlow, color: colors.green, fontFamily: fonts.mono, fontSize: 12, fontWeight: 500, marginTop: 8 }}>💰 {trial.compensation}</div>
+                                            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '4px 10px', borderRadius: 6, background: colors.greenGlow, color: colors.green, fontFamily: fonts.mono, fontSize: 12, fontWeight: 500, marginTop: 8 }}><HiOutlineBanknotes style={{ width: 12, height: 12 }} /> {trial.compensation}</div>
                                         </div>
                                     </div>
                                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 16 }}>
                                         {criteria.map((c, i) => {
-                                            const [icon, color, bg] = c.pass === true ? ['✓', colors.green, colors.greenGlow] : c.pass === false ? ['✗', colors.red, `${colors.red}15`] : ['⚠️', colors.yellow, `${colors.yellow}15`];
-                                            return <span key={i} style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '4px 10px', borderRadius: 6, fontSize: 12, fontFamily: fonts.body, color, background: bg, fontWeight: 500 }}>{icon} {c.label}</span>;
+                                            const [Icon, color, bg] = c.pass === true ? [HiOutlineCheckCircle, colors.green, colors.greenGlow] : c.pass === false ? [HiOutlineXCircle, colors.red, `${colors.red}15`] : [HiOutlineExclamationTriangle, colors.yellow, `${colors.yellow}15`];
+                                            return (
+                                                <span key={i} style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '4px 10px', borderRadius: 6, fontSize: 12, fontFamily: fonts.body, color, background: bg, fontWeight: 500 }}>
+                                                    <Icon style={{ width: 12, height: 12, flexShrink: 0 }} /> {c.label}
+                                                </span>
+                                            );
                                         })}
                                     </div>
                                     <div style={{ display: 'flex', gap: 10, position: 'relative' }}>
                                         {status === 'approved' ? (
-                                            <div style={{ padding: '10px 20px', borderRadius: 8, background: colors.greenGlow, color: colors.green, fontFamily: fonts.body, fontSize: 14, fontWeight: 600, border: `1px solid ${colors.green}30` }}>Referred ✅</div>
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '10px 20px', borderRadius: 8, background: colors.greenGlow, color: colors.green, fontFamily: fonts.body, fontSize: 14, fontWeight: 600, border: `1px solid ${colors.green}30` }}><HiOutlineCheckCircle style={{ width: 16, height: 16 }} /> Referred</div>
                                         ) : status === 'rejected' ? (
-                                            <div style={{ padding: '10px 20px', borderRadius: 8, background: `${colors.red}15`, color: colors.red, fontFamily: fonts.body, fontSize: 14, fontWeight: 600, border: `1px solid ${colors.red}30` }}>Not Suitable ❌</div>
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '10px 20px', borderRadius: 8, background: `${colors.red}15`, color: colors.red, fontFamily: fonts.body, fontSize: 14, fontWeight: 600, border: `1px solid ${colors.red}30` }}><HiOutlineXCircle style={{ width: 16, height: 16 }} /> Not Suitable</div>
                                         ) : (<>
-                                            <button onClick={() => handleApprove(trial.id)} style={{ padding: '10px 20px', borderRadius: 8, background: colors.green, color: '#fff', fontFamily: fonts.body, fontSize: 14, fontWeight: 600, border: 'none', cursor: 'pointer', transition: 'all 0.2s ease' }} onMouseEnter={e => e.target.style.opacity = '0.85'} onMouseLeave={e => e.target.style.opacity = '1'}>✅ Approve Referral</button>
+                                            <button onClick={() => handleApprove(trial.id)} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '10px 20px', borderRadius: 8, background: colors.green, color: '#fff', fontFamily: fonts.body, fontSize: 14, fontWeight: 600, border: 'none', cursor: 'pointer', transition: 'all 0.2s ease' }} onMouseEnter={e => e.target.style.opacity = '0.85'} onMouseLeave={e => e.target.style.opacity = '1'}><HiOutlineCheckCircle style={{ width: 16, height: 16 }} /> Approve Referral</button>
                                             <div style={{ position: 'relative' }}>
-                                                <button onClick={() => setShowRejectDropdown(showRejectDropdown === trial.id ? null : trial.id)} style={{ padding: '10px 20px', borderRadius: 8, background: 'transparent', color: colors.red, fontFamily: fonts.body, fontSize: 14, fontWeight: 600, border: `1px solid ${colors.red}30`, cursor: 'pointer', transition: 'all 0.2s ease' }} onMouseEnter={e => e.target.style.background = `${colors.red}15`} onMouseLeave={e => e.target.style.background = 'transparent'}>❌ Not Suitable</button>
+                                                <button onClick={() => setShowRejectDropdown(showRejectDropdown === trial.id ? null : trial.id)} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '10px 20px', borderRadius: 8, background: 'transparent', color: colors.red, fontFamily: fonts.body, fontSize: 14, fontWeight: 600, border: `1px solid ${colors.red}30`, cursor: 'pointer', transition: 'all 0.2s ease' }} onMouseEnter={e => e.target.style.background = `${colors.red}15`} onMouseLeave={e => e.target.style.background = 'transparent'}><HiOutlineXCircle style={{ width: 16, height: 16 }} /> Not Suitable</button>
                                                 {showRejectDropdown === trial.id && (
                                                     <div style={{ position: 'absolute', top: '100%', left: 0, marginTop: 8, background: colors.surface, border: `1px solid ${colors.border}`, borderRadius: 10, boxShadow: colors.shadow, zIndex: 20, minWidth: 200, overflow: 'hidden' }}>
                                                         {REJECTION_REASONS.map((reason, i) => (

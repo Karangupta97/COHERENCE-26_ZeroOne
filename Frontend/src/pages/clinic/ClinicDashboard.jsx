@@ -52,11 +52,9 @@ const GREETING_ICONS = {
 }
 function getGreeting() {
     const h = new Date().getHours()
-    if (h < 5) return { text: 'Good Night', Icon: GREETING_ICONS.evening }
     if (h < 12) return { text: 'Good Morning', Icon: GREETING_ICONS.morning }
     if (h < 17) return { text: 'Good Afternoon', Icon: GREETING_ICONS.afternoon }
-    if (h < 21) return { text: 'Good Evening', Icon: GREETING_ICONS.evening }
-    return { text: 'Good Night', Icon: GREETING_ICONS.evening }
+    return { text: 'Good Evening', Icon: GREETING_ICONS.evening }
 }
 
 // ── AI Insight icon map ──────────────────────────────────

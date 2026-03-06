@@ -22,6 +22,8 @@ import {
     HiOutlineArrowRight,
     HiOutlineCalendarDays,
     HiOutlineClock,
+    HiOutlineSun,
+    HiOutlineMoon,
 } from 'react-icons/hi2'
 
 import DoctorPerformanceScore from '../../components/doctor/DoctorPerformanceScore'
@@ -51,11 +53,9 @@ const INSIGHTS = [
 
 function getGreeting() {
     const h = new Date().getHours()
-    if (h < 5) return { text: 'Good Night', emoji: '🌙' }
-    if (h < 12) return { text: 'Good Morning', emoji: '🌅' }
-    if (h < 17) return { text: 'Good Afternoon', emoji: '☀️' }
-    if (h < 21) return { text: 'Good Evening', emoji: '🌇' }
-    return { text: 'Good Night', emoji: '🌙' }
+    if (h < 12) return { text: 'Good Morning', Icon: HiOutlineSun }
+    if (h < 17) return { text: 'Good Afternoon', Icon: HiOutlineSun }
+    return { text: 'Good Evening', Icon: HiOutlineMoon }
 }
 
 const fadeUp = { initial: { opacity: 0, y: 20 }, animate: { opacity: 1, y: 0 } }
@@ -96,8 +96,8 @@ export default function DoctorDashboard() {
 
                     <div style={{ position: 'relative', zIndex: 1 }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
-                            <span style={{ fontSize: '14px', color: 'rgba(255,255,255,0.8)', fontFamily: fonts.body, fontWeight: 500 }}>
-                                {greet.emoji} {greet.text}
+                            <span style={{ fontSize: '14px', color: 'rgba(255,255,255,0.8)', fontFamily: fonts.body, fontWeight: 500, display: 'flex', alignItems: 'center', gap: 4 }}>
+                                {(() => { const GIcon = greet.Icon; return <GIcon style={{ width: 16, height: 16 }} /> })()} {greet.text}
                             </span>
                             <span style={{ fontSize: '12px', color: 'rgba(255,255,255,0.5)', fontFamily: fonts.body }}>·</span>
                             <span style={{ fontSize: '12px', color: 'rgba(255,255,255,0.6)', fontFamily: fonts.body, display: 'flex', alignItems: 'center', gap: 4 }}>
