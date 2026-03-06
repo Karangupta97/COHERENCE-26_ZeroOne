@@ -1,298 +1,260 @@
 // ============================================================
-//  ClinicDashboard — Main dashboard page
+//  ClinicDashboard — Full-featured dashboard matching Patient design
 // ============================================================
 
-import { useTheme } from '../../theme';
-import KPICard from '../../components/shared/KPICard';
-import ProgressBar from '../../components/shared/ProgressBar';
-import StatusBadge from '../../components/shared/StatusBadge';
-import { CLINIC, CLINIC_TRIALS, CANDIDATES, RECENT_ACTIVITY, AI_INSIGHTS } from './data/mockData';
+import { useTheme, radius, spacing, fontSize } from '../../theme'
+import { motion } from 'framer-motion'
+import {
+    HiOutlineBeaker,
+    HiOutlineLink,
+    HiOutlineCheckCircle,
+    HiOutlineUserGroup,
+    HiOutlineDocumentText,
+    HiOutlineSparkles,
+    HiOutlineBuildingOffice2,
+} from 'react-icons/hi2'
+
+import EnrollmentScore from '../../components/clinic/EnrollmentScore'
+import TrialPipeline from '../../components/clinic/TrialPipeline'
+import { CLINIC, CLINIC_TRIALS, CANDIDATES, RECENT_ACTIVITY, AI_INSIGHTS } from './data/mockData'
+
+// ── Stats ───────────────────────────────────────────────
+const getStats = (candidates, trials) => {
+    const totalMatches = candidates.length
+    const doctorApproved = candidates.filter(c => c.doctorStatus === 'Approved').length
+    const enrolled = candidates.filter(c => c.stage === 'Enrolled').length
+    const activeTrials = trials.filter(t => t.status !== 'Completed').length
+    return [
+        { label: 'ACTIVE TRIALS', value: activeTrials, icon: HiOutlineBeaker, change: '↑ 12%' },
+        { label: 'TOTAL MATCHES', value: totalMatches, icon: HiOutlineLink, change: '↑ 23%' },
+        { label: 'DOCTOR APPROVED', value: doctorApproved, icon: HiOutlineCheckCircle, change: '↑ 8%' },
+        { label: 'ENROLLED PATIENTS', value: enrolled, icon: HiOutlineUserGroup, change: '↑ 5%' },
+    ]
+}
+
+// ── Greeting ─────────────────────────────────────────────
+function getGreeting() {
+    const h = new Date().getHours()
+    if (h < 12) return { text: 'Good Morning', emoji: '🌅' }
+    if (h < 17) return { text: 'Good Afternoon', emoji: '☀️' }
+    return { text: 'Good Evening', emoji: '🌙' }
+}
+
+// ── Active Trials Table ──────────────────────────────────
+function TrialsTable({ trials, colors, fonts }) {
+    return (
+        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
+            style={{ background: colors.surface, border: `1px solid ${colors.border}`, borderRadius: radius.lg, boxShadow: colors.shadow, padding: spacing.lg }}>
+            <h2 style={{ margin: `0 0 ${spacing.lg}`, fontSize: fontSize.lg, fontFamily: fonts.heading, fontWeight: 700, color: colors.textPrimary, display: 'flex', alignItems: 'center', gap: spacing.sm }}>
+                🧪 Active Trials Overview
+            </h2>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '2fr 100px 100px 1fr', gap: spacing.md, padding: `${spacing.sm} 0`, marginBottom: spacing.sm, borderBottom: `1px solid ${colors.border}` }}>
+                {['Trial', 'Phase', 'Status', 'Enrollment'].map(h => (
+                    <span key={h} style={{ fontSize: fontSize.xs, fontWeight: 600, color: colors.textSecondary, textTransform: 'uppercase', letterSpacing: '0.5px', fontFamily: fonts.mono || fonts.body }}>{h}</span>
+                ))}
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+                {trials.filter(t => t.status !== 'Completed').map((trial, i) => {
+                    const pct = Math.round((trial.enrolled / trial.target) * 100)
+                    const barColor = pct >= 80 ? colors.green : pct >= 50 ? colors.accent : (colors.yellow || '#F59E0B')
+                    return (
+                        <motion.div key={trial.id} initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 + i * 0.08 }}
+                            style={{
+                                display: 'grid', gridTemplateColumns: '2fr 100px 100px 1fr', gap: spacing.md, alignItems: 'center',
+                                padding: `${spacing.md} 0`, borderBottom: i < trials.length - 2 ? `1px solid ${colors.border}40` : 'none',
+                                borderRadius: radius.sm, transition: 'background 0.15s',
+                            }}
+                            onMouseEnter={(e) => { e.currentTarget.style.background = colors.card }}
+                            onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent' }}
+                        >
+                            <div>
+                                <div style={{ fontSize: fontSize.sm, fontWeight: 600, color: colors.textPrimary, fontFamily: fonts.body }}>{trial.name}</div>
+                                <div style={{ fontSize: fontSize.xs, color: colors.textSecondary, marginTop: 2, fontFamily: fonts.body }}>{trial.id} • {trial.location}</div>
+                            </div>
+                            <span style={{ fontSize: fontSize.xs, fontWeight: 600, padding: '3px 10px', borderRadius: radius.full, background: colors.accentGlow, color: colors.accent, textAlign: 'center' }}>{trial.phase}</span>
+                            <span style={{ fontSize: fontSize.xs, fontWeight: 600, padding: '3px 10px', borderRadius: radius.full, background: trial.status === 'Recruiting' ? colors.greenGlow : colors.accentGlow, color: trial.status === 'Recruiting' ? colors.green : colors.accent, textAlign: 'center' }}>{trial.status}</span>
+                            <div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm }}>
+                                    <div style={{ flex: 1, height: 8, borderRadius: 4, background: colors.border }}>
+                                        <motion.div initial={{ width: 0 }} animate={{ width: `${pct}%` }} transition={{ duration: 1, delay: 0.3 }} style={{ height: '100%', borderRadius: 4, background: barColor }} />
+                                    </div>
+                                    <span style={{ fontSize: fontSize.xs, fontWeight: 700, color: barColor, fontFamily: "'Open Sans', sans-serif", minWidth: 32, textAlign: 'right' }}>{pct}%</span>
+                                </div>
+                                <div style={{ fontSize: '10px', color: colors.textSecondary, marginTop: 3, fontFamily: fonts.mono || fonts.body }}>{trial.enrolled} / {trial.target} enrolled</div>
+                            </div>
+                        </motion.div>
+                    )
+                })}
+            </div>
+        </motion.div>
+    )
+}
 
 export default function ClinicDashboard({ setPage }) {
-    const { colors, fonts, spacing, radius, fontSize } = useTheme();
+    const { colors, fonts } = useTheme()
+    const greet = getGreeting()
+    const stats = getStats(CANDIDATES, CLINIC_TRIALS)
+    const activeTrials = CLINIC_TRIALS.filter(t => t.status !== 'Completed').length
 
-    const totalMatches = CANDIDATES.length;
-    const doctorApproved = CANDIDATES.filter(c => c.doctorStatus === 'Approved').length;
-    const enrolled = CANDIDATES.filter(c => c.stage === 'Enrolled').length;
-    const activeTrials = CLINIC_TRIALS.filter(t => t.status !== 'Completed').length;
-
-    const cardStyle = {
-        background: colors.card,
-        border: `1px solid ${colors.border}`,
-        borderRadius: radius.lg,
-        padding: spacing.lg,
-        transition: 'all 0.3s ease',
-    };
+    // Map activity icons
+    const ACTIVITY_ICONS = [HiOutlineDocumentText, HiOutlineSparkles, HiOutlineCheckCircle, HiOutlineBuildingOffice2, HiOutlineDocumentText]
+    const ACTIVITY_TYPES = ['green', 'accent', 'green', 'accent', 'green']
 
     return (
-        <div style={{
-            padding: spacing.xl,
-            display: 'flex',
-            flexDirection: 'column',
-            gap: spacing.xl,
-            animation: 'fadeInUp 0.4s ease',
-        }}>
-            {/* Clinic Info + KPIs Row */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: spacing.lg }}>
-                {/* Clinic Info Card */}
-                <div style={cardStyle}>
-                    <div style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: spacing.lg,
-                    }}>
-                        <div style={{
-                            width: '56px',
-                            height: '56px',
-                            borderRadius: radius.xl,
-                            background: `linear-gradient(135deg, ${colors.accent}, ${colors.green})`,
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            fontSize: '24px',
-                        }}>
-                            🏥
-                        </div>
-                        <div>
-                            <h2 style={{
-                                fontFamily: fonts.heading,
-                                fontSize: fontSize.lg,
-                                fontWeight: 700,
-                                color: colors.textPrimary,
-                                margin: 0,
-                            }}>
-                                {CLINIC.name}
-                            </h2>
-                            <div style={{
-                                fontSize: fontSize.sm,
-                                color: colors.textSecondary,
-                                marginTop: '4px',
-                                display: 'flex',
-                                gap: spacing.lg,
-                            }}>
-                                <span>📍 {CLINIC.location}</span>
-                                <span>👩‍⚕️ {CLINIC.leadDoctor}</span>
-                                <span>🧪 {activeTrials} Active Trials</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.lg }}>
 
-                {/* Quick Actions */}
-                <div style={{
-                    ...cardStyle,
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: spacing.md,
+            {/* ── Welcome Banner ── */}
+            <motion.div initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }}
+                style={{
+                    background: `linear-gradient(135deg, ${colors.accent}18, ${colors.green}18)`,
+                    border: `1px solid ${colors.accent}30`, borderRadius: radius.lg,
+                    padding: `${spacing.lg} ${spacing.xl}`,
+                    display: 'flex', alignItems: 'center', gap: spacing.xl,
+                    position: 'relative', overflow: 'hidden',
                 }}>
-                    <span style={{ fontSize: fontSize.sm, color: colors.textSecondary, fontWeight: 500, marginRight: spacing.sm }}>
-                        Quick Actions
-                    </span>
-                    {[
-                        { label: 'Post Trial', icon: '📝', page: 'post-trial' },
-                        { label: 'View Funnel', icon: '📈', page: 'funnel' },
-                        { label: 'View Candidates', icon: '👥', page: 'candidates' },
-                    ].map(btn => (
-                        <button
-                            key={btn.page}
-                            onClick={() => setPage(btn.page)}
-                            style={{
-                                background: colors.accentGlow,
-                                color: colors.accent,
-                                border: `1px solid ${colors.accent}30`,
-                                borderRadius: radius.md,
-                                padding: `${spacing.sm} ${spacing.md}`,
-                                fontSize: fontSize.sm,
-                                fontWeight: 600,
-                                cursor: 'pointer',
-                                fontFamily: fonts.body,
-                                transition: 'all 0.2s ease',
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: spacing.xs,
-                            }}
-                            onMouseEnter={e => {
-                                e.currentTarget.style.background = colors.accent;
-                                e.currentTarget.style.color = '#fff';
-                            }}
-                            onMouseLeave={e => {
-                                e.currentTarget.style.background = colors.accentGlow;
-                                e.currentTarget.style.color = colors.accent;
-                            }}
-                        >
-                            <span>{btn.icon}</span> {btn.label}
-                        </button>
-                    ))}
+                <div style={{ position: 'absolute', top: -40, right: -40, width: 120, height: 120, borderRadius: '50%', background: `${colors.accent}10` }} />
+                <div style={{ position: 'absolute', bottom: -30, right: 80, width: 80, height: 80, borderRadius: '50%', background: `${colors.green}10` }} />
+
+                <div style={{ flex: 1, position: 'relative', zIndex: 1 }}>
+                    <div style={{ fontSize: fontSize.sm, color: colors.textSecondary, fontFamily: fonts.body, marginBottom: 4, display: 'flex', alignItems: 'center', gap: spacing.xs }}>
+                        {greet.emoji} {greet.text}
+                    </div>
+                    <h2 style={{ margin: 0, fontSize: '22px', fontFamily: fonts.heading, fontWeight: 700, color: colors.textPrimary, lineHeight: 1.3 }}>
+                        Welcome back, <span style={{ background: `linear-gradient(90deg, ${colors.accent}, ${colors.green})`, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>{CLINIC.name}</span> 🏥
+                    </h2>
+                    <p style={{ margin: `${spacing.xs} 0 0`, fontSize: fontSize.sm, color: colors.textSecondary, fontFamily: fonts.body, lineHeight: 1.5 }}>
+                        📍 {CLINIC.location} &nbsp;·&nbsp; 👩‍⚕️ {CLINIC.leadDoctor} &nbsp;·&nbsp; 🧪 {activeTrials} Active Trials
+                    </p>
+                </div>
+
+                <div style={{ display: 'flex', gap: spacing.sm, flexShrink: 0, position: 'relative', zIndex: 1 }}>
+                    <button onClick={() => setPage('post-trial')} style={{
+                        padding: `10px ${spacing.lg}`, borderRadius: radius.sm,
+                        background: colors.accent, color: '#fff', border: 'none',
+                        fontSize: fontSize.sm, fontWeight: 600, fontFamily: fonts.body, cursor: 'pointer',
+                    }}>
+                        📝 Post Trial
+                    </button>
+                    <button onClick={() => setPage('candidates')} style={{
+                        padding: `10px ${spacing.lg}`, borderRadius: radius.sm,
+                        background: colors.surface, color: colors.textPrimary,
+                        border: `1px solid ${colors.border}`,
+                        fontSize: fontSize.sm, fontWeight: 600, fontFamily: fonts.body, cursor: 'pointer',
+                    }}>
+                        👥 View Candidates
+                    </button>
+                </div>
+            </motion.div>
+
+            {/* ── Stat Cards ── */}
+            <div>
+                <div style={{ height: 4, borderRadius: 2, background: `linear-gradient(90deg, ${colors.accent}, ${colors.green})`, marginBottom: spacing.lg }} />
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: spacing.md }}>
+                    {stats.map((stat, i) => {
+                        const Icon = stat.icon
+                        return (
+                            <motion.div key={stat.label} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1, duration: 0.4 }}
+                                style={{
+                                    background: colors.surface, border: `1px solid ${colors.border}`,
+                                    borderRadius: radius.lg, padding: spacing.lg, boxShadow: colors.shadow,
+                                    position: 'relative', overflow: 'hidden', cursor: 'pointer', transition: 'all 0.2s ease',
+                                }}
+                                onMouseEnter={(e) => { e.currentTarget.style.borderColor = colors.accent; e.currentTarget.style.transform = 'translateY(-2px)' }}
+                                onMouseLeave={(e) => { e.currentTarget.style.borderColor = colors.border; e.currentTarget.style.transform = 'translateY(0)' }}
+                            >
+                                <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: spacing.md }}>
+                                    <div style={{ width: 40, height: 40, borderRadius: radius.md, background: colors.accentGlow, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                        <Icon style={{ width: 20, height: 20, color: colors.accent }} />
+                                    </div>
+                                    <span style={{ fontSize: fontSize.xs, fontWeight: 600, color: colors.green, background: colors.greenGlow, padding: '2px 8px', borderRadius: radius.full, fontFamily: fonts.mono || fonts.body }}>
+                                        {stat.change}
+                                    </span>
+                                </div>
+                                <div style={{ fontSize: fontSize.hero || '36px', fontWeight: 800, fontFamily: "'Open Sans', sans-serif", color: colors.textPrimary, lineHeight: 1 }}>
+                                    {stat.value}
+                                </div>
+                                <div style={{ fontSize: fontSize.xs, fontWeight: 600, color: colors.textSecondary, letterSpacing: '1.5px', marginTop: spacing.xs, fontFamily: fonts.mono || fonts.body }}>
+                                    {stat.label}
+                                </div>
+                            </motion.div>
+                        )
+                    })}
                 </div>
             </div>
 
-            {/* KPI Cards */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: spacing.lg }}>
-                <KPICard icon="🧪" value={activeTrials} label="Active Trials" delta="12%" deltaType="up" />
-                <KPICard icon="🔗" value={totalMatches} label="Total Matches" delta="23%" deltaType="up" />
-                <KPICard icon="✅" value={doctorApproved} label="Doctor Approved" delta="8%" deltaType="up" />
-                <KPICard icon="🎯" value={enrolled} label="Enrolled Patients" delta="5%" deltaType="up" />
+            {/* ── Enrollment Score + Trial Pipeline — side by side ── */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: spacing.lg }}>
+                <EnrollmentScore />
+                <TrialPipeline />
             </div>
 
-            {/* Main Content Row */}
+            {/* ── Active Trials Table ── */}
+            <TrialsTable trials={CLINIC_TRIALS} colors={colors} fonts={fonts} />
+
+            {/* ── Recent Activity + AI Insights — side by side ── */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: spacing.lg }}>
                 {/* Recent Activity */}
-                <div style={cardStyle}>
-                    <h3 style={{
-                        fontFamily: fonts.heading,
-                        fontSize: fontSize.lg,
-                        fontWeight: 700,
-                        color: colors.textPrimary,
-                        margin: `0 0 ${spacing.md} 0`,
-                    }}>
-                        📋 Recent Activity
-                    </h3>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.sm }}>
-                        {RECENT_ACTIVITY.map(item => (
-                            <div key={item.id} style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: spacing.md,
-                                padding: spacing.sm,
-                                borderRadius: radius.md,
-                                transition: 'background 0.2s ease',
-                                cursor: 'default',
-                            }}
-                                onMouseEnter={e => e.currentTarget.style.background = `${colors.accent}08`}
-                                onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
-                            >
-                                <span style={{ fontSize: '20px', width: '28px', textAlign: 'center' }}>{item.icon}</span>
-                                <div style={{ flex: 1 }}>
-                                    <div style={{ fontSize: fontSize.sm, fontWeight: 600, color: colors.textPrimary }}>
-                                        {item.action}
+                <div style={{ background: colors.surface, border: `1px solid ${colors.border}`, borderRadius: radius.lg, boxShadow: colors.shadow, padding: spacing.lg }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: spacing.lg }}>
+                        <h2 style={{ margin: 0, fontSize: fontSize.lg, fontFamily: fonts.heading, fontWeight: 700, color: colors.textPrimary, display: 'flex', alignItems: 'center', gap: spacing.sm }}>
+                            📋 Recent Activity
+                        </h2>
+                        <button onClick={() => setPage('notifications')} style={{ padding: `4px ${spacing.sm}`, borderRadius: radius.sm, background: 'transparent', color: colors.accent, border: 'none', fontSize: fontSize.xs, fontWeight: 600, fontFamily: fonts.body, cursor: 'pointer' }}>
+                            View All →
+                        </button>
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+                        {RECENT_ACTIVITY.map((act, i) => {
+                            const Icon = ACTIVITY_ICONS[i % ACTIVITY_ICONS.length]
+                            const iconType = ACTIVITY_TYPES[i % ACTIVITY_TYPES.length]
+                            const color = iconType === 'green' ? colors.green : colors.accent
+                            const glow = iconType === 'green' ? colors.greenGlow : colors.accentGlow
+                            return (
+                                <motion.div key={act.id} initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.06, duration: 0.3 }}
+                                    style={{ display: 'flex', alignItems: 'flex-start', gap: spacing.md, padding: `${spacing.md} ${spacing.sm}`, borderBottom: i < RECENT_ACTIVITY.length - 1 ? `1px solid ${colors.border}` : 'none', borderRadius: radius.sm, transition: 'background 0.15s' }}
+                                    onMouseEnter={(e) => { e.currentTarget.style.background = colors.card }} onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent' }}
+                                >
+                                    <div style={{ width: 34, height: 34, borderRadius: radius.md, flexShrink: 0, background: glow, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                        <Icon style={{ width: 16, height: 16, color }} />
                                     </div>
-                                    <div style={{ fontSize: fontSize.xs, color: colors.textSecondary }}>
-                                        {item.detail}
+                                    <div style={{ flex: 1 }}>
+                                        <div style={{ fontSize: fontSize.sm, fontWeight: 600, color: colors.textPrimary, fontFamily: fonts.body }}>{act.action}</div>
+                                        <div style={{ fontSize: fontSize.xs, color: colors.textSecondary, marginTop: 2, fontFamily: fonts.body }}>{act.detail}</div>
                                     </div>
-                                </div>
-                                <span style={{
-                                    fontSize: fontSize.xs,
-                                    color: colors.textSecondary,
-                                    fontFamily: fonts.mono,
-                                    whiteSpace: 'nowrap',
-                                }}>
-                                    {item.time}
-                                </span>
-                            </div>
-                        ))}
+                                    <span style={{ fontSize: fontSize.xs, color: colors.textSecondary, flexShrink: 0, fontFamily: fonts.mono || fonts.body, whiteSpace: 'nowrap' }}>{act.time}</span>
+                                </motion.div>
+                            )
+                        })}
                     </div>
                 </div>
 
                 {/* AI Insights */}
-                <div style={cardStyle}>
-                    <h3 style={{
-                        fontFamily: fonts.heading,
-                        fontSize: fontSize.lg,
-                        fontWeight: 700,
-                        color: colors.textPrimary,
-                        margin: `0 0 ${spacing.md} 0`,
-                    }}>
-                        🤖 AI Insights
-                    </h3>
+                <div style={{ background: colors.surface, border: `1px solid ${colors.border}`, borderRadius: radius.lg, boxShadow: colors.shadow, padding: spacing.lg }}>
+                    <h2 style={{ margin: `0 0 ${spacing.lg}`, fontSize: fontSize.lg, fontFamily: fonts.heading, fontWeight: 700, color: colors.textPrimary, display: 'flex', alignItems: 'center', gap: spacing.sm }}>
+                        🧠 AI Insights
+                    </h2>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.sm }}>
-                        {AI_INSIGHTS.map(insight => {
-                            const borderColor = insight.type === 'warning' ? colors.yellow
-                                : insight.type === 'success' ? colors.green : colors.accent;
+                        {AI_INSIGHTS.map((ins, i) => {
+                            const borderColor = ins.type === 'warning' ? (colors.yellow || '#F59E0B') : ins.type === 'success' ? colors.green : colors.accent
+                            const bgColor = ins.type === 'success' ? colors.greenGlow : colors.accentGlow
                             return (
-                                <div key={insight.id} style={{
-                                    padding: spacing.md,
-                                    borderRadius: radius.md,
-                                    border: `1px solid ${borderColor}30`,
-                                    background: `${borderColor}08`,
-                                    borderLeft: `3px solid ${borderColor}`,
-                                }}>
-                                    <div style={{
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: spacing.sm,
-                                        marginBottom: '4px',
-                                    }}>
-                                        <span>{insight.icon}</span>
-                                        <span style={{
-                                            fontSize: fontSize.sm,
-                                            fontWeight: 700,
-                                            color: colors.textPrimary,
-                                        }}>
-                                            {insight.title}
-                                        </span>
+                                <motion.div key={ins.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08, duration: 0.3 }}
+                                    style={{ background: bgColor, borderLeft: `3px solid ${borderColor}`, borderRadius: radius.sm, padding: spacing.md, cursor: 'pointer', transition: 'all 0.2s' }}
+                                    onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateX(4px)' }} onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateX(0)' }}
+                                >
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm, marginBottom: 4 }}>
+                                        <span style={{ fontSize: '16px' }}>{ins.icon}</span>
+                                        <span style={{ fontSize: fontSize.sm, fontWeight: 700, color: colors.textPrimary, fontFamily: fonts.heading }}>{ins.title}</span>
                                     </div>
-                                    <p style={{
-                                        fontSize: fontSize.xs,
-                                        color: colors.textSecondary,
-                                        margin: 0,
-                                        lineHeight: 1.5,
-                                    }}>
-                                        {insight.message}
-                                    </p>
-                                </div>
-                            );
+                                    <p style={{ margin: 0, fontSize: fontSize.xs, color: colors.textSecondary, lineHeight: 1.5, fontFamily: fonts.body }}>{ins.message}</p>
+                                </motion.div>
+                            )
                         })}
                     </div>
                 </div>
             </div>
-
-            {/* Active Trials Overview */}
-            <div style={cardStyle}>
-                <h3 style={{
-                    fontFamily: fonts.heading,
-                    fontSize: fontSize.lg,
-                    fontWeight: 700,
-                    color: colors.textPrimary,
-                    margin: `0 0 ${spacing.lg} 0`,
-                }}>
-                    🧪 Active Trials Overview
-                </h3>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.lg }}>
-                    {CLINIC_TRIALS.filter(t => t.status !== 'Completed').map(trial => (
-                        <div key={trial.id} style={{
-                            display: 'grid',
-                            gridTemplateColumns: '2fr 100px 100px 1fr',
-                            gap: spacing.lg,
-                            alignItems: 'center',
-                            padding: `${spacing.sm} 0`,
-                            borderBottom: `1px solid ${colors.border}40`,
-                        }}>
-                            <div>
-                                <div style={{
-                                    fontSize: fontSize.sm,
-                                    fontWeight: 600,
-                                    color: colors.textPrimary,
-                                }}>
-                                    {trial.name}
-                                </div>
-                                <div style={{
-                                    fontSize: fontSize.xs,
-                                    color: colors.textSecondary,
-                                    marginTop: '2px',
-                                }}>
-                                    {trial.id} • {trial.location}
-                                </div>
-                            </div>
-                            <StatusBadge status={trial.phase} />
-                            <StatusBadge status={trial.status} />
-                            <ProgressBar
-                                value={trial.enrolled}
-                                max={trial.target}
-                                color={colors.accent}
-                                height="6px"
-                            />
-                        </div>
-                    ))}
-                </div>
-            </div>
-
-            <style>{`
-        @keyframes fadeInUp {
-          from { opacity: 0; transform: translateY(16px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-      `}</style>
         </div>
-    );
+    )
 }
-
