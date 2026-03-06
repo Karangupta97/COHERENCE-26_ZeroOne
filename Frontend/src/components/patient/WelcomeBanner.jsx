@@ -14,11 +14,9 @@ const PATIENT = PATIENTS[0]
 
 function getGreeting() {
   const hour = new Date().getHours()
-  if (hour < 5) return { text: 'Good Night', Icon: HiOutlineSparkles }
   if (hour < 12) return { text: 'Good Morning', Icon: HiOutlineSparkles }
   if (hour < 17) return { text: 'Good Afternoon', Icon: HiOutlineLightBulb }
-  if (hour < 21) return { text: 'Good Evening', Icon: HiOutlineSparkles }
-  return { text: 'Good Night', Icon: HiOutlineSparkles }
+  return { text: 'Good Evening', Icon: HiOutlineSparkles }
 }
 
 const TIPS = [
@@ -60,6 +58,7 @@ export default function WelcomeBanner() {
         </div>
         <h2 style={{ margin: 0, fontSize: '22px', fontFamily: fonts.heading, fontWeight: 700, color: colors.textPrimary, lineHeight: 1.3, display: 'flex', alignItems: 'center', gap: spacing.sm }}>
           Welcome back, <span style={{ background: `linear-gradient(90deg, ${colors.accent}, ${colors.green})`, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>{firstName}</span>
+          <HiOutlineHandRaised style={{ width: 22, height: 22, color: colors.accent }} />
         </h2>
         <p style={{ margin: `${spacing.xs} 0 0`, fontSize: fontSize.sm, color: colors.textSecondary, fontFamily: fonts.body, lineHeight: 1.5, display: 'flex', alignItems: 'center', gap: spacing.xs }}>
           <HiOutlineLightBulb style={{ width: 14, height: 14, color: colors.accent, flexShrink: 0 }} /> Tip: {tip}
