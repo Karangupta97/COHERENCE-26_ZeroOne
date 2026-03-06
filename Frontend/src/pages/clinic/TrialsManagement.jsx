@@ -2,7 +2,7 @@
 //  TrialsManagement — Trial table with actions
 // ============================================================
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTheme } from '../../theme';
 import DataTable from '../../components/shared/DataTable';
 import StatusBadge from '../../components/shared/StatusBadge';
@@ -12,8 +12,36 @@ import { CLINIC_TRIALS } from './data/mockData';
 
 export default function TrialsManagement({ setPage }) {
     const { colors, fonts, spacing, radius, fontSize } = useTheme();
-    const [trials, setTrials] = useState(CLINIC_TRIALS);
+    const [trials, setTrials] = useState([]);
     const [toast, setToast] = useState({ show: false, message: '', variant: 'success' });
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (!token) { setTrials(CLINIC_TRIALS); return; }
+        fetch('/api/trials/my', {
+            headers: { Authorization: `Bearer ${token}` },
+        })
+            .then(r => r.json())
+            .then(data => {
+                if (data.ok && data.data.length > 0) {
+                    setTrials(data.data.map(t => ({
+                        id: t.trialId,
+                        _id: t._id,
+                        name: t.trialName,
+                        phase: t.phase,
+                        category: t.category,
+                        location: t.location,
+                        slots: t.slots,
+                        enrolled: t.enrolled || 0,
+                        target: t.target || t.slots,
+                        status: t.status,
+                    })));
+                } else {
+                    setTrials(CLINIC_TRIALS);
+                }
+            })
+            .catch(() => setTrials(CLINIC_TRIALS));
+    }, []);
 
     const handleAction = (action, trial) => {
         if (action === 'pause') {
