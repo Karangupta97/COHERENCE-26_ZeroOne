@@ -1,11 +1,15 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTheme, radius, spacing, fontSize } from '../../theme.jsx'
-import { HiOutlineBell } from 'react-icons/hi2'
+import { HiOutlineBell, HiOutlineSun, HiOutlineMoon } from 'react-icons/hi2'
 
-export default function NavBar({ title, unreadCount, onBellClick }) {
+export default function NavBar({ title, titleData, unreadCount, onBellClick }) {
     const { colors, fonts, mode, toggleMode } = useTheme()
     const navigate = useNavigate()
+
+    // Support both old string title and new {icon, text} titleData
+    const TitleIcon = titleData?.icon
+    const titleText = titleData?.text || title || ''
 
     return (
         <header
@@ -23,9 +27,9 @@ export default function NavBar({ title, unreadCount, onBellClick }) {
                 zIndex: 50,
             }}
         >
-            {/* Page Title */}
-            <h1 style={{ margin: 0, fontSize: fontSize.xl, fontFamily: fonts.heading, fontWeight: 700, color: colors.textPrimary }}>
-                {title}
+            <h1 style={{ margin: 0, fontSize: fontSize.xl, fontFamily: fonts.heading, fontWeight: 700, color: colors.textPrimary, display: 'flex', alignItems: 'center', gap: spacing.sm }}>
+                {TitleIcon && <TitleIcon style={{ width: 24, height: 24, color: colors.accent }} />}
+                {titleText}
             </h1>
 
             {/* Right actions */}
@@ -49,7 +53,10 @@ export default function NavBar({ title, unreadCount, onBellClick }) {
                         transition: 'all 0.2s ease',
                     }}
                 >
-                    {mode === 'dark' ? '☀️ Light' : '🌙 Dark'}
+                    {mode === 'dark'
+                        ? <><HiOutlineSun style={{ width: 14, height: 14 }} /> Light</>
+                        : <><HiOutlineMoon style={{ width: 14, height: 14 }} /> Dark</>
+                    }
                 </button>
 
                 {/* Notification bell */}

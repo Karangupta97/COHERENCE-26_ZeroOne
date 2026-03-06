@@ -31,6 +31,16 @@ import Settings from './pages/clinic/Settings';
 import { NOTIFICATIONS, CANDIDATES } from './pages/clinic/data/mockData';
 
 import './App.css';
+import {
+  HiOutlineChartBar,
+  HiOutlinePencilSquare,
+  HiOutlineUserGroup,
+  HiOutlineArrowPath,
+  HiOutlineArrowTrendingUp,
+  HiOutlineBeaker,
+  HiOutlineBellAlert,
+  HiOutlineCog6Tooth,
+} from 'react-icons/hi2'
 
 // ── Coming Soon placeholder ──
 function ComingSoon({ role }) {
@@ -45,16 +55,15 @@ function ComingSoon({ role }) {
   );
 }
 
-// ── Clinic Portal Page Titles ──
 const PAGE_TITLES = {
-  'dashboard': '📊 Clinic Dashboard',
-  'post-trial': '📝 Post New Trial',
-  'candidates': '👥 Matched Candidates',
-  'workflow': '🔄 Candidate Workflow',
-  'funnel': '📈 Enrollment Funnel',
-  'trials': '🧪 Trials Management',
-  'notifications': '🔔 Notifications',
-  'settings': '⚙️ Settings',
+  'dashboard': { icon: HiOutlineChartBar, text: 'Clinic Dashboard' },
+  'post-trial': { icon: HiOutlinePencilSquare, text: 'Post New Trial' },
+  'candidates': { icon: HiOutlineUserGroup, text: 'Matched Candidates' },
+  'workflow': { icon: HiOutlineArrowPath, text: 'Candidate Workflow' },
+  'funnel': { icon: HiOutlineArrowTrendingUp, text: 'Enrollment Funnel' },
+  'trials': { icon: HiOutlineBeaker, text: 'Trials Management' },
+  'notifications': { icon: HiOutlineBellAlert, text: 'Notifications' },
+  'settings': { icon: HiOutlineCog6Tooth, text: 'Settings' },
 };
 
 // ── Clinic Layout (Sidebar + NavBar + pages) ──
@@ -82,7 +91,7 @@ function ClinicLayout() {
       <Sidebar activePage={activePage} setPage={setActivePage} />
       <div style={{ flex: 1, marginLeft: 240, display: 'flex', flexDirection: 'column', minHeight: '100vh', width: 'calc(100vw - 240px)', maxWidth: 'calc(100vw - 240px)', overflow: 'hidden' }}>
         <NavBar
-          title={PAGE_TITLES[activePage] || 'Clinic Portal'}
+          titleData={PAGE_TITLES[activePage] || { text: 'Clinic Portal' }}
           unreadCount={unreadCount}
           onBellClick={() => setActivePage('notifications')}
         />

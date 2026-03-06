@@ -146,9 +146,9 @@ export default function ClinicDashboard({ setPage }) {
                     <div style={{ fontSize: fontSize.sm, color: colors.textSecondary, fontFamily: fonts.body, marginBottom: 4, display: 'flex', alignItems: 'center', gap: spacing.xs }}>
                         <GreetIcon style={{ width: 16, height: 16, color: colors.accent }} /> {greet.text}
                     </div>
-                    <h2 style={{ margin: 0, fontSize: '22px', fontFamily: fonts.heading, fontWeight: 700, color: colors.textPrimary, lineHeight: 1.3, display: 'flex', alignItems: 'center', gap: spacing.sm }}>
-                        Welcome back, <span style={{ background: `linear-gradient(90deg, ${colors.accent}, ${colors.green})`, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>{CLINIC.name}</span>
-                        <HiOutlineBuildingOffice2 style={{ width: 22, height: 22, color: colors.accent }} />
+                    <h2 style={{ margin: 0, fontSize: '22px', fontFamily: fonts.heading, fontWeight: 700, color: colors.textPrimary, lineHeight: 1.3, display: 'flex', alignItems: 'center', gap: spacing.sm, flexWrap: 'wrap' }}>
+                        Welcome back, <span style={{ color: colors.accent }}>{CLINIC.name}</span>
+                        <HiOutlineBuildingOffice2 style={{ width: 22, height: 22, color: colors.accent, flexShrink: 0 }} />
                     </h2>
                     <p style={{ margin: `${spacing.xs} 0 0`, fontSize: fontSize.sm, color: colors.textSecondary, fontFamily: fonts.body, lineHeight: 1.5, display: 'flex', alignItems: 'center', gap: spacing.sm }}>
                         <HiOutlineMapPin style={{ width: 14, height: 14, flexShrink: 0 }} /> {CLINIC.location}
