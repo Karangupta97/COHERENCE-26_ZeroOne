@@ -9,9 +9,24 @@ export default function StatusBadge({ status }) {
         referred: { label: 'Referred', bg: `${colors.yellow}18`, color: colors.yellow, border: colors.yellow },
         enrolled: { label: 'Enrolled', bg: `${colors.green}18`, color: colors.green, border: colors.green },
         screening: { label: 'Screening', bg: `${colors.accent}18`, color: colors.accent, border: colors.accent },
+        // Trial statuses
+        'Recruiting': { label: 'Recruiting', bg: '#22C55E20', color: '#22C55E', border: '#22C55E' },
+        'Almost Full': { label: 'Almost Full', bg: '#F59E0B20', color: '#F59E0B', border: '#F59E0B' },
+        'Enrolling Soon': { label: 'Enrolling Soon', bg: '#818CF820', color: '#818CF8', border: '#818CF8' },
+        'Completed': { label: 'Completed', bg: '#6B728020', color: '#9CA3AF', border: '#9CA3AF' },
+        'Paused': { label: 'Paused', bg: '#EF444420', color: '#EF4444', border: '#EF4444' },
+        'Approved': { label: 'Approved', bg: '#22C55E20', color: '#22C55E', border: '#22C55E' },
+        'Pending': { label: 'Pending', bg: '#F59E0B20', color: '#F59E0B', border: '#F59E0B' },
+        'Declined': { label: 'Declined', bg: '#EF444420', color: '#EF4444', border: '#EF4444' },
+        'Matched': { label: 'Matched', bg: '#818CF820', color: '#818CF8', border: '#818CF8' },
+        'Doctor Approved': { label: 'Doctor Approved', bg: '#34D39920', color: '#34D399', border: '#34D399' },
+        'Accepted': { label: 'Accepted', bg: '#22C55E20', color: '#22C55E', border: '#22C55E' },
+        'Screened': { label: 'Screened', bg: '#F59E0B20', color: '#F59E0B', border: '#F59E0B' },
+        'Enrolled': { label: 'Enrolled', bg: '#0EA5E920', color: '#0EA5E9', border: '#0EA5E9' },
+        'Rejected': { label: 'Rejected', bg: '#EF444420', color: '#EF4444', border: '#EF4444' },
     };
 
-    const c = config[status] || config.awaiting;
+    const c = config[status] || { label: status, bg: `${colors.red}18`, color: colors.red, border: colors.red };
 
     return (
         <span style={{

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useTheme } from '../../theme';
+import { useTheme, ThemeSwitcher } from '../../theme';
 import { ALERTS } from '../../doctor/data/mockData';
 
-export default function NavBar() {
+export default function NavBar({ title, unreadCount, onBellClick }) {
     const { colors, fonts, mode, toggleMode } = useTheme();
     const navigate = useNavigate();
     const location = useLocation();
@@ -11,6 +11,99 @@ export default function NavBar() {
     const [toggleHover, setToggleHover] = useState(false);
     const [bellHover, setBellHover] = useState(false);
 
+    // Determine portal mode based on props
+    const isClinicMode = typeof onBellClick === 'function';
+
+    // ── Clinic Portal NavBar ──
+    if (isClinicMode) {
+        return (
+            <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                padding: '12px 24px',
+                background: colors.surface,
+                borderBottom: `1px solid ${colors.border}`,
+                position: 'sticky',
+                top: 0,
+                zIndex: 50,
+                backdropFilter: 'blur(12px)',
+                transition: 'background 0.3s ease, border-color 0.3s ease',
+            }}>
+                {/* Page Title */}
+                <h1 style={{
+                    fontFamily: fonts.heading,
+                    fontSize: '20px',
+                    fontWeight: 700,
+                    color: colors.textPrimary,
+                    margin: 0,
+                }}>
+                    {title}
+                </h1>
+
+                {/* Right Section */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                    <ThemeSwitcher />
+
+                    {/* Notification Bell */}
+                    <button
+                        onClick={onBellClick}
+                        style={{
+                            position: 'relative',
+                            background: 'transparent',
+                            border: 'none',
+                            cursor: 'pointer',
+                            fontSize: '20px',
+                            padding: '8px',
+                            borderRadius: '8px',
+                            transition: 'background 0.2s ease',
+                        }}
+                        onMouseEnter={e => e.currentTarget.style.background = colors.accentGlow}
+                        onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                    >
+                        🔔
+                        {(unreadCount || 0) > 0 && (
+                            <span style={{
+                                position: 'absolute',
+                                top: '4px',
+                                right: '4px',
+                                background: colors.red,
+                                color: '#fff',
+                                fontSize: '9px',
+                                fontWeight: 700,
+                                borderRadius: '9999px',
+                                padding: '1px 5px',
+                                minWidth: '16px',
+                                textAlign: 'center',
+                                lineHeight: '14px',
+                            }}>
+                                {unreadCount}
+                            </span>
+                        )}
+                    </button>
+
+                    {/* User Avatar */}
+                    <div style={{
+                        width: '32px',
+                        height: '32px',
+                        borderRadius: '50%',
+                        background: `linear-gradient(135deg, ${colors.accent}, ${colors.green})`,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: '12px',
+                        fontWeight: 700,
+                        color: '#fff',
+                        cursor: 'pointer',
+                    }}>
+                        PS
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    // ── Doctor Portal NavBar ──
     const links = [
         { label: 'Dashboard', path: '/doctor/dashboard' },
         { label: 'Patients', path: '/doctor/patients' },

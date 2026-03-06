@@ -2,27 +2,48 @@ import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTheme } from '../../theme';
 import { ALERTS } from '../../doctor/data/mockData';
+import { NOTIFICATIONS } from '../../pages/clinic/data/mockData';
 
-export default function Sidebar() {
+// ── Clinic Portal nav items ──
+const CLINIC_NAV_ITEMS = [
+    { key: 'dashboard', label: 'Dashboard', icon: '📊' },
+    { key: 'post-trial', label: 'Post Trial', icon: '📝' },
+    { key: 'candidates', label: 'Matched Candidates', icon: '👥' },
+    { key: 'workflow', label: 'Candidate Workflow', icon: '🔄' },
+    { key: 'funnel', label: 'Enrollment Funnel', icon: '📈' },
+    { key: 'trials', label: 'Trials Management', icon: '🧪' },
+    { key: 'notifications', label: 'Notifications', icon: '🔔' },
+    { key: 'settings', label: 'Settings', icon: '⚙️' },
+];
+
+// ── Doctor Portal nav items ──
+const DOCTOR_NAV_ITEMS = [
+    { key: 'dashboard', label: 'Dashboard', path: '/doctor/dashboard', icon: '📊' },
+    { key: 'patients', label: 'Patients', path: '/doctor/patients', icon: '👥' },
+    { key: 'trials', label: 'Trial Matches', path: '/doctor/trials', icon: '🔬' },
+    { key: 'chat', label: 'Chat', path: '/doctor/chat/PT-0041', icon: '💬' },
+    { key: 'notifications', label: 'Notifications', path: '/doctor/alerts', icon: '🔔', badge: ALERTS.length },
+    { key: 'settings', label: 'Settings', path: '/doctor/settings', icon: '⚙️' },
+];
+
+export default function Sidebar({ activePage, setPage }) {
     const { colors, fonts } = useTheme();
     const navigate = useNavigate();
     const location = useLocation();
     const [hoveredItem, setHoveredItem] = useState(null);
 
-    const navItems = [
-        { key: 'dashboard', label: 'Dashboard', path: '/doctor/dashboard', icon: '📊' },
-        { key: 'patients', label: 'Patients', path: '/doctor/patients', icon: '👥' },
-        { key: 'trials', label: 'Trial Matches', path: '/doctor/trials', icon: '🔬' },
-        { key: 'chat', label: 'Chat', path: '/doctor/chat/PT-0041', icon: '💬' },
-        { key: 'notifications', label: 'Notifications', path: '/doctor/alerts', icon: '🔔', badge: ALERTS.length },
-        { key: 'settings', label: 'Settings', path: '/doctor/settings', icon: '⚙️' },
-    ];
+    // Determine portal mode based on props
+    const isClinicMode = typeof setPage === 'function';
 
-    const isActive = (item) => {
+    const unreadCount = isClinicMode
+        ? NOTIFICATIONS.filter(n => !n.read).length
+        : 0;
+
+    const isDoctorActive = (item) => {
         const path = location.pathname;
         switch (item.key) {
             case 'dashboard': return path === '/doctor/dashboard';
-            case 'patients': return path === '/doctor/patients' || (path.startsWith('/doctor/patients/'));
+            case 'patients': return path === '/doctor/patients' || path.startsWith('/doctor/patients/');
             case 'trials': return path === '/doctor/trials';
             case 'chat': return path.startsWith('/doctor/chat');
             case 'notifications': return path === '/doctor/alerts';
@@ -30,6 +51,9 @@ export default function Sidebar() {
             default: return false;
         }
     };
+
+    const navItems = isClinicMode ? CLINIC_NAV_ITEMS : DOCTOR_NAV_ITEMS;
+    const portalLabel = isClinicMode ? 'CLINIC PORTAL' : 'DOCTOR PORTAL';
 
     return (
         <aside style={{
@@ -46,10 +70,10 @@ export default function Sidebar() {
         }}>
             {/* Logo */}
             <div
-                onClick={() => navigate('/doctor/dashboard')}
+                onClick={() => isClinicMode ? null : navigate('/doctor/dashboard')}
                 style={{
                     padding: '20px 18px 16px',
-                    cursor: 'pointer',
+                    cursor: isClinicMode ? 'default' : 'pointer',
                 }}
             >
                 <div style={{
@@ -87,19 +111,19 @@ export default function Sidebar() {
                     letterSpacing: '1.5px',
                     marginLeft: '42px',
                 }}>
-                    DOCTOR PORTAL
+                    {portalLabel}
                 </span>
             </div>
 
             {/* Nav items */}
             <nav style={{ flex: 1, padding: '8px 10px', display: 'flex', flexDirection: 'column', gap: '2px' }}>
                 {navItems.map((item) => {
-                    const active = isActive(item);
+                    const active = isClinicMode ? activePage === item.key : isDoctorActive(item);
                     const hovered = hoveredItem === item.key;
                     return (
                         <button
                             key={item.key}
-                            onClick={() => navigate(item.path)}
+                            onClick={() => isClinicMode ? setPage(item.key) : navigate(item.path)}
                             onMouseEnter={() => setHoveredItem(item.key)}
                             onMouseLeave={() => setHoveredItem(null)}
                             style={{
@@ -122,7 +146,25 @@ export default function Sidebar() {
                         >
                             <span style={{ fontSize: '14px', width: '18px', textAlign: 'center', filter: (active || hovered) ? 'brightness(10)' : 'none' }}>{item.icon}</span>
                             <span style={{ flex: 1 }}>{item.label}</span>
-                            {item.badge && (
+                            {isClinicMode && item.key === 'notifications' && unreadCount > 0 && (
+                                <span style={{
+                                    minWidth: '18px',
+                                    height: '18px',
+                                    borderRadius: '9999px',
+                                    background: (active || hovered) ? 'rgba(255,255,255,0.25)' : colors.red,
+                                    color: '#fff',
+                                    fontSize: '10px',
+                                    fontWeight: 700,
+                                    fontFamily: fonts.mono,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    padding: '0 5px',
+                                }}>
+                                    {unreadCount}
+                                </span>
+                            )}
+                            {!isClinicMode && item.badge && (
                                 <span style={{
                                     minWidth: '18px',
                                     height: '18px',
