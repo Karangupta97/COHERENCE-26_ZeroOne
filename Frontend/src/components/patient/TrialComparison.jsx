@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useTheme, radius, spacing, fontSize, TRIALS } from '../../theme.jsx'
 import { motion, AnimatePresence } from 'framer-motion'
-import { HiOutlineXMark } from 'react-icons/hi2'
+import { HiOutlineXMark, HiOutlineScale, HiOutlineTrophy, HiOutlineCpuChip } from 'react-icons/hi2'
 
 export default function TrialComparison() {
   const { colors, fonts } = useTheme()
@@ -17,15 +17,15 @@ export default function TrialComparison() {
   }
 
   const FIELDS = [
-    { key: 'score',        label: 'AI Match Score', fmt: (v) => `${v}%` },
-    { key: 'phase',        label: 'Phase' },
-    { key: 'sponsor',      label: 'Sponsor' },
-    { key: 'category',     label: 'Category' },
-    { key: 'location',     label: 'Location' },
-    { key: 'distance',     label: 'Distance' },
-    { key: 'slots',        label: 'Slots Left', fmt: (v) => `${v}` },
+    { key: 'score', label: 'AI Match Score', fmt: (v) => `${v}%` },
+    { key: 'phase', label: 'Phase' },
+    { key: 'sponsor', label: 'Sponsor' },
+    { key: 'category', label: 'Category' },
+    { key: 'location', label: 'Location' },
+    { key: 'distance', label: 'Distance' },
+    { key: 'slots', label: 'Slots Left', fmt: (v) => `${v}` },
     { key: 'compensation', label: 'Compensation' },
-    { key: 'status',       label: 'Status' },
+    { key: 'status', label: 'Status' },
   ]
 
   const getBest = (key) => {
@@ -50,7 +50,7 @@ export default function TrialComparison() {
     >
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: spacing.md }}>
         <h2 style={{ margin: 0, fontSize: fontSize.lg, fontFamily: fonts.heading, fontWeight: 700, color: colors.textPrimary, display: 'flex', alignItems: 'center', gap: spacing.sm }}>
-          ⚖️ Compare Trials
+          <HiOutlineScale style={{ width: 22, height: 22, color: colors.accent }} /> Compare Trials
         </h2>
         {selected.length >= 2 && (
           <button
@@ -146,7 +146,7 @@ export default function TrialComparison() {
                               background: isBest ? colors.greenGlow : 'transparent',
                               fontFamily: fonts.body,
                             }}>
-                              {isBest && '🏆 '}{val}
+                              {isBest && <><HiOutlineTrophy style={{ width: 14, height: 14, display: 'inline', verticalAlign: 'middle', marginRight: 4 }} /></>}{val}
                             </td>
                           )
                         })}
@@ -164,7 +164,7 @@ export default function TrialComparison() {
               borderLeft: `3px solid ${colors.green}`,
               display: 'flex', alignItems: 'center', gap: spacing.sm,
             }}>
-              <span style={{ fontSize: '20px' }}>🤖</span>
+              <div style={{ width: 36, height: 36, borderRadius: radius.sm, background: colors.greenGlow, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><HiOutlineCpuChip style={{ width: 20, height: 20, color: colors.green }} /></div>
               <div>
                 <div style={{ fontSize: fontSize.sm, fontWeight: 700, color: colors.green, marginBottom: 2 }}>AI Recommendation</div>
                 <div style={{ fontSize: fontSize.xs, color: colors.textSecondary }}>

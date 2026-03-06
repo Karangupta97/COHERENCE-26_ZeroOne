@@ -1,5 +1,5 @@
 // ============================================================
-//  ClinicDashboard — Full-featured dashboard matching Patient design
+//  ClinicDashboard — Full-featured dashboard (professional icons)
 // ============================================================
 
 import { useTheme, radius, spacing, fontSize } from '../../theme'
@@ -12,10 +12,21 @@ import {
     HiOutlineDocumentText,
     HiOutlineSparkles,
     HiOutlineBuildingOffice2,
+    HiOutlineMapPin,
+    HiOutlineUserCircle,
+    HiOutlinePencilSquare,
+    HiOutlineClipboardDocumentList,
+    HiOutlineLightBulb,
+    HiOutlineExclamationTriangle,
+    HiOutlineArrowTrendingUp,
+    HiOutlineChartBar,
 } from 'react-icons/hi2'
 
 import EnrollmentScore from '../../components/clinic/EnrollmentScore'
 import TrialPipeline from '../../components/clinic/TrialPipeline'
+import TrialPieChart from '../../components/clinic/TrialPieChart'
+import MonthlyEnrollmentChart from '../../components/clinic/MonthlyEnrollmentChart'
+import CandidateBreakdown from '../../components/clinic/CandidateBreakdown'
 import { CLINIC, CLINIC_TRIALS, CANDIDATES, RECENT_ACTIVITY, AI_INSIGHTS } from './data/mockData'
 
 // ── Stats ───────────────────────────────────────────────
@@ -33,11 +44,23 @@ const getStats = (candidates, trials) => {
 }
 
 // ── Greeting ─────────────────────────────────────────────
+const GREETING_ICONS = {
+    morning: HiOutlineSparkles,
+    afternoon: HiOutlineLightBulb,
+    evening: HiOutlineSparkles,
+}
 function getGreeting() {
     const h = new Date().getHours()
-    if (h < 12) return { text: 'Good Morning', emoji: '🌅' }
-    if (h < 17) return { text: 'Good Afternoon', emoji: '☀️' }
-    return { text: 'Good Evening', emoji: '🌙' }
+    if (h < 12) return { text: 'Good Morning', Icon: GREETING_ICONS.morning }
+    if (h < 17) return { text: 'Good Afternoon', Icon: GREETING_ICONS.afternoon }
+    return { text: 'Good Evening', Icon: GREETING_ICONS.evening }
+}
+
+// ── AI Insight icon map ──────────────────────────────────
+const INSIGHT_ICONS = {
+    warning: HiOutlineExclamationTriangle,
+    success: HiOutlineArrowTrendingUp,
+    info: HiOutlineLightBulb,
 }
 
 // ── Active Trials Table ──────────────────────────────────
@@ -46,7 +69,8 @@ function TrialsTable({ trials, colors, fonts }) {
         <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
             style={{ background: colors.surface, border: `1px solid ${colors.border}`, borderRadius: radius.lg, boxShadow: colors.shadow, padding: spacing.lg }}>
             <h2 style={{ margin: `0 0 ${spacing.lg}`, fontSize: fontSize.lg, fontFamily: fonts.heading, fontWeight: 700, color: colors.textPrimary, display: 'flex', alignItems: 'center', gap: spacing.sm }}>
-                🧪 Active Trials Overview
+                <HiOutlineBeaker style={{ width: 22, height: 22, color: colors.accent }} />
+                Active Trials Overview
             </h2>
 
             <div style={{ display: 'grid', gridTemplateColumns: '2fr 100px 100px 1fr', gap: spacing.md, padding: `${spacing.sm} 0`, marginBottom: spacing.sm, borderBottom: `1px solid ${colors.border}` }}>
@@ -95,6 +119,7 @@ function TrialsTable({ trials, colors, fonts }) {
 export default function ClinicDashboard({ setPage }) {
     const { colors, fonts } = useTheme()
     const greet = getGreeting()
+    const GreetIcon = greet.Icon
     const stats = getStats(CANDIDATES, CLINIC_TRIALS)
     const activeTrials = CLINIC_TRIALS.filter(t => t.status !== 'Completed').length
 
@@ -119,13 +144,18 @@ export default function ClinicDashboard({ setPage }) {
 
                 <div style={{ flex: 1, position: 'relative', zIndex: 1 }}>
                     <div style={{ fontSize: fontSize.sm, color: colors.textSecondary, fontFamily: fonts.body, marginBottom: 4, display: 'flex', alignItems: 'center', gap: spacing.xs }}>
-                        {greet.emoji} {greet.text}
+                        <GreetIcon style={{ width: 16, height: 16, color: colors.accent }} /> {greet.text}
                     </div>
-                    <h2 style={{ margin: 0, fontSize: '22px', fontFamily: fonts.heading, fontWeight: 700, color: colors.textPrimary, lineHeight: 1.3 }}>
-                        Welcome back, <span style={{ background: `linear-gradient(90deg, ${colors.accent}, ${colors.green})`, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>{CLINIC.name}</span> 🏥
+                    <h2 style={{ margin: 0, fontSize: '22px', fontFamily: fonts.heading, fontWeight: 700, color: colors.textPrimary, lineHeight: 1.3, display: 'flex', alignItems: 'center', gap: spacing.sm }}>
+                        Welcome back, <span style={{ background: `linear-gradient(90deg, ${colors.accent}, ${colors.green})`, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>{CLINIC.name}</span>
+                        <HiOutlineBuildingOffice2 style={{ width: 22, height: 22, color: colors.accent }} />
                     </h2>
-                    <p style={{ margin: `${spacing.xs} 0 0`, fontSize: fontSize.sm, color: colors.textSecondary, fontFamily: fonts.body, lineHeight: 1.5 }}>
-                        📍 {CLINIC.location} &nbsp;·&nbsp; 👩‍⚕️ {CLINIC.leadDoctor} &nbsp;·&nbsp; 🧪 {activeTrials} Active Trials
+                    <p style={{ margin: `${spacing.xs} 0 0`, fontSize: fontSize.sm, color: colors.textSecondary, fontFamily: fonts.body, lineHeight: 1.5, display: 'flex', alignItems: 'center', gap: spacing.sm }}>
+                        <HiOutlineMapPin style={{ width: 14, height: 14, flexShrink: 0 }} /> {CLINIC.location}
+                        <span style={{ margin: '0 4px' }}>·</span>
+                        <HiOutlineUserCircle style={{ width: 14, height: 14, flexShrink: 0 }} /> {CLINIC.leadDoctor}
+                        <span style={{ margin: '0 4px' }}>·</span>
+                        <HiOutlineBeaker style={{ width: 14, height: 14, flexShrink: 0 }} /> {activeTrials} Active Trials
                     </p>
                 </div>
 
@@ -134,16 +164,18 @@ export default function ClinicDashboard({ setPage }) {
                         padding: `10px ${spacing.lg}`, borderRadius: radius.sm,
                         background: colors.accent, color: '#fff', border: 'none',
                         fontSize: fontSize.sm, fontWeight: 600, fontFamily: fonts.body, cursor: 'pointer',
+                        display: 'flex', alignItems: 'center', gap: spacing.xs,
                     }}>
-                        📝 Post Trial
+                        <HiOutlinePencilSquare style={{ width: 16, height: 16 }} /> Post Trial
                     </button>
                     <button onClick={() => setPage('candidates')} style={{
                         padding: `10px ${spacing.lg}`, borderRadius: radius.sm,
                         background: colors.surface, color: colors.textPrimary,
                         border: `1px solid ${colors.border}`,
                         fontSize: fontSize.sm, fontWeight: 600, fontFamily: fonts.body, cursor: 'pointer',
+                        display: 'flex', alignItems: 'center', gap: spacing.xs,
                     }}>
-                        👥 View Candidates
+                        <HiOutlineUserGroup style={{ width: 16, height: 16 }} /> View Candidates
                     </button>
                 </div>
             </motion.div>
@@ -190,6 +222,15 @@ export default function ClinicDashboard({ setPage }) {
                 <TrialPipeline />
             </div>
 
+            {/* ── Pie Chart + Candidate Breakdown — side by side ── */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: spacing.lg }}>
+                <TrialPieChart />
+                <CandidateBreakdown />
+            </div>
+
+            {/* ── Monthly Enrollment Bar Chart ── */}
+            <MonthlyEnrollmentChart />
+
             {/* ── Active Trials Table ── */}
             <TrialsTable trials={CLINIC_TRIALS} colors={colors} fonts={fonts} />
 
@@ -199,7 +240,8 @@ export default function ClinicDashboard({ setPage }) {
                 <div style={{ background: colors.surface, border: `1px solid ${colors.border}`, borderRadius: radius.lg, boxShadow: colors.shadow, padding: spacing.lg }}>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: spacing.lg }}>
                         <h2 style={{ margin: 0, fontSize: fontSize.lg, fontFamily: fonts.heading, fontWeight: 700, color: colors.textPrimary, display: 'flex', alignItems: 'center', gap: spacing.sm }}>
-                            📋 Recent Activity
+                            <HiOutlineClipboardDocumentList style={{ width: 22, height: 22, color: colors.accent }} />
+                            Recent Activity
                         </h2>
                         <button onClick={() => setPage('notifications')} style={{ padding: `4px ${spacing.sm}`, borderRadius: radius.sm, background: 'transparent', color: colors.accent, border: 'none', fontSize: fontSize.xs, fontWeight: 600, fontFamily: fonts.body, cursor: 'pointer' }}>
                             View All →
@@ -233,19 +275,21 @@ export default function ClinicDashboard({ setPage }) {
                 {/* AI Insights */}
                 <div style={{ background: colors.surface, border: `1px solid ${colors.border}`, borderRadius: radius.lg, boxShadow: colors.shadow, padding: spacing.lg }}>
                     <h2 style={{ margin: `0 0 ${spacing.lg}`, fontSize: fontSize.lg, fontFamily: fonts.heading, fontWeight: 700, color: colors.textPrimary, display: 'flex', alignItems: 'center', gap: spacing.sm }}>
-                        🧠 AI Insights
+                        <HiOutlineLightBulb style={{ width: 22, height: 22, color: colors.accent }} />
+                        AI Insights
                     </h2>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.sm }}>
                         {AI_INSIGHTS.map((ins, i) => {
                             const borderColor = ins.type === 'warning' ? (colors.yellow || '#F59E0B') : ins.type === 'success' ? colors.green : colors.accent
                             const bgColor = ins.type === 'success' ? colors.greenGlow : colors.accentGlow
+                            const InsightIcon = ins.type === 'warning' ? INSIGHT_ICONS.warning : ins.type === 'success' ? INSIGHT_ICONS.success : INSIGHT_ICONS.info
                             return (
                                 <motion.div key={ins.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08, duration: 0.3 }}
                                     style={{ background: bgColor, borderLeft: `3px solid ${borderColor}`, borderRadius: radius.sm, padding: spacing.md, cursor: 'pointer', transition: 'all 0.2s' }}
                                     onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateX(4px)' }} onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateX(0)' }}
                                 >
                                     <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm, marginBottom: 4 }}>
-                                        <span style={{ fontSize: '16px' }}>{ins.icon}</span>
+                                        <InsightIcon style={{ width: 16, height: 16, color: borderColor }} />
                                         <span style={{ fontSize: fontSize.sm, fontWeight: 700, color: colors.textPrimary, fontFamily: fonts.heading }}>{ins.title}</span>
                                     </div>
                                     <p style={{ margin: 0, fontSize: fontSize.xs, color: colors.textSecondary, lineHeight: 1.5, fontFamily: fonts.body }}>{ins.message}</p>

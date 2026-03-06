@@ -2,7 +2,10 @@ import { useState } from 'react'
 import { useTheme, radius, spacing, fontSize, TRIALS } from '../../theme.jsx'
 import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { HiOutlineEye, HiOutlinePaperAirplane, HiOutlineXMark, HiOutlineCheckCircle } from 'react-icons/hi2'
+import {
+  HiOutlineEye, HiOutlinePaperAirplane, HiOutlineXMark, HiOutlineCheckCircle,
+  HiOutlineSparkles, HiOutlineMapPin, HiOutlineBanknotes, HiOutlineClipboardDocumentList,
+} from 'react-icons/hi2'
 
 const ELIGIBILITY = {
   'T-001': ['Age criteria matches', 'Disease stage eligible', 'No excluded medications'],
@@ -83,8 +86,8 @@ export default function RecommendedTrials() {
       </AnimatePresence>
 
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: spacing.lg }}>
-        <h2 style={{ margin: 0, fontSize: fontSize.lg, fontFamily: fonts.heading, fontWeight: 700, color: colors.textPrimary }}>
-          🤖 AI Recommended Clinical Trials
+        <h2 style={{ margin: 0, fontSize: fontSize.lg, fontFamily: fonts.heading, fontWeight: 700, color: colors.textPrimary, display: 'flex', alignItems: 'center', gap: spacing.sm }}>
+          <HiOutlineSparkles style={{ width: 22, height: 22, color: colors.accent }} /> AI Recommended Clinical Trials
         </h2>
         <button
           onClick={() => navigate('/patient/trials')}
@@ -146,8 +149,8 @@ export default function RecommendedTrials() {
                   </span>
                 </div>
 
-                <div style={{ fontSize: fontSize.sm, color: colors.textSecondary, marginTop: 4, fontFamily: fonts.body }}>
-                  📍 {trial.sponsor} • {trial.location} • {trial.distance} away
+                <div style={{ fontSize: fontSize.sm, color: colors.textSecondary, marginTop: 4, fontFamily: fonts.body, display: 'flex', alignItems: 'center', gap: spacing.xs }}>
+                  <HiOutlineMapPin style={{ width: 14, height: 14, flexShrink: 0 }} /> {trial.sponsor} • {trial.location} • {trial.distance} away
                 </div>
 
                 {/* Eligibility bullets */}
@@ -164,8 +167,8 @@ export default function RecommendedTrials() {
                 </div>
 
                 {/* Compensation */}
-                <div style={{ fontSize: fontSize.xs, color: colors.textSecondary, marginTop: spacing.xs }}>
-                  💰 {trial.compensation} • {trial.slots} slots remaining
+                <div style={{ fontSize: fontSize.xs, color: colors.textSecondary, marginTop: spacing.xs, display: 'flex', alignItems: 'center', gap: spacing.xs }}>
+                  <HiOutlineBanknotes style={{ width: 14, height: 14, flexShrink: 0 }} /> {trial.compensation} • {trial.slots} slots remaining
                 </div>
               </div>
 
@@ -222,8 +225,8 @@ export default function RecommendedTrials() {
                   }}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: spacing.md }}>
-                    <h3 style={{ margin: 0, fontSize: fontSize.lg, fontFamily: fonts.heading, fontWeight: 700, color: colors.textPrimary }}>
-                      📋 {trial.name} — Full Details
+                    <h3 style={{ margin: 0, fontSize: fontSize.lg, fontFamily: fonts.heading, fontWeight: 700, color: colors.textPrimary, display: 'flex', alignItems: 'center', gap: spacing.sm }}>
+                      <HiOutlineClipboardDocumentList style={{ width: 20, height: 20, color: colors.accent }} /> {trial.name} — Full Details
                     </h3>
                     <button onClick={() => setViewTrial(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: colors.textSecondary }}>
                       <HiOutlineXMark style={{ width: 20, height: 20 }} />

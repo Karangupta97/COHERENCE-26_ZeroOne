@@ -1,5 +1,6 @@
 import { useTheme, radius, spacing, fontSize } from '../../theme.jsx'
 import { motion } from 'framer-motion'
+import { HiOutlineRocketLaunch } from 'react-icons/hi2'
 
 const PIPELINE_FLOW = ['Matched', 'Under Review', 'Approved', 'Screening', 'Enrolled', 'Active']
 
@@ -26,7 +27,8 @@ export default function PatientPipeline() {
             }}
         >
             <h2 style={{ margin: `0 0 ${spacing.lg}`, fontSize: fontSize.lg, fontFamily: fonts.heading, fontWeight: 700, color: colors.textPrimary, display: 'flex', alignItems: 'center', gap: spacing.sm }}>
-                🚀 Patient Pipeline Tracker
+                <HiOutlineRocketLaunch style={{ width: 22, height: 22, color: colors.accent }} />
+                Patient Pipeline Tracker
             </h2>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.xl }}>

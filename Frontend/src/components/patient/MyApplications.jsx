@@ -1,21 +1,23 @@
 import { useTheme, radius, spacing, fontSize } from '../../theme.jsx'
 import { motion } from 'framer-motion'
+import { HiOutlineDocumentText, HiOutlineCheckCircle, HiOutlineXCircle, HiOutlineClock } from 'react-icons/hi2'
 
 const APPLICATIONS = [
-  { id: 1, trial: 'GLYCO-ADVANCE',  phase: 'Phase III', location: 'Mumbai',      status: 'Under Review', date: '01 Mar 2026' },
-  { id: 2, trial: 'ONCO-TARGET',    phase: 'Phase III', location: 'Mumbai',      status: 'Approved',     date: '25 Feb 2026' },
-  { id: 3, trial: 'CARDIO-PROTECT', phase: 'Phase II',  location: 'Pune',        status: 'Under Review', date: '20 Feb 2026' },
-  { id: 4, trial: 'META-RESET',     phase: 'Phase II',  location: 'Navi Mumbai', status: 'Rejected',     date: '15 Feb 2026' },
-  { id: 5, trial: 'NEURO-SHIELD',   phase: 'Phase I',   location: 'Mumbai',      status: 'Under Review', date: '10 Feb 2026' },
+  { id: 1, trial: 'GLYCO-ADVANCE', phase: 'Phase III', location: 'Mumbai', status: 'Under Review', date: '01 Mar 2026' },
+  { id: 2, trial: 'ONCO-TARGET', phase: 'Phase III', location: 'Mumbai', status: 'Approved', date: '25 Feb 2026' },
+  { id: 3, trial: 'CARDIO-PROTECT', phase: 'Phase II', location: 'Pune', status: 'Under Review', date: '20 Feb 2026' },
+  { id: 4, trial: 'META-RESET', phase: 'Phase II', location: 'Navi Mumbai', status: 'Rejected', date: '15 Feb 2026' },
+  { id: 5, trial: 'NEURO-SHIELD', phase: 'Phase I', location: 'Mumbai', status: 'Under Review', date: '10 Feb 2026' },
 ]
 
 function StatusBadge({ status, colors }) {
   const config = {
-    'Approved':     { bg: colors.greenGlow, color: colors.green, icon: '✓' },
-    'Rejected':     { bg: `${colors.red}18`, color: colors.red, icon: '✗' },
-    'Under Review': { bg: colors.accentGlow, color: colors.accent, icon: '⏳' },
+    'Approved': { bg: colors.greenGlow, color: colors.green, IconComp: HiOutlineCheckCircle },
+    'Rejected': { bg: `${colors.red}18`, color: colors.red, IconComp: HiOutlineXCircle },
+    'Under Review': { bg: colors.accentGlow, color: colors.accent, IconComp: HiOutlineClock },
   }
   const c = config[status] || config['Under Review']
+  const StatusIcon = c.IconComp
   return (
     <span style={{
       display: 'inline-flex', alignItems: 'center', gap: 4,
@@ -23,7 +25,7 @@ function StatusBadge({ status, colors }) {
       background: c.bg, color: c.color,
       fontSize: fontSize.xs, fontWeight: 600,
     }}>
-      {c.icon} {status}
+      <StatusIcon style={{ width: 12, height: 12 }} /> {status}
     </span>
   )
 }
@@ -56,7 +58,7 @@ export default function MyApplications() {
       overflow: 'hidden',
     }}>
       <h2 style={{ margin: `0 0 ${spacing.lg}`, fontSize: fontSize.lg, fontFamily: fonts.heading, fontWeight: 700, color: colors.textPrimary, display: 'flex', alignItems: 'center', gap: spacing.sm }}>
-        📄 My Applications
+        <HiOutlineDocumentText style={{ width: 22, height: 22, color: colors.accent }} /> My Applications
       </h2>
 
       <div style={{ overflowX: 'auto' }}>

@@ -1,10 +1,11 @@
 import { useTheme, radius, spacing, fontSize, STATUS_FLOW } from '../../theme.jsx'
 import { motion } from 'framer-motion'
+import { HiOutlineRocketLaunch } from 'react-icons/hi2'
 
 const APPLICATIONS = [
-  { trial: 'GLYCO-ADVANCE',  step: 3, status: 'Doctor Reviewing',  score: 94 },
-  { trial: 'ONCO-TARGET',    step: 5, status: 'Clinic Accepted',   score: 88 },
-  { trial: 'CARDIO-PROTECT', step: 2, status: 'AI Matched',        score: 81 },
+  { trial: 'GLYCO-ADVANCE', step: 3, status: 'Doctor Reviewing', score: 94 },
+  { trial: 'ONCO-TARGET', step: 5, status: 'Clinic Accepted', score: 88 },
+  { trial: 'CARDIO-PROTECT', step: 2, status: 'AI Matched', score: 81 },
 ]
 
 export default function ApplicationStepper() {
@@ -24,7 +25,8 @@ export default function ApplicationStepper() {
       }}
     >
       <h2 style={{ margin: `0 0 ${spacing.lg}`, fontSize: fontSize.lg, fontFamily: fonts.heading, fontWeight: 700, color: colors.textPrimary, display: 'flex', alignItems: 'center', gap: spacing.sm }}>
-        🚀 Application Progress Tracker
+        <HiOutlineRocketLaunch style={{ width: 22, height: 22, color: colors.accent }} />
+        Application Progress Tracker
       </h2>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.xl }}>
@@ -62,7 +64,6 @@ export default function ApplicationStepper() {
 
                 return (
                   <div key={step} style={{ display: 'flex', alignItems: 'center', flex: i < STATUS_FLOW.length - 1 ? 1 : 0 }}>
-                    {/* Dot */}
                     <motion.div
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
@@ -84,7 +85,6 @@ export default function ApplicationStepper() {
                       {completed ? '✓' : i + 1}
                     </motion.div>
 
-                    {/* Connector line */}
                     {i < STATUS_FLOW.length - 1 && (
                       <div style={{
                         flex: 1, height: 3, marginLeft: -1, marginRight: -1,

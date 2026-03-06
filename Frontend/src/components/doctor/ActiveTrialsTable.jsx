@@ -1,6 +1,7 @@
 import { useTheme, radius, spacing, fontSize } from '../../theme.jsx'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
+import { HiOutlineBeaker } from 'react-icons/hi2'
 
 const TRIALS = [
     { name: 'GLYCO-ADVANCE', phase: 'Phase III', status: 'Recruiting', enrolled: 18, target: 30, match: 94, domain: 'Endocrinology' },
@@ -48,7 +49,8 @@ export default function ActiveTrialsTable() {
         >
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: spacing.lg }}>
                 <h2 style={{ margin: 0, fontSize: fontSize.lg, fontFamily: fonts.heading, fontWeight: 700, color: colors.textPrimary, display: 'flex', alignItems: 'center', gap: spacing.sm }}>
-                    🧪 Active Trials Overview
+                    <HiOutlineBeaker style={{ width: 22, height: 22, color: colors.accent }} />
+                    Active Trials Overview
                 </h2>
                 <button
                     onClick={() => navigate('/doctor/trials')}

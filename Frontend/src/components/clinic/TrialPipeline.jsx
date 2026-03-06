@@ -1,5 +1,6 @@
 import { useTheme, radius, spacing, fontSize } from '../../theme.jsx'
 import { motion } from 'framer-motion'
+import { HiOutlineRocketLaunch } from 'react-icons/hi2'
 
 const FUNNEL_FLOW = ['Posted', 'Matched', 'Doctor Approved', 'Screened', 'Enrolled', 'Active']
 
@@ -16,7 +17,7 @@ export default function TrialPipeline() {
         <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
             style={{ background: colors.surface, border: `1px solid ${colors.border}`, borderRadius: radius.lg, boxShadow: colors.shadow, padding: spacing.lg }}>
             <h2 style={{ margin: `0 0 ${spacing.lg}`, fontSize: fontSize.lg, fontFamily: fonts.heading, fontWeight: 700, color: colors.textPrimary, display: 'flex', alignItems: 'center', gap: spacing.sm }}>
-                🚀 Trial Enrollment Pipeline
+                <HiOutlineRocketLaunch style={{ width: 22, height: 22, color: colors.accent }} /> Trial Enrollment Pipeline
             </h2>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.xl }}>

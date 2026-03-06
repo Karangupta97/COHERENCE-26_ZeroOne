@@ -2,14 +2,23 @@ import { useEffect, useState } from 'react'
 import { useTheme, radius, spacing, fontSize } from '../../theme.jsx'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
+import {
+  HiOutlineHeart,
+  HiOutlineUserCircle,
+  HiOutlineDocumentText,
+  HiOutlineCursorArrowRays,
+  HiOutlineChartBar,
+  HiOutlineArrowUpCircle,
+  HiOutlineBeaker,
+} from 'react-icons/hi2'
 
 const SCORE_DATA = {
   overall: 82,
   categories: [
-    { label: 'Profile Completeness', score: 85, icon: '👤', tip: 'Add latest lab results' },
-    { label: 'Medical Records',      score: 70, icon: '📄', tip: 'Upload recent prescriptions' },
-    { label: 'Trial Eligibility',    score: 92, icon: '🎯', tip: 'Matches 5 active trials' },
-    { label: 'Data Freshness',       score: 78, icon: '📊', tip: 'Update blood work results' },
+    { label: 'Profile Completeness', score: 85, Icon: HiOutlineUserCircle, tip: 'Add latest lab results' },
+    { label: 'Medical Records', score: 70, Icon: HiOutlineDocumentText, tip: 'Upload recent prescriptions' },
+    { label: 'Trial Eligibility', score: 92, Icon: HiOutlineCursorArrowRays, tip: 'Matches 5 active trials' },
+    { label: 'Data Freshness', score: 78, Icon: HiOutlineChartBar, tip: 'Update blood work results' },
   ]
 }
 
@@ -80,34 +89,37 @@ export default function HealthScore() {
       }}
     >
       <h2 style={{ margin: `0 0 ${spacing.lg}`, fontSize: fontSize.lg, fontFamily: fonts.heading, fontWeight: 700, color: colors.textPrimary, display: 'flex', alignItems: 'center', gap: spacing.sm }}>
-        💚 AI Health Readiness Score
+        <HiOutlineHeart style={{ width: 22, height: 22, color: colors.green }} /> AI Health Readiness Score
       </h2>
 
       <div style={{ display: 'flex', alignItems: 'center', gap: spacing.xl }}>
-        {/* Big gauge */}
         <AnimatedCircle score={SCORE_DATA.overall} colors={colors} />
 
-        {/* Category breakdown */}
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: spacing.md }}>
-          {SCORE_DATA.categories.map((cat, i) => (
-            <motion.div
-              key={cat.label}
-              initial={{ opacity: 0, x: 12 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.3 + i * 0.1 }}
-              style={{ display: 'flex', alignItems: 'center', gap: spacing.md }}
-            >
-              <span style={{ fontSize: '18px', flexShrink: 0 }}>{cat.icon}</span>
-              <div style={{ flex: 1 }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
-                  <span style={{ fontSize: fontSize.sm, fontWeight: 600, color: colors.textPrimary, fontFamily: fonts.body }}>{cat.label}</span>
-                  <span style={{ fontSize: fontSize.xs, fontWeight: 700, color: cat.score >= 80 ? colors.green : colors.accent, fontFamily: fonts.mono || fonts.body }}>{cat.score}%</span>
+          {SCORE_DATA.categories.map((cat, i) => {
+            const CatIcon = cat.Icon
+            return (
+              <motion.div
+                key={cat.label}
+                initial={{ opacity: 0, x: 12 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.3 + i * 0.1 }}
+                style={{ display: 'flex', alignItems: 'center', gap: spacing.md }}
+              >
+                <div style={{ width: 28, height: 28, borderRadius: radius.sm, background: colors.accentGlow, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <CatIcon style={{ width: 15, height: 15, color: colors.accent }} />
                 </div>
-                <MiniBar score={cat.score} colors={colors} />
-                <div style={{ fontSize: '11px', color: colors.textSecondary, marginTop: 3 }}>{cat.tip}</div>
-              </div>
-            </motion.div>
-          ))}
+                <div style={{ flex: 1 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
+                    <span style={{ fontSize: fontSize.sm, fontWeight: 600, color: colors.textPrimary, fontFamily: fonts.body }}>{cat.label}</span>
+                    <span style={{ fontSize: fontSize.xs, fontWeight: 700, color: cat.score >= 80 ? colors.green : colors.accent, fontFamily: fonts.mono || fonts.body }}>{cat.score}%</span>
+                  </div>
+                  <MiniBar score={cat.score} colors={colors} />
+                  <div style={{ fontSize: '11px', color: colors.textSecondary, marginTop: 3 }}>{cat.tip}</div>
+                </div>
+              </motion.div>
+            )
+          })}
         </div>
       </div>
 
@@ -118,9 +130,10 @@ export default function HealthScore() {
             padding: `8px ${spacing.lg}`, borderRadius: radius.sm,
             background: colors.accent, color: '#fff', border: 'none',
             fontSize: fontSize.xs, fontWeight: 600, fontFamily: fonts.body, cursor: 'pointer',
+            display: 'flex', alignItems: 'center', gap: spacing.xs,
           }}
         >
-          ⬆ Improve Score
+          <HiOutlineArrowUpCircle style={{ width: 14, height: 14 }} /> Improve Score
         </button>
         <button
           onClick={() => navigate('/patient/trials')}
@@ -129,9 +142,10 @@ export default function HealthScore() {
             background: colors.accentGlow, color: colors.accent,
             border: `1px solid ${colors.accent}40`,
             fontSize: fontSize.xs, fontWeight: 600, fontFamily: fonts.body, cursor: 'pointer',
+            display: 'flex', alignItems: 'center', gap: spacing.xs,
           }}
         >
-          🎯 View Matched Trials
+          <HiOutlineBeaker style={{ width: 14, height: 14 }} /> View Matched Trials
         </button>
       </div>
     </motion.div>

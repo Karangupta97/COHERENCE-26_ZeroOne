@@ -1,10 +1,17 @@
 import { useTheme, radius, spacing, fontSize } from '../../theme.jsx'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
+import {
+  HiOutlineLightBulb,
+  HiOutlineBolt,
+  HiOutlineCursorArrowRays,
+  HiOutlineChartBar,
+  HiOutlineBellAlert,
+} from 'react-icons/hi2'
 
 const INSIGHTS = [
   {
-    emoji: '⚡',
+    Icon: HiOutlineBolt,
     title: 'New Trials Available',
     desc: '3 new clinical trials available near your location that match your profile.',
     type: 'accent',
@@ -12,7 +19,7 @@ const INSIGHTS = [
     link: '/patient/nearby',
   },
   {
-    emoji: '🎯',
+    Icon: HiOutlineCursorArrowRays,
     title: 'High Match Score',
     desc: 'GLYCO-ADVANCE has a 94% match score for your condition. Consider applying soon — only 12 slots left.',
     type: 'green',
@@ -20,7 +27,7 @@ const INSIGHTS = [
     link: '/patient/trials',
   },
   {
-    emoji: '📊',
+    Icon: HiOutlineChartBar,
     title: 'Profile Completeness',
     desc: 'Adding your latest lab results could improve match accuracy by ~15%. Upload in My Profile.',
     type: 'accent',
@@ -28,7 +35,7 @@ const INSIGHTS = [
     link: '/patient/profile',
   },
   {
-    emoji: '🔔',
+    Icon: HiOutlineBellAlert,
     title: 'Application Update',
     desc: 'Your ONCO-TARGET application has been approved! Next step: screening appointment.',
     type: 'green',
@@ -50,13 +57,15 @@ export default function AIInsights() {
       padding: spacing.lg,
     }}>
       <h2 style={{ margin: `0 0 ${spacing.lg}`, fontSize: fontSize.lg, fontFamily: fonts.heading, fontWeight: 700, color: colors.textPrimary, display: 'flex', alignItems: 'center', gap: spacing.sm }}>
-        🧠 AI Insights
+        <HiOutlineLightBulb style={{ width: 22, height: 22, color: colors.accent }} />
+        AI Insights
       </h2>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.sm }}>
         {INSIGHTS.map((ins, i) => {
           const borderColor = ins.type === 'green' ? colors.green : colors.accent
           const bgColor = ins.type === 'green' ? colors.greenGlow : colors.accentGlow
+          const InsIcon = ins.Icon
           return (
             <motion.div
               key={i}
@@ -76,7 +85,7 @@ export default function AIInsights() {
               onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateX(0)' }}
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm, marginBottom: 4 }}>
-                <span style={{ fontSize: '16px' }}>{ins.emoji}</span>
+                <InsIcon style={{ width: 16, height: 16, color: borderColor }} />
                 <span style={{ fontSize: fontSize.sm, fontWeight: 700, color: colors.textPrimary, fontFamily: fonts.heading }}>
                   {ins.title}
                 </span>

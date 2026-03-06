@@ -1,14 +1,23 @@
 import { useEffect, useState } from 'react'
 import { useTheme, radius, spacing, fontSize } from '../../theme.jsx'
 import { motion } from 'framer-motion'
+import {
+    HiOutlineBolt,
+    HiOutlineLink,
+    HiOutlineCursorArrowRays,
+    HiOutlineShieldCheck,
+    HiOutlineChartBar,
+    HiOutlineUserGroup,
+    HiOutlineBeaker,
+} from 'react-icons/hi2'
 
 const SCORE_DATA = {
     overall: 74,
     categories: [
-        { label: 'Recruitment Pace', score: 82, icon: '🏃', tip: 'On track for Q2 target' },
-        { label: 'Screening Success', score: 68, icon: '🔍', tip: '68% pass screening criteria' },
-        { label: 'Enrollment Completion', score: 60, icon: '📋', tip: '2 of 7 approved → enrolled' },
-        { label: 'Trial Compliance', score: 91, icon: '✅', tip: 'All trials meet protocol' },
+        { label: 'Recruitment Pace', score: 82, Icon: HiOutlineBolt, tip: 'On track for Q2 target' },
+        { label: 'Screening Success', score: 68, Icon: HiOutlineCursorArrowRays, tip: '68% pass screening criteria' },
+        { label: 'Enrollment Completion', score: 60, Icon: HiOutlineUserGroup, tip: '2 of 7 approved → enrolled' },
+        { label: 'Trial Compliance', score: 91, Icon: HiOutlineShieldCheck, tip: 'All trials meet protocol' },
     ]
 }
 
@@ -57,26 +66,32 @@ export default function EnrollmentScore() {
         <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
             style={{ background: colors.surface, border: `1px solid ${colors.border}`, borderRadius: radius.lg, boxShadow: colors.shadow, padding: spacing.lg }}>
             <h2 style={{ margin: `0 0 ${spacing.lg}`, fontSize: fontSize.lg, fontFamily: fonts.heading, fontWeight: 700, color: colors.textPrimary, display: 'flex', alignItems: 'center', gap: spacing.sm }}>
-                📊 Enrollment Performance Score
+                <HiOutlineChartBar style={{ width: 22, height: 22, color: colors.accent }} />
+                Enrollment Performance Score
             </h2>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: spacing.xl }}>
                 <AnimatedCircle score={SCORE_DATA.overall} colors={colors} />
                 <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: spacing.md }}>
-                    {SCORE_DATA.categories.map((cat, i) => (
-                        <motion.div key={cat.label} initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 + i * 0.1 }}
-                            style={{ display: 'flex', alignItems: 'center', gap: spacing.md }}>
-                            <span style={{ fontSize: '18px', flexShrink: 0 }}>{cat.icon}</span>
-                            <div style={{ flex: 1 }}>
-                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
-                                    <span style={{ fontSize: fontSize.sm, fontWeight: 600, color: colors.textPrimary, fontFamily: fonts.body }}>{cat.label}</span>
-                                    <span style={{ fontSize: fontSize.xs, fontWeight: 700, color: cat.score >= 80 ? colors.green : colors.accent, fontFamily: fonts.mono || fonts.body }}>{cat.score}%</span>
+                    {SCORE_DATA.categories.map((cat, i) => {
+                        const CatIcon = cat.Icon
+                        return (
+                            <motion.div key={cat.label} initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 + i * 0.1 }}
+                                style={{ display: 'flex', alignItems: 'center', gap: spacing.md }}>
+                                <div style={{ width: 28, height: 28, borderRadius: radius.sm, background: colors.accentGlow, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                                    <CatIcon style={{ width: 15, height: 15, color: colors.accent }} />
                                 </div>
-                                <MiniBar score={cat.score} colors={colors} />
-                                <div style={{ fontSize: '11px', color: colors.textSecondary, marginTop: 3 }}>{cat.tip}</div>
-                            </div>
-                        </motion.div>
-                    ))}
+                                <div style={{ flex: 1 }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
+                                        <span style={{ fontSize: fontSize.sm, fontWeight: 600, color: colors.textPrimary, fontFamily: fonts.body }}>{cat.label}</span>
+                                        <span style={{ fontSize: fontSize.xs, fontWeight: 700, color: cat.score >= 80 ? colors.green : colors.accent, fontFamily: fonts.mono || fonts.body }}>{cat.score}%</span>
+                                    </div>
+                                    <MiniBar score={cat.score} colors={colors} />
+                                    <div style={{ fontSize: '11px', color: colors.textSecondary, marginTop: 3 }}>{cat.tip}</div>
+                                </div>
+                            </motion.div>
+                        )
+                    })}
                 </div>
             </div>
         </motion.div>

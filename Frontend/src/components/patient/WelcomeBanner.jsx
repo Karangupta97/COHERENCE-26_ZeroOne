@@ -1,29 +1,37 @@
 import { useTheme, radius, spacing, fontSize, PATIENTS } from '../../theme.jsx'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
+import {
+  HiOutlineSparkles,
+  HiOutlineLightBulb,
+  HiOutlineHandRaised,
+  HiOutlineMagnifyingGlass,
+  HiOutlineClipboardDocumentList,
+} from 'react-icons/hi2'
 
 const PATIENT = PATIENTS[0]
 
 function getGreeting() {
   const hour = new Date().getHours()
-  if (hour < 12) return { text: 'Good Morning', emoji: '🌅' }
-  if (hour < 17) return { text: 'Good Afternoon', emoji: '☀️' }
-  return { text: 'Good Evening', emoji: '🌙' }
+  if (hour < 12) return { text: 'Good Morning', Icon: HiOutlineSparkles }
+  if (hour < 17) return { text: 'Good Afternoon', Icon: HiOutlineLightBulb }
+  return { text: 'Good Evening', Icon: HiOutlineSparkles }
 }
 
 const TIPS = [
-  '💡 Tip: Upload your latest lab results to improve trial matching accuracy by ~15%.',
-  '💡 Tip: Your GLYCO-ADVANCE trial has only 12 slots left — consider applying soon!',
-  '💡 Tip: Complete your profile to unlock personalized AI health insights.',
-  '💡 Tip: Check the Nearby Trials page for new trials added this week.',
-  '💡 Tip: Your ONCO-TARGET application was approved! Schedule your screening visit.',
+  'Upload your latest lab results to improve trial matching accuracy by ~15%.',
+  'Your GLYCO-ADVANCE trial has only 12 slots left — consider applying soon!',
+  'Complete your profile to unlock personalized AI health insights.',
+  'Check the Nearby Trials page for new trials added this week.',
+  'Your ONCO-TARGET application was approved! Schedule your screening visit.',
 ]
 
 export default function WelcomeBanner() {
   const { colors, fonts } = useTheme()
   const navigate = useNavigate()
   const greet = getGreeting()
-  const tip = TIPS[Math.floor(Date.now() / 86400000) % TIPS.length] // Rotates daily
+  const GreetIcon = greet.Icon
+  const tip = TIPS[Math.floor(Date.now() / 86400000) % TIPS.length]
 
   return (
     <motion.div
@@ -44,13 +52,14 @@ export default function WelcomeBanner() {
 
       <div style={{ flex: 1, position: 'relative', zIndex: 1 }}>
         <div style={{ fontSize: fontSize.sm, color: colors.textSecondary, fontFamily: fonts.body, marginBottom: 4, display: 'flex', alignItems: 'center', gap: spacing.xs }}>
-          {greet.emoji} {greet.text}
+          <GreetIcon style={{ width: 16, height: 16, color: colors.accent }} /> {greet.text}
         </div>
-        <h2 style={{ margin: 0, fontSize: '22px', fontFamily: fonts.heading, fontWeight: 700, color: colors.textPrimary, lineHeight: 1.3 }}>
-          Welcome back, <span style={{ background: `linear-gradient(90deg, ${colors.accent}, ${colors.green})`, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Rajesh</span> 👋
+        <h2 style={{ margin: 0, fontSize: '22px', fontFamily: fonts.heading, fontWeight: 700, color: colors.textPrimary, lineHeight: 1.3, display: 'flex', alignItems: 'center', gap: spacing.sm }}>
+          Welcome back, <span style={{ background: `linear-gradient(90deg, ${colors.accent}, ${colors.green})`, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Rajesh</span>
+          <HiOutlineHandRaised style={{ width: 22, height: 22, color: colors.accent }} />
         </h2>
-        <p style={{ margin: `${spacing.xs} 0 0`, fontSize: fontSize.sm, color: colors.textSecondary, fontFamily: fonts.body, lineHeight: 1.5 }}>
-          {tip}
+        <p style={{ margin: `${spacing.xs} 0 0`, fontSize: fontSize.sm, color: colors.textSecondary, fontFamily: fonts.body, lineHeight: 1.5, display: 'flex', alignItems: 'center', gap: spacing.xs }}>
+          <HiOutlineLightBulb style={{ width: 14, height: 14, color: colors.accent, flexShrink: 0 }} /> Tip: {tip}
         </p>
       </div>
 
@@ -62,9 +71,10 @@ export default function WelcomeBanner() {
             background: colors.accent, color: '#fff', border: 'none',
             fontSize: fontSize.sm, fontWeight: 600, fontFamily: fonts.body,
             cursor: 'pointer', transition: 'all 0.2s',
+            display: 'flex', alignItems: 'center', gap: spacing.xs,
           }}
         >
-          🔍 Find Trials
+          <HiOutlineMagnifyingGlass style={{ width: 16, height: 16 }} /> Find Trials
         </button>
         <button
           onClick={() => navigate('/patient/profile')}
@@ -74,9 +84,10 @@ export default function WelcomeBanner() {
             border: `1px solid ${colors.border}`,
             fontSize: fontSize.sm, fontWeight: 600, fontFamily: fonts.body,
             cursor: 'pointer', transition: 'all 0.2s',
+            display: 'flex', alignItems: 'center', gap: spacing.xs,
           }}
         >
-          📋 My Profile
+          <HiOutlineClipboardDocumentList style={{ width: 16, height: 16 }} /> My Profile
         </button>
       </div>
     </motion.div>

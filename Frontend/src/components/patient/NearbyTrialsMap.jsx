@@ -1,12 +1,13 @@
 import { useTheme, radius, spacing, fontSize, TRIALS } from '../../theme.jsx'
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
+import { HiOutlineMapPin } from 'react-icons/hi2'
 
 const TRIAL_LOCATIONS = [
-  { name: 'GLYCO-ADVANCE',  lat: 19.0760, lng: 72.8777, sponsor: 'Novo Nordisk',   score: 94 },
-  { name: 'CARDIO-PROTECT', lat: 18.5204, lng: 73.8567, sponsor: 'AstraZeneca',     score: 81 },
-  { name: 'META-RESET',     lat: 19.0330, lng: 73.0297, sponsor: 'Sun Pharma',      score: 73 },
-  { name: 'NEURO-SHIELD',   lat: 19.1136, lng: 72.8697, sponsor: 'Cipla Research',  score: 68 },
-  { name: 'ONCO-TARGET',    lat: 19.0048, lng: 72.8432, sponsor: 'Tata Memorial',   score: 88 },
+  { name: 'GLYCO-ADVANCE', lat: 19.0760, lng: 72.8777, sponsor: 'Novo Nordisk', score: 94 },
+  { name: 'CARDIO-PROTECT', lat: 18.5204, lng: 73.8567, sponsor: 'AstraZeneca', score: 81 },
+  { name: 'META-RESET', lat: 19.0330, lng: 73.0297, sponsor: 'Sun Pharma', score: 73 },
+  { name: 'NEURO-SHIELD', lat: 19.1136, lng: 72.8697, sponsor: 'Cipla Research', score: 68 },
+  { name: 'ONCO-TARGET', lat: 19.0048, lng: 72.8432, sponsor: 'Tata Memorial', score: 88 },
 ]
 
 export default function NearbyTrialsMap() {
@@ -22,7 +23,7 @@ export default function NearbyTrialsMap() {
       overflow: 'hidden',
     }}>
       <h2 style={{ margin: `0 0 ${spacing.md}`, fontSize: fontSize.lg, fontFamily: fonts.heading, fontWeight: 700, color: colors.textPrimary, display: 'flex', alignItems: 'center', gap: spacing.sm }}>
-        📍 Nearby Clinical Trials
+        <HiOutlineMapPin style={{ width: 22, height: 22, color: colors.accent }} /> Nearby Clinical Trials
       </h2>
 
       <div style={{ borderRadius: radius.md, overflow: 'hidden', height: 280 }}>

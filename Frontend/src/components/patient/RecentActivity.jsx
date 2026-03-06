@@ -6,14 +6,15 @@ import {
   HiOutlineSparkles,
   HiOutlineCheckCircle,
   HiOutlineDocumentText,
+  HiOutlineClipboardDocumentList,
 } from 'react-icons/hi2'
 
 const ACTIVITIES = [
-  { id: 1, icon: HiOutlinePaperAirplane, iconBg: 'accent',  title: 'Applied to trial',     desc: 'GLYCO-ADVANCE Phase III',               time: '10 min ago', link: '/patient/applications' },
-  { id: 2, icon: HiOutlineSparkles,      iconBg: 'green',   title: 'New trial matched',     desc: 'CARDIO-PROTECT matched with 81% score',  time: '25 min ago', link: '/patient/trials' },
-  { id: 3, icon: HiOutlineCheckCircle,    iconBg: 'green',   title: 'Application approved',  desc: 'ONCO-TARGET Phase III approved by clinic', time: '1 hr ago',  link: '/patient/applications' },
-  { id: 4, icon: HiOutlineDocumentText,   iconBg: 'accent',  title: 'Profile updated',       desc: 'Medical records uploaded successfully',   time: '2 hrs ago', link: '/patient/profile' },
-  { id: 5, icon: HiOutlineSparkles,       iconBg: 'green',   title: 'AI analysis complete',  desc: 'Eligibility reassessed for 3 trials',     time: '3 hrs ago', link: '/patient/trials' },
+  { id: 1, icon: HiOutlinePaperAirplane, iconBg: 'accent', title: 'Applied to trial', desc: 'GLYCO-ADVANCE Phase III', time: '10 min ago', link: '/patient/applications' },
+  { id: 2, icon: HiOutlineSparkles, iconBg: 'green', title: 'New trial matched', desc: 'CARDIO-PROTECT matched with 81% score', time: '25 min ago', link: '/patient/trials' },
+  { id: 3, icon: HiOutlineCheckCircle, iconBg: 'green', title: 'Application approved', desc: 'ONCO-TARGET Phase III approved by clinic', time: '1 hr ago', link: '/patient/applications' },
+  { id: 4, icon: HiOutlineDocumentText, iconBg: 'accent', title: 'Profile updated', desc: 'Medical records uploaded successfully', time: '2 hrs ago', link: '/patient/profile' },
+  { id: 5, icon: HiOutlineSparkles, iconBg: 'green', title: 'AI analysis complete', desc: 'Eligibility reassessed for 3 trials', time: '3 hrs ago', link: '/patient/trials' },
 ]
 
 export default function RecentActivity() {
@@ -30,7 +31,8 @@ export default function RecentActivity() {
     }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: spacing.lg }}>
         <h2 style={{ margin: 0, fontSize: fontSize.lg, fontFamily: fonts.heading, fontWeight: 700, color: colors.textPrimary, display: 'flex', alignItems: 'center', gap: spacing.sm }}>
-          📋 Recent Activity
+          <HiOutlineClipboardDocumentList style={{ width: 22, height: 22, color: colors.accent }} />
+          Recent Activity
         </h2>
         <button
           onClick={() => navigate('/patient/notifications')}
