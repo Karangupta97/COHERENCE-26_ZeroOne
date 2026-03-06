@@ -54,6 +54,7 @@ export default function PostTrial({ setPage }) {
     const [focusedField, setFocusedField] = useState(null);
     const [errors, setErrors] = useState({});
     const [shakeNext, setShakeNext] = useState(false);
+    const [apiError, setApiError] = useState(null);
 
     const update = (key, val) => setFormData(prev => ({ ...prev, [key]: val }));
     const toggleChip = (key, val) => setFormData(prev => ({
@@ -71,7 +72,51 @@ export default function PostTrial({ setPage }) {
     }));
 
     const handleSubmit = () => { setPhase('loading'); setTimeout(() => setPhase('preview'), 2500); };
-    const handleConfirm = () => setPhase('success');
+
+    const handleConfirm = async () => {
+        setPhase('loading');
+        setApiError(null);
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                setApiError('You are not logged in. Please log in as a clinic account.');
+                setPhase('preview');
+                return;
+            }
+            // Check stored role before making the request
+            try {
+                const stored = JSON.parse(localStorage.getItem('user') || '{}');
+                if (stored.role && stored.role !== 'clinic') {
+                    setApiError(`You are logged in as "${stored.role}". Please log out and log in with a Clinic account to post a trial.`);
+                    setPhase('preview');
+                    return;
+                }
+            } catch { /* proceed with API call */ }
+
+            const res = await fetch('/api/trials', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify(formData),
+            });
+            const data = await res.json();
+            if (!res.ok) {
+                if (res.status === 403) {
+                    setApiError('Access denied. You must be logged in with a Clinic account to post a trial.');
+                } else {
+                    setApiError(data.message || 'Failed to post trial');
+                }
+                setPhase('preview');
+                return;
+            }
+            setPhase('success');
+        } catch (err) {
+            setApiError('Network error. Please try again.');
+            setPhase('preview');
+        }
+    };
 
     // ── Shared styles ─────────────────────────
     const inputBase = {
@@ -206,8 +251,7 @@ export default function PostTrial({ setPage }) {
 
     // ── Step 1: Basic Info ─────────────────────
     const BasicInfoStep = () => (
-        <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}
-            style={{ display: 'flex', flexDirection: 'column', gap: spacing.lg }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.lg }}>
             <div style={{
                 display: 'flex', alignItems: 'center', gap: spacing.sm, marginBottom: spacing.sm,
             }}>
@@ -262,13 +306,12 @@ export default function PostTrial({ setPage }) {
                         onFocus={() => setFocusedField('duration')} onBlur={() => setFocusedField(null)} />
                 </div>
             </div>
-        </motion.div>
+        </div>
     );
 
     // ── Step 2: Patient Requirements ──────────
     const RequirementsStep = () => (
-        <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}
-            style={{ display: 'flex', flexDirection: 'column', gap: spacing.lg }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.lg }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm, marginBottom: spacing.sm }}>
                 <div style={{ width: 40, height: 40, borderRadius: radius.md, background: colors.accentGlow, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <HiOutlineUserCircle style={{ width: 20, height: 20, color: colors.accent }} />
@@ -464,13 +507,12 @@ export default function PostTrial({ setPage }) {
                     </div>
                 </div>
             </div>
-        </motion.div>
+        </div>
     );
 
     // ── Step 3: Logistics ─────────────────────
     const LogisticsStep = () => (
-        <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}
-            style={{ display: 'flex', flexDirection: 'column', gap: spacing.lg }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.lg }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm, marginBottom: spacing.sm }}>
                 <div style={{ width: 40, height: 40, borderRadius: radius.md, background: colors.accentGlow, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <HiOutlineTruck style={{ width: 20, height: 20, color: colors.accent }} />
@@ -536,7 +578,7 @@ export default function PostTrial({ setPage }) {
                         onFocus={() => setFocusedField('description')} onBlur={() => setFocusedField(null)} />
                 </div>
             </div>
-        </motion.div>
+        </div>
     );
 
     // ── Step 4: Review ────────────────────────
@@ -575,8 +617,7 @@ export default function PostTrial({ setPage }) {
         ];
 
         return (
-            <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}
-                style={{ display: 'flex', flexDirection: 'column', gap: spacing.lg }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.lg }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm, marginBottom: spacing.sm }}>
                     <div style={{ width: 40, height: 40, borderRadius: radius.md, background: colors.greenGlow, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <HiOutlineCheckCircle style={{ width: 20, height: 20, color: colors.green }} />
@@ -623,14 +664,13 @@ export default function PostTrial({ setPage }) {
                         </motion.div>
                     );
                 })}
-            </motion.div>
+            </div>
         );
     };
 
     // ── FORM VIEW ─────────────────────────────
     if (phase === 'form') {
-        const stepComponents = [BasicInfoStep, RequirementsStep, LogisticsStep, ReviewStep];
-        const CurrentStepComponent = stepComponents[currentStep];
+        const stepRenderers = [BasicInfoStep, RequirementsStep, LogisticsStep, ReviewStep];
 
         return (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
@@ -641,7 +681,9 @@ export default function PostTrial({ setPage }) {
                     borderRadius: radius.lg, padding: spacing.xl, boxShadow: colors.shadow,
                 }}>
                     <AnimatePresence mode="wait">
-                        <CurrentStepComponent key={currentStep} />
+                        <motion.div key={currentStep} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+                            {stepRenderers[currentStep]()}
+                        </motion.div>
                     </AnimatePresence>
 
                     {/* Navigation buttons */}
@@ -792,6 +834,18 @@ export default function PostTrial({ setPage }) {
                     </div>
                 </div>
 
+                <div style={{ display: 'flex', gap: spacing.md }}>
+                    {apiError && (
+                        <div style={{
+                            width: '100%', padding: `${spacing.sm} ${spacing.md}`,
+                            background: `${colors.red || '#EF4444'}12`, border: `1px solid ${colors.red || '#EF4444'}40`,
+                            borderRadius: radius.md, marginBottom: spacing.sm,
+                            fontSize: fontSize.sm, color: colors.red || '#EF4444', fontFamily: fonts.body,
+                        }}>
+                            {apiError}
+                        </div>
+                    )}
+                </div>
                 <div style={{ display: 'flex', gap: spacing.md }}>
                     <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
                         onClick={handleConfirm} style={{
