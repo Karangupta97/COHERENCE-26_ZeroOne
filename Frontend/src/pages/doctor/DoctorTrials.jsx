@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useTheme } from '../theme';
-import DoctorLayout from '../components/shared/DoctorLayout';
+import { useTheme } from '../../theme';
+import DoctorLayout from '../../components/shared/DoctorLayout';
 import { PATIENTS, TRIALS, PATIENT_TRIAL_MATCHES, MATCH_SCORES } from './data/mockData';
 
 export default function DoctorTrials() {

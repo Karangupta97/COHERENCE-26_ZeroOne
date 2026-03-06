@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { useTheme } from '../theme';
-import DoctorLayout from '../components/shared/DoctorLayout';
+import { useTheme } from '../../theme';
+import DoctorLayout from '../../components/shared/DoctorLayout';
 
 export default function DoctorSettings() {
     const { colors, fonts, mode, toggleMode } = useTheme();

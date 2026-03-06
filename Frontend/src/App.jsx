@@ -4,13 +4,13 @@ import { ThemeProvider } from './theme';
 
 // ── Doctor Portal Imports ──
 import LoginPage from './Auth/LoginPage';
-import DoctorDashboard from './doctor/DoctorDashboard';
-import DoctorPatients from './doctor/DoctorPatients';
-import PatientDetail from './doctor/PatientDetail';
-import DoctorChat from './doctor/DoctorChat';
-import DoctorAlerts from './doctor/DoctorAlerts';
-import DoctorTrials from './doctor/DoctorTrials';
-import DoctorSettings from './doctor/DoctorSettings';
+import DoctorDashboard from './pages/doctor/DoctorDashboard';
+import DoctorPatients from './pages/doctor/DoctorPatients';
+import PatientDetail from './pages/doctor/PatientDetail';
+import DoctorChat from './pages/doctor/DoctorChat';
+import DoctorAlerts from './pages/doctor/DoctorAlerts';
+import DoctorTrials from './pages/doctor/DoctorTrials';
+import DoctorSettings from './pages/doctor/DoctorSettings';
 
 // ── Patient Portal Imports ──
 import PatientDashboard from './pages/patients/PatientDashboard';

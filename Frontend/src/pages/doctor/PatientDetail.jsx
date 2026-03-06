@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useTheme } from '../theme';
-import DoctorLayout from '../components/shared/DoctorLayout';
-import ScoreRing from '../components/shared/ScoreRing';
-import { useToast } from '../components/shared/Toast';
+import { useTheme } from '../../theme';
+import DoctorLayout from '../../components/shared/DoctorLayout';
+import ScoreRing from '../../components/shared/ScoreRing';
+import { useToast } from '../../components/shared/Toast';
 import { PATIENTS, TRIALS, TRIAL_CRITERIA, PATIENT_TRIAL_MATCHES, MATCH_SCORES, REJECTION_REASONS } from './data/mockData';
 
 export default function PatientDetail() {

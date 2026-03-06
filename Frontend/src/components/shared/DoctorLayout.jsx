@@ -1,148 +1,124 @@
-import React, { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { useTheme } from '../../theme';
-import Sidebar from './Sidebar';
-import { ALERTS } from '../../doctor/data/mockData';
+import React from 'react'
+import { useNavigate, useLocation } from 'react-router-dom'
+import { useTheme, radius, spacing, fontSize } from '../../theme.jsx'
+import Sidebar from './Sidebar'
+import { ALERTS } from '../../pages/doctor/data/mockData'
+import { HiOutlineBell } from 'react-icons/hi2'
 
 function TopBar() {
-    const { colors, fonts, mode, toggleMode, spacing, radius, fontSize } = useTheme();
-    const navigate = useNavigate();
-    const location = useLocation();
-    const [toggleHover, setToggleHover] = useState(false);
-    const [bellHover, setBellHover] = useState(false);
+    const { colors, fonts, mode, toggleMode } = useTheme()
+    const navigate = useNavigate()
+    const location = useLocation()
 
-    const alertCount = ALERTS.length;
+    const alertCount = ALERTS.length
 
     const getPageTitle = () => {
-        const path = location.pathname;
-        if (path.includes('/dashboard')) return 'Doctor Dashboard';
-        if (path.includes('/patients/') && !path.endsWith('/patients')) return 'Patient Details';
-        if (path.includes('/patients')) return 'Patients';
-        if (path.includes('/trials')) return 'Trial Matches';
-        if (path.includes('/chat')) return 'Messages';
-        if (path.includes('/alerts')) return 'Notifications';
-        if (path.includes('/settings')) return 'Settings';
-        return 'Doctor Portal';
-    };
+        const path = location.pathname
+        if (path.includes('/dashboard')) return 'Doctor Dashboard'
+        if (path.includes('/patients/') && !path.endsWith('/patients')) return 'Patient Details'
+        if (path.includes('/patients')) return 'Patients'
+        if (path.includes('/trials')) return 'Trial Matches'
+        if (path.includes('/chat')) return 'Messages'
+        if (path.includes('/alerts')) return 'Notifications'
+        if (path.includes('/settings')) return 'Settings'
+        return 'Doctor Portal'
+    }
 
     return (
-        <header style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            padding: `${spacing.md} ${spacing.xl}`,
-            minHeight: 64,
-            background: colors.surface,
-            borderBottom: `1px solid ${colors.border}`,
-            position: 'sticky',
-            top: 0,
-            zIndex: 50,
-        }}>
-            <h1 style={{
-                fontFamily: fonts.heading,
-                fontSize: fontSize.lg,
-                fontWeight: 700,
-                color: colors.textPrimary,
-                margin: 0,
-            }}>
+        <header
+            style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                padding: `${spacing.md} ${spacing.xl}`,
+                borderBottom: `1px solid ${colors.border}`,
+                background: colors.surface,
+                fontFamily: fonts.body,
+                minHeight: 64,
+            }}
+        >
+            {/* Title */}
+            <h1 style={{ margin: 0, fontSize: fontSize.xl, fontFamily: fonts.heading, fontWeight: 700, color: colors.textPrimary }}>
                 {getPageTitle()}
             </h1>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                {/* Dark/Light toggle pill */}
+            {/* Right actions */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: spacing.md }}>
+                {/* Dark/Light toggle */}
                 <button
                     onClick={toggleMode}
-                    onMouseEnter={() => setToggleHover(true)}
-                    onMouseLeave={() => setToggleHover(false)}
+                    title={`Switch to ${mode === 'dark' ? 'light' : 'dark'} mode`}
                     style={{
-                        padding: '5px 14px',
-                        borderRadius: radius.full,
-                        background: toggleHover ? colors.card : colors.surface,
+                        background: colors.card,
                         border: `1px solid ${colors.border}`,
+                        borderRadius: radius.full,
+                        padding: '5px 12px',
+                        cursor: 'pointer',
                         color: colors.textSecondary,
                         fontFamily: fonts.mono || fonts.body,
-                        fontSize: fontSize.xs,
-                        fontWeight: 500,
-                        cursor: 'pointer',
+                        fontSize: '12px',
                         display: 'flex',
                         alignItems: 'center',
                         gap: '6px',
                         transition: 'all 0.2s ease',
                     }}
                 >
-                    <span style={{
-                        width: '8px',
-                        height: '8px',
-                        borderRadius: '50%',
-                        background: mode === 'dark' ? '#818CF8' : '#10B981',
-                    }} />
-                    {mode === 'dark' ? 'Light' : 'Dark'}
+                    {mode === 'dark' ? '☀️ Light' : '🌙 Dark'}
                 </button>
 
-                {/* Bell */}
+                {/* Notification bell */}
                 <button
                     onClick={() => navigate('/doctor/alerts')}
-                    onMouseEnter={() => setBellHover(true)}
-                    onMouseLeave={() => setBellHover(false)}
                     style={{
                         position: 'relative',
-                        fontSize: 18,
-                        padding: 6,
-                        borderRadius: radius.md,
-                        background: bellHover ? colors.card : 'transparent',
-                        border: 'none',
+                        background: colors.card,
+                        border: `1px solid ${colors.border}`,
+                        borderRadius: radius.full,
+                        width: 38, height: 38,
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
                         cursor: 'pointer',
-                        transition: 'all 0.2s ease',
+                        color: colors.textSecondary,
+                        transition: 'all 0.2s',
                     }}
+                    onMouseEnter={(e) => { e.currentTarget.style.borderColor = colors.accent }}
+                    onMouseLeave={(e) => { e.currentTarget.style.borderColor = colors.border }}
                 >
-                    🔔
+                    <HiOutlineBell style={{ width: 18, height: 18 }} />
                     {alertCount > 0 && (
                         <span style={{
-                            position: 'absolute',
-                            top: 0,
-                            right: 0,
-                            width: 16,
-                            height: 16,
-                            borderRadius: radius.full,
-                            background: colors.red,
-                            color: '#fff',
-                            fontSize: 9,
-                            fontWeight: 700,
-                            fontFamily: fonts.mono,
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            border: `2px solid ${colors.surface}`,
+                            position: 'absolute', top: -2, right: -2,
+                            width: 16, height: 16, borderRadius: '50%',
+                            background: colors.red || '#EF4444', color: '#fff',
+                            fontSize: '9px', fontWeight: 700,
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
                         }}>
                             {alertCount}
                         </span>
                     )}
                 </button>
 
-                {/* Avatar */}
-                <div style={{
-                    width: 36,
-                    height: 36,
-                    borderRadius: radius.full,
-                    background: `linear-gradient(135deg, ${colors.accent}, #7C3AED)`,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: fontSize.sm,
-                    fontFamily: fonts.mono,
-                    fontWeight: 700,
-                    color: '#fff',
-                    cursor: 'pointer',
-                }}>
+                {/* Profile avatar */}
+                <div
+                    onClick={() => navigate('/doctor/settings')}
+                    style={{
+                        width: 38, height: 38, borderRadius: radius.full,
+                        background: `linear-gradient(135deg, ${colors.accent}, ${colors.green})`,
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        color: '#fff', fontSize: fontSize.sm, fontWeight: 700, fontFamily: fonts.heading,
+                        cursor: 'pointer', transition: 'all 0.2s',
+                    }}
+                    onMouseEnter={(e) => { e.currentTarget.style.transform = 'scale(1.08)' }}
+                    onMouseLeave={(e) => { e.currentTarget.style.transform = 'scale(1)' }}
+                >
                     PS
                 </div>
             </div>
         </header>
-    );
+    )
 }
 
 export default function DoctorLayout({ children }) {
-    const { colors, spacing } = useTheme();
+    const { colors } = useTheme()
 
     return (
         <div style={{
@@ -164,5 +140,5 @@ export default function DoctorLayout({ children }) {
                 </main>
             </div>
         </div>
-    );
+    )
 }

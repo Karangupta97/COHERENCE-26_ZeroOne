@@ -1,9 +1,9 @@
 import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useTheme } from '../theme';
-import DoctorLayout from '../components/shared/DoctorLayout';
-import StatusBadge from '../components/shared/StatusBadge';
-import PatientAvatar from '../components/shared/PatientAvatar';
+import { useTheme } from '../../theme';
+import DoctorLayout from '../../components/shared/DoctorLayout';
+import StatusBadge from '../../components/shared/StatusBadge';
+import PatientAvatar from '../../components/shared/PatientAvatar';
 import { PATIENTS } from './data/mockData';
 
 export default function DoctorPatients() {

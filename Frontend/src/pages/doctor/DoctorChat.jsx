@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useTheme } from '../theme';
-import DoctorLayout from '../components/shared/DoctorLayout';
-import PatientAvatar from '../components/shared/PatientAvatar';
+import { useTheme } from '../../theme';
+import DoctorLayout from '../../components/shared/DoctorLayout';
+import PatientAvatar from '../../components/shared/PatientAvatar';
 import { PATIENTS, CHAT_MESSAGES, MATCH_SCORES, TRIALS, PATIENT_TRIAL_MATCHES } from './data/mockData';
 
 export default function DoctorChat() {
