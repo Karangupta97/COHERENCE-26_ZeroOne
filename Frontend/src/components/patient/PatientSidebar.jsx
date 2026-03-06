@@ -7,18 +7,20 @@ import {
   HiOutlineMagnifyingGlass,
   HiOutlineMapPin,
   HiOutlineDocumentText,
+  HiOutlineFolderOpen,
   HiOutlineBell,
   HiOutlineCog6Tooth,
 } from 'react-icons/hi2'
 
 const NAV_ITEMS = [
-  { label: 'Dashboard',          icon: HiOutlineHome,              path: '/patient/dashboard' },
-  { label: 'My Profile',         icon: HiOutlineUserCircle,        path: '/patient/profile' },
+  { label: 'Dashboard', icon: HiOutlineHome, path: '/patient/dashboard' },
+  { label: 'My Profile', icon: HiOutlineUserCircle, path: '/patient/profile' },
   { label: 'Find Clinical Trials', icon: HiOutlineMagnifyingGlass, path: '/patient/trials' },
-  { label: 'Nearby Trials',      icon: HiOutlineMapPin,            path: '/patient/nearby' },
-  { label: 'My Applications',    icon: HiOutlineDocumentText,      path: '/patient/applications' },
-  { label: 'Notifications',      icon: HiOutlineBell,              path: '/patient/notifications', badge: 3 },
-  { label: 'Settings',           icon: HiOutlineCog6Tooth,         path: '/patient/settings' },
+  { label: 'Nearby Trials', icon: HiOutlineMapPin, path: '/patient/nearby' },
+  { label: 'My Applications', icon: HiOutlineDocumentText, path: '/patient/applications' },
+  { label: 'Medical Reports', icon: HiOutlineFolderOpen, path: '/patient/reports' },
+  { label: 'Notifications', icon: HiOutlineBell, path: '/patient/notifications', badge: 3 },
+  { label: 'Settings', icon: HiOutlineCog6Tooth, path: '/patient/settings' },
 ]
 
 export default function PatientSidebar() {

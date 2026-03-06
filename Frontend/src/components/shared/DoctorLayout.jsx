@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import { useTheme, radius, spacing, fontSize } from '../../theme.jsx'
 import Sidebar from './Sidebar'
 import { ALERTS } from '../../pages/doctor/data/mockData'
-import { HiOutlineBell, HiOutlineMagnifyingGlass } from 'react-icons/hi2'
+import { HiOutlineBell, HiOutlineMagnifyingGlass, HiOutlineSun, HiOutlineMoon } from 'react-icons/hi2'
 import useDoctor from '../../hooks/useDoctor'
 
 function TopBar() {
@@ -70,7 +70,10 @@ function TopBar() {
                     onMouseEnter={e => e.currentTarget.style.borderColor = colors.accent}
                     onMouseLeave={e => e.currentTarget.style.borderColor = colors.border}
                 >
-                    {mode === 'dark' ? '☀️ Light' : '🌙 Dark'}
+                    {mode === 'dark'
+                        ? <><HiOutlineSun style={{ width: 14, height: 14 }} /> Light</>
+                        : <><HiOutlineMoon style={{ width: 14, height: 14 }} /> Dark</>
+                    }
                 </button>
 
                 {/* Notification bell */}

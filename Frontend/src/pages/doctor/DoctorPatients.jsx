@@ -5,6 +5,16 @@ import DoctorLayout from '../../components/shared/DoctorLayout';
 import StatusBadge from '../../components/shared/StatusBadge';
 import PatientAvatar from '../../components/shared/PatientAvatar';
 import { PATIENTS } from './data/mockData';
+import { motion } from 'framer-motion';
+import {
+    HiOutlineMagnifyingGlass,
+    HiOutlineUserGroup,
+    HiOutlineMapPin,
+    HiOutlineArrowRight,
+    HiOutlineFunnel,
+} from 'react-icons/hi2';
+
+const fadeUp = { initial: { opacity: 0, y: 16 }, animate: { opacity: 1, y: 0 } };
 
 export default function DoctorPatients() {
     const { colors, fonts } = useTheme();
@@ -14,7 +24,7 @@ export default function DoctorPatients() {
     const [hoveredCard, setHoveredCard] = useState(null);
 
     const tabs = [
-        { key: 'all', label: 'All' },
+        { key: 'all', label: 'All Patients' },
         { key: 'awaiting', label: 'Awaiting Review' },
         { key: 'referred', label: 'Referred' },
         { key: 'enrolled', label: 'Enrolled' },
@@ -31,66 +41,148 @@ export default function DoctorPatients() {
         });
     }, [search, activeFilter]);
 
+    const card = {
+        background: colors.surface,
+        border: `1px solid ${colors.border}`,
+        borderRadius: '16px',
+        boxShadow: colors.shadow,
+    };
+
     return (
         <DoctorLayout>
-            <div className="page-enter" style={{ padding: '28px 32px', maxWidth: '1200px' }}>
-                <p style={{ fontFamily: fonts.body, fontSize: '15px', color: colors.textSecondary, margin: '0 0 20px 0' }}>{PATIENTS.length} patients under your care</p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', maxWidth: 1400 }}>
 
-                {/* Search bar */}
-                <div style={{ marginBottom: '20px' }}>
-                    <input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search by Patient ID or diagnosis…"
-                        onFocus={(e) => { e.target.style.borderColor = colors.accent; e.target.style.boxShadow = `0 0 0 3px ${colors.accentGlow}`; }}
-                        onBlur={(e) => { e.target.style.borderColor = colors.border; e.target.style.boxShadow = 'none'; }}
-                        style={{
-                            width: '100%', maxWidth: '480px', padding: '12px 16px 12px 40px', borderRadius: '10px', border: `1.5px solid ${colors.border}`, background: colors.surface, color: colors.textPrimary, fontFamily: fonts.body, fontSize: '14px', transition: 'all 0.3s ease',
-                            backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%237DB3CC' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.3-4.3'/%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: '14px center'
+                {/* Header */}
+                <motion.div {...fadeUp} transition={{ duration: 0.4 }}
+                    style={{
+                        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                        ...card, padding: '20px 24px',
+                    }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                        <div style={{
+                            width: 44, height: 44, borderRadius: '12px',
+                            background: colors.accentGlow,
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        }}>
+                            <HiOutlineUserGroup style={{ width: 22, height: 22, color: colors.accent }} />
+                        </div>
+                        <div>
+                            <h2 style={{ margin: 0, fontSize: '18px', fontFamily: fonts.heading, fontWeight: 700, color: colors.textPrimary }}>
+                                Patient Management
+                            </h2>
+                            <span style={{ fontSize: '13px', color: colors.textSecondary, fontFamily: fonts.body }}>
+                                {PATIENTS.length} patients under your care
+                            </span>
+                        </div>
+                    </div>
+
+                    {/* Search */}
+                    <div style={{ position: 'relative', width: 320 }}>
+                        <HiOutlineMagnifyingGlass style={{
+                            position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)',
+                            width: 16, height: 16, color: colors.textSecondary, pointerEvents: 'none',
                         }} />
-                </div>
+                        <input type="text" value={search} onChange={(e) => setSearch(e.target.value)}
+                            placeholder="Search by ID or diagnosis…"
+                            onFocus={(e) => { e.target.style.borderColor = colors.accent; e.target.style.boxShadow = `0 0 0 3px ${colors.accent}15`; }}
+                            onBlur={(e) => { e.target.style.borderColor = colors.border; e.target.style.boxShadow = 'none'; }}
+                            style={{
+                                width: '100%', padding: '10px 14px 10px 36px', borderRadius: '10px',
+                                border: `1.5px solid ${colors.border}`, background: colors.card,
+                                color: colors.textPrimary, fontFamily: fonts.body, fontSize: '13px',
+                                transition: 'all 0.2s ease', outline: 'none',
+                            }} />
+                    </div>
+                </motion.div>
 
                 {/* Filter tabs */}
-                <div style={{ display: 'flex', gap: '6px', marginBottom: '24px', flexWrap: 'wrap' }}>
+                <motion.div {...fadeUp} transition={{ delay: 0.05 }}
+                    style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
                     {tabs.map(tab => (
                         <button key={tab.key} onClick={() => setActiveFilter(tab.key)}
-                            style={{ padding: '8px 16px', borderRadius: '9999px', fontSize: '13px', fontWeight: activeFilter === tab.key ? 600 : 500, fontFamily: fonts.body, color: activeFilter === tab.key ? '#fff' : colors.textSecondary, background: activeFilter === tab.key ? colors.accent : 'transparent', border: activeFilter === tab.key ? 'none' : `1px solid ${colors.border}`, cursor: 'pointer', transition: 'all 0.2s ease' }}>
+                            style={{
+                                padding: '8px 18px', borderRadius: '20px',
+                                fontSize: '12px', fontWeight: activeFilter === tab.key ? 600 : 500,
+                                fontFamily: fonts.body,
+                                color: activeFilter === tab.key ? '#fff' : colors.textSecondary,
+                                background: activeFilter === tab.key ? colors.accent : 'transparent',
+                                border: activeFilter === tab.key ? 'none' : `1px solid ${colors.border}`,
+                                cursor: 'pointer', transition: 'all 0.2s ease',
+                            }}>
                             {tab.label}
                         </button>
                     ))}
-                </div>
+                    <span style={{ marginLeft: 'auto', fontSize: '12px', color: colors.textSecondary, fontFamily: fonts.body, display: 'flex', alignItems: 'center', gap: 4 }}>
+                        <HiOutlineFunnel style={{ width: 14, height: 14 }} /> {filtered.length} results
+                    </span>
+                </motion.div>
 
                 {/* Patient cards */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                     {filtered.map((patient, i) => (
-                        <div key={patient.anonymizedId} onMouseEnter={() => setHoveredCard(i)} onMouseLeave={() => setHoveredCard(null)} onClick={() => navigate(`/doctor/patients/${patient.anonymizedId}`)}
-                            style={{ background: colors.card, borderRadius: '14px', padding: '20px 24px', border: `1px solid ${hoveredCard === i ? colors.accent + '40' : colors.border}`, boxShadow: colors.shadow, cursor: 'pointer', transition: 'all 0.3s ease', transform: hoveredCard === i ? 'translateY(-1px)' : 'none', display: 'flex', alignItems: 'center', gap: '20px' }}>
-                            <PatientAvatar patientId={patient.anonymizedId} size={48} />
+                        <motion.div key={patient.anonymizedId}
+                            initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.05 + i * 0.04 }}
+                            onMouseEnter={() => setHoveredCard(i)} onMouseLeave={() => setHoveredCard(null)}
+                            onClick={() => navigate(`/doctor/patients/${patient.anonymizedId}`)}
+                            style={{
+                                ...card,
+                                padding: '18px 22px',
+                                cursor: 'pointer',
+                                transition: 'all 0.25s ease',
+                                borderColor: hoveredCard === i ? `${colors.accent}50` : colors.border,
+                                transform: hoveredCard === i ? 'translateY(-2px)' : 'none',
+                                boxShadow: hoveredCard === i ? `0 6px 24px ${colors.accent}10` : colors.shadow,
+                                display: 'flex', alignItems: 'center', gap: '18px',
+                            }}>
+                            <PatientAvatar patientId={patient.anonymizedId} size={44} />
                             <div style={{ flex: 1, minWidth: 0 }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '6px', flexWrap: 'wrap' }}>
-                                    <span style={{ fontFamily: fonts.mono, fontSize: '15px', fontWeight: 600, color: colors.textPrimary }}>{patient.anonymizedId}</span>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '4px', flexWrap: 'wrap' }}>
+                                    <span style={{ fontFamily: fonts.heading, fontSize: '14px', fontWeight: 700, color: colors.textPrimary }}>{patient.anonymizedId}</span>
                                     <StatusBadge status={patient.status} />
                                 </div>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px', color: colors.textSecondary, fontFamily: fonts.body, flexWrap: 'wrap' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', color: colors.textSecondary, fontFamily: fonts.body, flexWrap: 'wrap' }}>
                                     <span>{patient.age} · {patient.gender}</span>
-                                    <span style={{ opacity: 0.4 }}>|</span>
+                                    <span style={{ opacity: 0.3 }}>|</span>
                                     <span>{patient.diagnosis}</span>
-                                    <span style={{ opacity: 0.4 }}>|</span>
+                                    <span style={{ opacity: 0.3 }}>|</span>
                                     <span>{patient.meds}</span>
-                                    <span style={{ opacity: 0.4 }}>|</span>
-                                    <span>📍 {patient.location}</span>
+                                    <span style={{ opacity: 0.3 }}>|</span>
+                                    <span style={{ display: 'flex', alignItems: 'center', gap: 3 }}>
+                                        <HiOutlineMapPin style={{ width: 11, height: 11 }} /> {patient.location}
+                                    </span>
                                 </div>
                             </div>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 14px', borderRadius: '9999px', background: colors.accentGlow, color: colors.accent, fontFamily: fonts.mono, fontSize: '13px', fontWeight: 600, flexShrink: 0 }}>
+                            <div style={{
+                                display: 'flex', alignItems: 'center', gap: '6px',
+                                padding: '5px 14px', borderRadius: '20px',
+                                background: colors.accentGlow, color: colors.accent,
+                                fontFamily: fonts.body, fontSize: '12px', fontWeight: 600, flexShrink: 0,
+                            }}>
                                 {patient.matches} matches
                             </div>
                             <button onClick={(e) => { e.stopPropagation(); navigate(`/doctor/patients/${patient.anonymizedId}`); }}
-                                style={{ padding: '8px 18px', borderRadius: '8px', background: 'transparent', color: colors.accent, fontFamily: fonts.body, fontSize: '13px', fontWeight: 600, border: `1px solid ${colors.accent}30`, cursor: 'pointer', transition: 'all 0.2s ease', whiteSpace: 'nowrap', flexShrink: 0 }}
-                                onMouseEnter={(e) => { e.target.style.background = colors.accent; e.target.style.color = '#fff'; }}
-                                onMouseLeave={(e) => { e.target.style.background = 'transparent'; e.target.style.color = colors.accent; }}>
-                                View Details →
+                                style={{
+                                    padding: '8px 16px', borderRadius: '10px',
+                                    background: 'transparent', color: colors.accent,
+                                    fontFamily: fonts.body, fontSize: '12px', fontWeight: 600,
+                                    border: `1px solid ${colors.border}`, cursor: 'pointer',
+                                    transition: 'all 0.2s ease', whiteSpace: 'nowrap', flexShrink: 0,
+                                    display: 'flex', alignItems: 'center', gap: 4,
+                                }}
+                                onMouseEnter={(e) => { e.target.style.background = colors.accent; e.target.style.color = '#fff'; e.target.style.borderColor = colors.accent; }}
+                                onMouseLeave={(e) => { e.target.style.background = 'transparent'; e.target.style.color = colors.accent; e.target.style.borderColor = colors.border; }}>
+                                View <HiOutlineArrowRight style={{ width: 12, height: 12 }} />
                             </button>
-                        </div>
+                        </motion.div>
                     ))}
                     {filtered.length === 0 && (
-                        <div style={{ padding: '48px', textAlign: 'center', color: colors.textSecondary, fontFamily: fonts.body, fontSize: '15px' }}>No patients found matching your search.</div>
+                        <div style={{
+                            padding: '60px', textAlign: 'center', color: colors.textSecondary,
+                            fontFamily: fonts.body, fontSize: '14px', ...card,
+                        }}>
+                            No patients found matching your search.
+                        </div>
                     )}
                 </div>
             </div>
