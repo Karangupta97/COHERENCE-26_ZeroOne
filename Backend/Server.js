@@ -1,63 +1,75 @@
-const http = require("http");
 require("dotenv").config();
 
-const PORT = Number(process.env.PORT) || 4000;
+const express = require("express");
+const cors = require("cors");
+const helmet = require("helmet");
 
-function sendJson(res, statusCode, body) {
-	res.writeHead(statusCode, { "Content-Type": "application/json" });
-	res.end(JSON.stringify(body));
-}
+// Routes
+const authRoutes = require("./src/routes/authRoutes");
+const profileRoutes = require("./src/routes/profileRoutes");
+const protectedRoutes = require("./src/routes/protectedRoutes");
 
-const server = http.createServer((req, res) => {
-	// Basic CORS support for frontend testing.
-	res.setHeader("Access-Control-Allow-Origin", "*");
-	res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
-	res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+// Middleware
+const errorHandler = require("./src/middlewares/errorHandler");
 
-	if (req.method === "OPTIONS") {
-		res.writeHead(204);
-		res.end();
-		return;
-	}
+const app = express();
+const PORT = Number(process.env.PORT) || 5000;
 
-	const baseUrl = `http://${req.headers.host || `localhost:${PORT}`}`;
-	const url = new URL(req.url || "/", baseUrl);
+// ─── GLOBAL MIDDLEWARE ──────────────────────────────────
+app.use(helmet()); // security headers
+app.use(cors({ origin: process.env.CORS_ORIGIN || "*", credentials: true }));
+app.use(express.json({ limit: "10kb" })); // body parser with size limit
+app.use(express.urlencoded({ extended: false }));
 
-	if (req.method === "GET" && url.pathname === "/") {
-		sendJson(res, 200, {
-			ok: true,
-			message: "Test server is running",
-		});
-		return;
-	}
-
-	if (req.method === "GET" && url.pathname === "/health") {
-		sendJson(res, 200, {
-			ok: true,
-			status: "healthy",
-			uptime: Number(process.uptime().toFixed(2)),
-			timestamp: new Date().toISOString(),
-		});
-		return;
-	}
-
-	sendJson(res, 404, {
-		ok: false,
-		message: "Route not found",
-		path: url.pathname,
-	});
+// Handle malformed JSON
+app.use((err, _req, res, next) => {
+  if (err.type === "entity.parse.failed") {
+    return res.status(400).json({ ok: false, message: "Invalid JSON in request body" });
+  }
+  next(err);
 });
 
-server.listen(PORT, () => {
-	console.log(`Test server running at http://localhost:${PORT}`);
+// ─── HEALTH CHECK ───────────────────────────────────────
+app.get("/", (_req, res) => {
+  res.json({ ok: true, message: "API server is running" });
 });
 
+app.get("/health", (_req, res) => {
+  res.json({
+    ok: true,
+    status: "healthy",
+    uptime: Number(process.uptime().toFixed(2)),
+    timestamp: new Date().toISOString(),
+  });
+});
+
+// ─── API ROUTES ─────────────────────────────────────────
+app.use("/api/auth", authRoutes);
+app.use("/api/profile", profileRoutes);
+app.use("/api/v1", protectedRoutes);
+
+// ─── 404 HANDLER ────────────────────────────────────────
+app.use((_req, res) => {
+  res.status(404).json({ ok: false, message: "Route not found" });
+});
+
+// ─── ERROR HANDLER ──────────────────────────────────────
+app.use(errorHandler);
+
+// ─── START SERVER ───────────────────────────────────────
+const server = app.listen(PORT, () => {
+  console.log(`Server running at http://localhost:${PORT}`);
+  console.log(`Environment: ${process.env.NODE_ENV || "development"}`);
+});
+
+// Graceful shutdown
 function shutdown(signal) {
-	console.log(`${signal} received. Closing server...`);
-	server.close(() => {
-		process.exit(0);
-	});
+  console.log(`${signal} received. Closing server...`);
+  server.close(() => process.exit(0));
 }
+
+process.on("SIGINT", shutdown.bind(null, "SIGINT"));
+process.on("SIGTERM", shutdown.bind(null, "SIGTERM"));
 
 process.on("SIGINT", () => shutdown("SIGINT"));
 process.on("SIGTERM", () => shutdown("SIGTERM"));
