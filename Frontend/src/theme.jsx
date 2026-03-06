@@ -17,9 +17,9 @@ export const themes = {
     name: "Clinical White",
     icon: "🤍",
     fonts: {
-      heading: "'Playfair Display', serif",
-      body: "'Source Sans 3', sans-serif",
-      mono: "'IBM Plex Mono', monospace",
+      heading: "'Fraunces', serif",
+      body: "'Poppins', sans-serif",
+      mono: "'Roboto Mono', monospace",
     },
     dark: {
       bg: "#0A0F14",
@@ -58,9 +58,9 @@ export const themes = {
     name: "Deep Navy",
     icon: "🌊",
     fonts: {
-      heading: "'Cormorant Garamond', serif",
-      body: "'Libre Franklin', sans-serif",
-      mono: "'Fira Code', monospace",
+      heading: "'Fraunces', serif",
+      body: "'Poppins', sans-serif",
+      mono: "'Roboto Mono', monospace",
     },
     dark: {
       bg: "#020B18",
@@ -100,8 +100,8 @@ export const themes = {
     icon: "🌿",
     fonts: {
       heading: "'Fraunces', serif",
-      body: "'DM Sans', sans-serif",
-      mono: "'Space Mono', monospace",
+      body: "'Poppins', sans-serif",
+      mono: "'Roboto Mono', monospace",
     },
     dark: {
       bg: "#0D1F1A",
@@ -140,9 +140,9 @@ export const themes = {
     name: "Slate Pro",
     icon: "🩶",
     fonts: {
-      heading: "'Outfit', sans-serif",
-      body: "'Manrope', sans-serif",
-      mono: "'JetBrains Mono', monospace",
+      heading: "'Fraunces', serif",
+      body: "'Poppins', sans-serif",
+      mono: "'Roboto Mono', monospace",
     },
     dark: {
       bg: "#0F1117",
@@ -181,9 +181,9 @@ export const themes = {
     name: "Aurora Medical",
     icon: "🔵",
     fonts: {
-      heading: "'Syne', sans-serif",
-      body: "'DM Sans', sans-serif",
-      mono: "'DM Mono', monospace",
+      heading: "'Fraunces', serif",
+      body: "'Poppins', sans-serif",
+      mono: "'Roboto Mono', monospace",
     },
     dark: {
       bg: "#04051A",
@@ -224,7 +224,7 @@ export const themes = {
 // ─────────────────────────────────────────────
 
 export const GOOGLE_FONTS_URL =
-  "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Source+Sans+3:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Cormorant+Garamond:wght@600;700&family=Libre+Franklin:wght@400;500;600&family=Fira+Code:wght@400;500&family=Fraunces:wght@700;800&family=DM+Sans:wght@400;500;600&family=Space+Mono:wght@400;700&family=Outfit:wght@600;700;800&family=Manrope:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Syne:wght@700;800&family=DM+Mono:wght@400;500&display=swap";
+  "https://fonts.googleapis.com/css2?family=Fraunces:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&family=Open+Sans:wght@400;600;700;800&family=Roboto+Mono:wght@400;500;600;700&display=swap";
 
 // ─────────────────────────────────────────────
 //  SHARED SPACING & RADIUS TOKENS
