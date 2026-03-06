@@ -9,10 +9,10 @@ import {
 } from 'react-icons/hi2'
 
 const STATS = [
-  { label: 'MATCHED TRIALS',       value: 5,  icon: HiOutlineBeaker,       change: '↑ 17%', link: '/patient/trials' },
+  { label: 'MATCHED TRIALS', value: 5, icon: HiOutlineBeaker, change: '↑ 17%', link: '/patient/trials' },
   { label: 'APPLICATIONS SUBMITTED', value: 5, icon: HiOutlineDocumentText, change: '↑ 23%', link: '/patient/applications' },
-  { label: 'NEARBY TRIALS',        value: 7,  icon: HiOutlineMapPin,       change: '↑ 8%',  link: '/patient/nearby' },
-  { label: 'APPROVED TRIALS',      value: 1,  icon: HiOutlineCheckCircle,  change: '↑ 5%',  link: '/patient/applications' },
+  { label: 'NEARBY TRIALS', value: 7, icon: HiOutlineMapPin, change: '↑ 8%', link: '/patient/nearby' },
+  { label: 'APPROVED TRIALS', value: 1, icon: HiOutlineCheckCircle, change: '↑ 5%', link: '/patient/applications' },
 ]
 
 export default function PatientStats() {
@@ -74,7 +74,7 @@ export default function PatientStats() {
                 </span>
               </div>
 
-              <div style={{ fontSize: fontSize.hero, fontWeight: 800, fontFamily: fonts.heading, color: colors.textPrimary, lineHeight: 1 }}>
+              <div style={{ fontSize: fontSize.hero, fontWeight: 800, fontFamily: "'Open Sans', sans-serif", color: colors.textPrimary, lineHeight: 1 }}>
                 {stat.value}
               </div>
               <div style={{

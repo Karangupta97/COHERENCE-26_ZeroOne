@@ -68,7 +68,7 @@ export default function KPICard({ icon, value, label, delta, deltaType = 'up' })
 
             <div style={{
                 fontSize: fontSize.hero ? fontSize.hero : '42px',
-                fontFamily: fonts.heading,
+                fontFamily: "'Open Sans', sans-serif",
                 fontWeight: 800,
                 color: colors.textPrimary,
                 lineHeight: 1.1,
