@@ -22,9 +22,16 @@ import {
     HiOutlineCpuChip,
     HiOutlineArrowPath,
     HiOutlineExclamationTriangle,
+    HiOutlineInformationCircle,
 } from 'react-icons/hi2';
 
 const PHASES = ['Phase I', 'Phase II', 'Phase III', 'Phase IV'];
+const PHASE_INFO = {
+    'Phase I': { participants: '20–80', goal: 'Safety & Dosage', desc: 'Tests the treatment in a small group to evaluate safety, determine dosage range, and identify side effects.' },
+    'Phase II': { participants: '100–300', goal: 'Efficacy & Side Effects', desc: 'The treatment is given to a larger group to assess effectiveness and further evaluate safety.' },
+    'Phase III': { participants: '1,000–3,000', goal: 'Confirm Effectiveness', desc: 'Large-scale testing to confirm efficacy, monitor side effects, and compare with standard treatments.' },
+    'Phase IV': { participants: 'Post-approval', goal: 'Post-Market Surveillance', desc: 'Ongoing studies after approval to gather long-term safety and effectiveness data.' },
+};
 const CATEGORIES = ['Endocrinology', 'Cardiology', 'Oncology', 'Neurology', 'Metabolic', 'Nephrology', 'Pulmonology', 'Rheumatology'];
 const DIAGNOSES = ['Type 2 Diabetes', 'Hypertension', 'Breast Cancer', 'Chronic Kidney Disease', 'Metabolic Syndrome', 'Asthma', 'COPD', 'Rheumatoid Arthritis', 'Heart Failure', 'Alzheimer\'s Disease'];
 const EXCLUSIONS = ['Pregnancy', 'Active Infection', 'Liver Cirrhosis', 'Uncontrolled Diabetes', 'Recent Surgery', 'Immunocompromised'];
@@ -41,7 +48,7 @@ export default function PostTrial({ setPage }) {
     const { colors, fonts, spacing, radius, fontSize } = useTheme();
 
     const [formData, setFormData] = useState({
-        trialName: '', trialId: '', phase: '', category: '', duration: '',
+        trialName: '', trialId: '', phase: '', category: '',
         ageMin: '', ageMax: '', gender: 'All',
         diagnoses: [], exclusions: [],
         labValues: [{ labName: '', operator: '>', value: '', unit: '' }],
@@ -282,13 +289,70 @@ export default function PostTrial({ setPage }) {
                     {fieldError('trialId')}
                 </div>
                 <div>
-                    <label style={labelStyle}>Phase *</label>
+                    <label style={{ ...labelStyle, display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        Phase *
+                        <span
+                            onClick={() => setFocusedField(focusedField === 'phaseInfo' ? null : 'phaseInfo')}
+                            style={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center' }}
+                            title="What do the phases mean?"
+                        >
+                            <HiOutlineInformationCircle style={{ width: 14, height: 14, color: focusedField === 'phaseInfo' ? colors.accent : colors.textSecondary, transition: 'color 0.2s' }} />
+                        </span>
+                    </label>
                     <select style={inputFocusStyleValidated('phase')} value={formData.phase} onChange={e => { update('phase', e.target.value); setErrors(prev => { const n = { ...prev }; delete n.phase; return n; }); }}
                         onFocus={() => setFocusedField('phase')} onBlur={() => setFocusedField(null)}>
                         <option value="">Select Phase</option>
                         {PHASES.map(p => <option key={p} value={p}>{p}</option>)}
                     </select>
                     {fieldError('phase')}
+                    {(formData.phase && PHASE_INFO[formData.phase] || focusedField === 'phaseInfo') && (
+                        <div style={{
+                            marginTop: '8px', padding: `${spacing.sm} ${spacing.md}`,
+                            background: colors.accentGlow || `${colors.accent}08`,
+                            border: `1px solid ${colors.accent}25`,
+                            borderRadius: radius.md,
+                        }}>
+                            {formData.phase && PHASE_INFO[formData.phase] ? (
+                                <>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
+                                        <HiOutlineLightBulb style={{ width: 13, height: 13, color: colors.accent, flexShrink: 0 }} />
+                                        <span style={{ fontSize: '11px', fontWeight: 700, color: colors.accent, fontFamily: fonts.body }}>
+                                            {formData.phase}
+                                        </span>
+                                        <span style={{ fontSize: '10px', color: colors.textSecondary, fontFamily: fonts.body }}>
+                                            — {PHASE_INFO[formData.phase].goal}
+                                        </span>
+                                    </div>
+                                    <p style={{ margin: 0, fontSize: '11px', color: colors.textSecondary, fontFamily: fonts.body, lineHeight: 1.5 }}>
+                                        {PHASE_INFO[formData.phase].desc}
+                                    </p>
+                                    <span style={{
+                                        display: 'inline-block', marginTop: '4px',
+                                        fontSize: '10px', fontWeight: 600, color: colors.accent,
+                                        background: `${colors.accent}12`, padding: '1px 8px',
+                                        borderRadius: radius.sm, fontFamily: fonts.mono || fonts.body,
+                                    }}>
+                                        Typical participants: {PHASE_INFO[formData.phase].participants}
+                                    </span>
+                                </>
+                            ) : (
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '2px' }}>
+                                        <HiOutlineInformationCircle style={{ width: 13, height: 13, color: colors.accent, flexShrink: 0 }} />
+                                        <span style={{ fontSize: '11px', fontWeight: 700, color: colors.accent, fontFamily: fonts.body }}>
+                                            Clinical Trial Phases
+                                        </span>
+                                    </div>
+                                    {PHASES.map(p => (
+                                        <div key={p} style={{ display: 'flex', gap: '6px', alignItems: 'baseline' }}>
+                                            <span style={{ fontSize: '11px', fontWeight: 700, color: colors.accent, fontFamily: fonts.body, minWidth: 60 }}>{p}</span>
+                                            <span style={{ fontSize: '11px', color: colors.textSecondary, fontFamily: fonts.body }}>{PHASE_INFO[p].goal} — {PHASE_INFO[p].participants} participants</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    )}
                 </div>
                 <div>
                     <label style={labelStyle}>Medical Category *</label>
@@ -299,12 +363,7 @@ export default function PostTrial({ setPage }) {
                     </select>
                     {fieldError('category')}
                 </div>
-                <div style={{ gridColumn: '1 / -1' }}>
-                    <label style={labelStyle}>Duration</label>
-                    <input style={inputFocusStyle('duration')} placeholder="e.g. 18 months"
-                        value={formData.duration} onChange={e => update('duration', e.target.value)}
-                        onFocus={() => setFocusedField('duration')} onBlur={() => setFocusedField(null)} />
-                </div>
+
             </div>
         </div>
     );
@@ -591,7 +650,6 @@ export default function PostTrial({ setPage }) {
                     ['Trial ID', formData.trialId || '—'],
                     ['Phase', formData.phase || '—'],
                     ['Category', formData.category || '—'],
-                    ['Duration', formData.duration || '—'],
                 ],
             },
             {
