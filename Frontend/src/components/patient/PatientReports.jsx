@@ -605,8 +605,13 @@ export default function PatientReports() {
                                 {s.count}
                             </div>
                         ) : (
-                            <div style={{ fontSize: '18px', fontWeight: 800, fontFamily: fonts.heading, color: colors.textPrimary, lineHeight: 1 }}>
-                                {formatFileSize(totalSize)} <span style={{ fontSize: '12px', fontWeight: 500, color: colors.textSecondary }}>/ 5 MB</span>
+                            <div style={{ display: 'flex', alignItems: 'baseline', gap: 6 }}>
+                                <span style={{ fontSize: '26px', fontWeight: 800, fontFamily: fonts.heading, color: colors.textPrimary, lineHeight: 1 }}>
+                                    {((totalSize / (5 * 1024 * 1024)) * 100).toFixed(1)}%
+                                </span>
+                                <span style={{ fontSize: '11px', fontWeight: 500, color: colors.textSecondary }}>
+                                    ({formatFileSize(totalSize)} / 5 MB)
+                                </span>
                             </div>
                         )}
                         <div style={{ fontSize: '11px', color: colors.textSecondary, fontFamily: fonts.body, marginTop: 4 }}>{s.sub}</div>

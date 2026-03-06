@@ -1,5 +1,5 @@
 const MedicalReport = require("../models/MedicalReport");
-const { uploadToR2 } = require("../utils/r2Storage");
+const { uploadToR2, getObjectSize } = require("../utils/r2Storage");
 const { extractMedicalData } = require("../utils/geminiExtract");
 
 // Allowed MIME types for medical reports
@@ -54,6 +54,7 @@ async function uploadReport(req, res, next) {
       reportUrl,
       originalFileName: originalname,
       mimeType: mimetype,
+      fileSize: size,
       extractionStatus: "pending",
     });
 
@@ -94,6 +95,20 @@ async function getMyReports(req, res, next) {
     const reports = await MedicalReport.find({ userId: req.user._id })
       .sort({ createdAt: -1 })
       .lean();
+
+    // Lazy-backfill fileSize for reports uploaded before the field existed
+    const needSize = reports.filter((r) => !r.fileSize && r.reportUrl);
+    if (needSize.length) {
+      await Promise.all(
+        needSize.map(async (r) => {
+          const size = await getObjectSize(r.reportUrl);
+          if (size) {
+            r.fileSize = size;
+            await MedicalReport.updateOne({ _id: r._id }, { fileSize: size });
+          }
+        })
+      );
+    }
 
     return res.json({ ok: true, count: reports.length, data: reports });
   } catch (err) {

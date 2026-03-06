@@ -1,4 +1,4 @@
-const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
+const { S3Client, PutObjectCommand, HeadObjectCommand } = require("@aws-sdk/client-s3");
 const crypto = require("crypto");
 const path = require("path");
 
@@ -43,4 +43,20 @@ async function uploadToR2(buffer, originalName, mimeType) {
   return fileUrl;
 }
 
-module.exports = { uploadToR2 };
+/**
+ * Returns the size (in bytes) of an object stored in R2.
+ *
+ * @param {string} fileUrl  Public URL of the object
+ * @returns {Promise<number>}  File size in bytes, or 0 on error
+ */
+async function getObjectSize(fileUrl) {
+  try {
+    const key = fileUrl.replace(`${PUBLIC_URL.replace(/\/$/, "")}/`, "");
+    const head = await r2.send(new HeadObjectCommand({ Bucket: BUCKET_NAME, Key: key }));
+    return head.ContentLength || 0;
+  } catch {
+    return 0;
+  }
+}
+
+module.exports = { uploadToR2, getObjectSize };

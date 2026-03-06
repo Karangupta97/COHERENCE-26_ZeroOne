@@ -43,6 +43,10 @@ const medicalReportSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
+    fileSize: {
+      type: Number,
+      default: 0,
+    },
     extractedData: {
       type: extractedDataSchema,
       default: null,

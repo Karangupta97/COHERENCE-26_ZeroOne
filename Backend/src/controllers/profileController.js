@@ -22,11 +22,12 @@ async function updateMe(req, res, next) {
       return res.status(404).json({ ok: false, message: "User not found" });
     }
 
-    // Common fields
+    // Common fields — skip empty strings so required fields aren't blanked
     const allowedCommon = ["firstName", "lastName", "phone"];
     for (const field of allowedCommon) {
-      if (req.body[field] !== undefined) {
-        user[field] = req.body[field];
+      const val = req.body[field];
+      if (val !== undefined && val !== "") {
+        user[field] = val;
       }
     }
 

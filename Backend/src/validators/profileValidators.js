@@ -2,17 +2,17 @@ const { body } = require("express-validator");
 
 const updateProfileValidation = [
   body("firstName")
-    .optional()
+    .optional({ values: "falsy" })
     .trim()
     .isLength({ min: 1, max: 50 }).withMessage("First name must be 1–50 characters"),
 
   body("lastName")
-    .optional()
+    .optional({ values: "falsy" })
     .trim()
     .isLength({ min: 1, max: 50 }).withMessage("Last name must be 1–50 characters"),
 
   body("phone")
-    .optional()
+    .optional({ values: "falsy" })
     .trim()
     .isMobilePhone("any").withMessage("Invalid phone number"),
 
