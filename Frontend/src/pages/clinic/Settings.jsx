@@ -1,187 +1,136 @@
-// ============================================================
-//  Settings — Clinic portal settings page
-// ============================================================
+import { useState } from 'react'
+import { useTheme, radius, spacing, fontSize } from '../../theme'
+import { ThemeSwitcher } from '../../theme'
+import { motion } from 'framer-motion'
+import {
+    HiOutlinePaintBrush,
+    HiOutlineBell,
+    HiOutlineShieldCheck,
+    HiOutlineUserCircle,
+    HiOutlineCog6Tooth,
+    HiOutlineGlobeAlt,
+    HiOutlineCalendarDays,
+} from 'react-icons/hi2'
 
-import { useState } from 'react';
-import { useTheme } from '../../theme';
-import Toast from '../../components/shared/Toast';
-
-export default function Settings() {
-    const { colors, fonts, spacing, radius, fontSize } = useTheme();
-
-    const [settings, setSettings] = useState({
-        emailNotifications: true,
-        smsNotifications: false,
-        matchAlerts: true,
-        enrollmentAlerts: true,
-        autoApproveHighScore: false,
-        autoApproveThreshold: 90,
-        defaultRadius: 50,
-        exportFormat: 'CSV',
-        timezone: 'Asia/Kolkata',
-    });
-
-    const [toast, setToast] = useState({ show: false, message: '', variant: 'success' });
-
-    const update = (key, val) => setSettings(prev => ({ ...prev, [key]: val }));
-
-    const handleSave = () => {
-        setToast({ show: true, message: 'Settings saved successfully!', variant: 'success' });
-    };
-
-    const cardStyle = {
-        background: colors.card,
-        border: `1px solid ${colors.border}`,
-        borderRadius: radius.lg,
-        padding: spacing.lg,
-    };
-
-    const toggleStyle = (enabled) => ({
-        width: '44px', height: '24px', borderRadius: radius.full,
-        background: enabled ? colors.accent : `${colors.border}80`,
-        border: 'none', cursor: 'pointer', position: 'relative',
-        transition: 'background 0.2s ease', padding: 0,
-    });
-
-    const toggleDot = (enabled) => ({
-        position: 'absolute', top: '3px',
-        left: enabled ? '23px' : '3px',
-        width: '18px', height: '18px', borderRadius: '50%',
-        background: '#fff', transition: 'left 0.2s ease',
-        boxShadow: '0 1px 3px rgba(0,0,0,0.3)',
-    });
-
-    const inputStyle = {
-        padding: `${spacing.sm} ${spacing.md}`,
-        background: colors.surface, border: `1px solid ${colors.border}`,
-        borderRadius: radius.md, color: colors.textPrimary,
-        fontFamily: fonts.body, fontSize: fontSize.sm, outline: 'none',
-        width: '200px',
-    };
-
-    const labelStyle = { fontSize: fontSize.sm, color: colors.textPrimary, fontWeight: 500, flex: 1 };
-    const descStyle = { fontSize: fontSize.xs, color: colors.textSecondary, marginTop: '2px' };
-
-    const ToggleRow = ({ label, desc, settingKey }) => (
-        <div style={{ display: 'flex', alignItems: 'center', padding: `${spacing.sm} 0`, borderBottom: `1px solid ${colors.border}30` }}>
-            <div style={{ flex: 1 }}>
-                <div style={labelStyle}>{label}</div>
-                {desc && <div style={descStyle}>{desc}</div>}
-            </div>
-            <button style={toggleStyle(settings[settingKey])} onClick={() => update(settingKey, !settings[settingKey])}>
-                <div style={toggleDot(settings[settingKey])} />
-            </button>
-        </div>
-    );
-
+function ToggleSwitch({ on, onToggle, colors }) {
     return (
-        <div style={{ padding: spacing.xl, display: 'flex', flexDirection: 'column', gap: spacing.lg, animation: 'fadeInUp 0.4s ease' }}>
-
-            {/* Notification Preferences */}
-            <div style={cardStyle}>
-                <h3 style={{ fontFamily: fonts.heading, fontSize: fontSize.base, fontWeight: 700, color: colors.textPrimary, margin: `0 0 ${spacing.md}` }}>
-                    🔔 Notification Preferences
-                </h3>
-                <ToggleRow label="Email Notifications" desc="Receive updates via email" settingKey="emailNotifications" />
-                <ToggleRow label="SMS Notifications" desc="Receive SMS for urgent updates" settingKey="smsNotifications" />
-                <ToggleRow label="Match Alerts" desc="Alert when new matches are found" settingKey="matchAlerts" />
-                <ToggleRow label="Enrollment Alerts" desc="Alert when patients are enrolled" settingKey="enrollmentAlerts" />
-            </div>
-
-            {/* Auto-Approve */}
-            <div style={cardStyle}>
-                <h3 style={{ fontFamily: fonts.heading, fontSize: fontSize.base, fontWeight: 700, color: colors.textPrimary, margin: `0 0 ${spacing.md}` }}>
-                    🤖 AI Automation
-                </h3>
-                <ToggleRow label="Auto-Approve High Score Matches" desc={`Automatically approve candidates with score ≥ ${settings.autoApproveThreshold}%`} settingKey="autoApproveHighScore" />
-                {settings.autoApproveHighScore && (
-                    <div style={{ display: 'flex', alignItems: 'center', gap: spacing.md, padding: `${spacing.sm} 0` }}>
-                        <label style={{ fontSize: fontSize.sm, color: colors.textSecondary }}>Threshold:</label>
-                        <input type="range" min="70" max="100" value={settings.autoApproveThreshold}
-                            onChange={e => update('autoApproveThreshold', parseInt(e.target.value))}
-                            style={{ width: '150px', accentColor: colors.accent }} />
-                        <span style={{ fontFamily: fonts.mono, fontSize: fontSize.sm, color: colors.accent, fontWeight: 700 }}>
-                            {settings.autoApproveThreshold}%
-                        </span>
-                    </div>
-                )}
-            </div>
-
-            {/* General Settings */}
-            <div style={cardStyle}>
-                <h3 style={{ fontFamily: fonts.heading, fontSize: fontSize.base, fontWeight: 700, color: colors.textPrimary, margin: `0 0 ${spacing.md}` }}>
-                    🌐 General
-                </h3>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.md }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: spacing.md }}>
-                        <label style={{ ...labelStyle, minWidth: '160px' }}>Default Location Radius</label>
-                        <input type="number" style={inputStyle} value={settings.defaultRadius} onChange={e => update('defaultRadius', e.target.value)} />
-                        <span style={{ fontSize: fontSize.xs, color: colors.textSecondary }}>km</span>
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: spacing.md }}>
-                        <label style={{ ...labelStyle, minWidth: '160px' }}>Export Format</label>
-                        <select style={inputStyle} value={settings.exportFormat} onChange={e => update('exportFormat', e.target.value)}>
-                            <option>CSV</option><option>Excel</option><option>PDF</option>
-                        </select>
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: spacing.md }}>
-                        <label style={{ ...labelStyle, minWidth: '160px' }}>Timezone</label>
-                        <select style={inputStyle} value={settings.timezone} onChange={e => update('timezone', e.target.value)}>
-                            <option value="Asia/Kolkata">Asia/Kolkata (IST)</option>
-                            <option value="America/New_York">America/New_York (EST)</option>
-                            <option value="Europe/London">Europe/London (GMT)</option>
-                            <option value="Asia/Tokyo">Asia/Tokyo (JST)</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-
-            {/* Calendar Integration */}
-            <div style={cardStyle}>
-                <h3 style={{ fontFamily: fonts.heading, fontSize: fontSize.base, fontWeight: 700, color: colors.textPrimary, margin: `0 0 ${spacing.md}` }}>
-                    📅 Calendar Integration
-                </h3>
-                <div style={{ display: 'flex', gap: spacing.md }}>
-                    {[
-                        { label: 'Connect Google Calendar', icon: '📆', bg: '#4285F4' },
-                        { label: 'Connect Outlook', icon: '📧', bg: '#0078D4' },
-                    ].map(btn => (
-                        <button key={btn.label} onClick={() => setToast({ show: true, message: `${btn.label} — coming soon!`, variant: 'info' })} style={{
-                            padding: `${spacing.md} ${spacing.lg}`, background: `${btn.bg}15`,
-                            color: btn.bg, border: `1px solid ${btn.bg}40`,
-                            borderRadius: radius.md, fontSize: fontSize.sm, fontWeight: 600,
-                            cursor: 'pointer', fontFamily: fonts.body, display: 'flex',
-                            alignItems: 'center', gap: spacing.sm, transition: 'all 0.2s ease',
-                        }}
-                            onMouseEnter={e => { e.currentTarget.style.background = `${btn.bg}25`; }}
-                            onMouseLeave={e => { e.currentTarget.style.background = `${btn.bg}15`; }}
-                        >
-                            {btn.icon} {btn.label}
-                        </button>
-                    ))}
-                </div>
-            </div>
-
-            {/* Save Button */}
-            <button onClick={handleSave} style={{
-                padding: `${spacing.md} ${spacing.xl}`,
-                background: `linear-gradient(135deg, ${colors.accent}, ${colors.green})`,
-                color: '#fff', border: 'none', borderRadius: radius.md,
-                fontSize: fontSize.base, fontWeight: 700, cursor: 'pointer',
-                fontFamily: fonts.body, boxShadow: `0 4px 20px ${colors.accent}40`,
-                transition: 'all 0.3s ease', alignSelf: 'flex-start',
-            }}
-                onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; }}
-                onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; }}
-            >
-                💾 Save Settings
-            </button>
-
-            <Toast message={toast.message} variant={toast.variant} isVisible={toast.show}
-                onClose={() => setToast({ ...toast, show: false })} />
-
-            <style>{`@keyframes fadeInUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }`}</style>
-        </div>
-    );
+        <button onClick={onToggle} style={{
+            width: 44, height: 24, borderRadius: 12, border: 'none', cursor: 'pointer',
+            background: on ? colors.green : colors.border, position: 'relative', transition: 'background 0.2s',
+            padding: 0,
+        }}>
+            <div style={{
+                width: 18, height: 18, borderRadius: '50%', background: '#fff',
+                position: 'absolute', top: 3, left: on ? 22 : 4, transition: 'left 0.2s',
+                boxShadow: '0 1px 4px rgba(0,0,0,0.2)',
+            }} />
+        </button>
+    )
 }
 
+export default function Settings() {
+    const { colors, fonts } = useTheme()
+    const [settings, setSettings] = useState({
+        emailNotif: true,
+        pushNotif: true,
+        smsNotif: false,
+        matchAlerts: true,
+        enrollmentAlerts: true,
+        autoApprove: false,
+        dataSharing: true,
+        twoFactor: false,
+    })
+
+    const toggle = (key) => setSettings({ ...settings, [key]: !settings[key] })
+
+    const cardStyle = { background: colors.surface, border: `1px solid ${colors.border}`, borderRadius: radius.lg, boxShadow: colors.shadow, padding: spacing.lg }
+
+    const sectionTitle = (icon, title, iconColor) => {
+        const Icon = icon
+        return (
+            <h3 style={{ margin: `0 0 ${spacing.lg}`, fontSize: fontSize.lg, fontFamily: fonts.heading, fontWeight: 700, color: colors.textPrimary, display: 'flex', alignItems: 'center', gap: spacing.sm }}>
+                <Icon style={{ width: 20, height: 20, color: iconColor }} /> {title}
+            </h3>
+        )
+    }
+
+    const settingRow = (label, desc, key) => (
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: `${spacing.md} 0`, borderBottom: `1px solid ${colors.border}` }}>
+            <div>
+                <div style={{ fontSize: fontSize.sm, fontWeight: 600, color: colors.textPrimary, fontFamily: fonts.body }}>{label}</div>
+                <div style={{ fontSize: fontSize.xs, color: colors.textSecondary, marginTop: 2, fontFamily: fonts.body }}>{desc}</div>
+            </div>
+            <ToggleSwitch on={settings[key]} onToggle={() => toggle(key)} colors={colors} />
+        </div>
+    )
+
+    return (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.lg }}>
+            {/* Appearance */}
+            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} style={cardStyle}>
+                {sectionTitle(HiOutlinePaintBrush, 'Appearance', colors.accent)}
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: `${spacing.md} 0`, borderBottom: `1px solid ${colors.border}` }}>
+                    <div>
+                        <div style={{ fontSize: fontSize.sm, fontWeight: 600, color: colors.textPrimary, fontFamily: fonts.body }}>Theme & Mode</div>
+                        <div style={{ fontSize: fontSize.xs, color: colors.textSecondary, marginTop: 2, fontFamily: fonts.body }}>Choose your preferred color theme and dark/light mode</div>
+                    </div>
+                    <ThemeSwitcher />
+                </div>
+            </motion.div>
+
+            {/* Notifications */}
+            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }} style={cardStyle}>
+                {sectionTitle(HiOutlineBell, 'Notification Preferences', colors.accent)}
+                {settingRow('Email Notifications', 'Receive trial updates and candidate status via email', 'emailNotif')}
+                {settingRow('Push Notifications', 'Get instant push notifications for important updates', 'pushNotif')}
+                {settingRow('SMS Alerts', 'Receive SMS alerts for urgent enrollment notifications', 'smsNotif')}
+                {settingRow('Match Alerts', 'Alert when new patient matches are found', 'matchAlerts')}
+                {settingRow('Enrollment Alerts', 'Alert when patients are enrolled in trials', 'enrollmentAlerts')}
+            </motion.div>
+
+            {/* Privacy & Security */}
+            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} style={cardStyle}>
+                {sectionTitle(HiOutlineShieldCheck, 'Privacy & Security', colors.green)}
+                {settingRow('Data Sharing', 'Allow sharing candidate data with partner institutions', 'dataSharing')}
+                {settingRow('Two-Factor Authentication', 'Add an extra layer of security to your account', 'twoFactor')}
+            </motion.div>
+
+            {/* AI Automation */}
+            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} style={cardStyle}>
+                {sectionTitle(HiOutlineCog6Tooth, 'AI Automation', colors.accent)}
+                {settingRow('Auto-Approve High Score', 'Automatically approve candidates with match score ≥ 90%', 'autoApprove')}
+            </motion.div>
+
+            {/* Account */}
+            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} style={cardStyle}>
+                {sectionTitle(HiOutlineUserCircle, 'Account', colors.accent)}
+                <div style={{ display: 'flex', gap: spacing.md, flexWrap: 'wrap' }}>
+                    <button style={{
+                        padding: `10px ${spacing.xl}`, borderRadius: radius.sm,
+                        background: colors.accentGlow, color: colors.accent,
+                        border: `1px solid ${colors.accent}40`, fontSize: fontSize.sm,
+                        fontWeight: 600, fontFamily: fonts.body, cursor: 'pointer',
+                    }}>
+                        Change Password
+                    </button>
+                    <button style={{
+                        padding: `10px ${spacing.xl}`, borderRadius: radius.sm,
+                        background: colors.accentGlow, color: colors.accent,
+                        border: `1px solid ${colors.accent}40`, fontSize: fontSize.sm,
+                        fontWeight: 600, fontFamily: fonts.body, cursor: 'pointer',
+                    }}>
+                        Export Data
+                    </button>
+                    <button style={{
+                        padding: `10px ${spacing.xl}`, borderRadius: radius.sm,
+                        background: `${colors.red}18`, color: colors.red,
+                        border: `1px solid ${colors.red}40`, fontSize: fontSize.sm,
+                        fontWeight: 600, fontFamily: fonts.body, cursor: 'pointer',
+                    }}>
+                        Delete Account
+                    </button>
+                </div>
+            </motion.div>
+        </div>
+    )
+}
