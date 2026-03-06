@@ -1,5 +1,5 @@
-import { useState, useRef } from 'react'
-import { useTheme, radius, spacing, fontSize, PATIENTS } from '../../theme.jsx'
+import { useState, useRef, useEffect, useCallback } from 'react'
+import { useTheme, radius, spacing, fontSize } from '../../theme.jsx'
 import { motion, AnimatePresence } from 'framer-motion'
 import usePatient from '../../hooks/usePatient'
 import {
@@ -16,8 +16,6 @@ import {
   HiOutlineEye,
 } from 'react-icons/hi2'
 
-const PATIENT = PATIENTS[0]
-
 const INITIAL_RECORDS = [
   { id: 1, name: 'Blood Work Report - Feb 2026',  date: '28 Feb 2026', type: 'Lab Report',    size: '1.2 MB' },
   { id: 2, name: 'HbA1c Test Results',            date: '15 Feb 2026', type: 'Lab Report',    size: '0.8 MB' },
@@ -28,27 +26,40 @@ const INITIAL_RECORDS = [
 export default function MyProfilePage() {
   const { colors, fonts } = useTheme()
   const fileInputRef = useRef(null)
-  const { patient, fullName: patientFullName, anonymizedId } = usePatient()
+  const { patient, anonymizedId } = usePatient()
+
+  // ── Build profile from backend patient data ──
+  const buildProfile = useCallback((p) => ({
+    fullName: p ? `${p.firstName || ''} ${p.lastName || ''}`.trim() : 'Patient',
+    age: p?.age != null ? `${p.age}` : '',
+    gender: p?.gender || '',
+    location: p?.location || '',
+    phone: p?.phone || '',
+    email: p?.email || '',
+    address: p?.address || '',
+    diagnosis: p?.diagnosis || '',
+    medications: p?.medications || '',
+    hba1c: p?.hba1c || '',
+    bmi: p?.bmi || '',
+    bloodType: p?.bloodGroup || '',
+    allergies: p?.allergies || '',
+  }), [])
 
   // ── Edit Profile state ──
   const [editing, setEditing] = useState(false)
-  const [profile, setProfile] = useState({
-    fullName: patientFullName || 'Patient',
-    age: `${PATIENT.age}`,
-    gender: PATIENT.gender === 'F' ? 'Female' : 'Male',
-    location: PATIENT.location,
-    phone: patient?.phone || '',
-    email: patient?.email || '',
-    address: patient?.address || '',
-    diagnosis: PATIENT.diagnosis,
-    medications: PATIENT.meds,
-    hba1c: PATIENT.hba1c,
-    bmi: PATIENT.bmi,
-    bloodType: 'B+',
-    allergies: 'None reported',
-  })
-  const [savedProfile, setSavedProfile] = useState({ ...profile })
+  const [profile, setProfile] = useState(() => buildProfile(patient))
+  const [savedProfile, setSavedProfile] = useState(() => buildProfile(patient))
   const [saveToast, setSaveToast] = useState(false)
+  const [saving, setSaving] = useState(false)
+
+  // Sync profile when patient data loads from API
+  useEffect(() => {
+    if (patient) {
+      const fresh = buildProfile(patient)
+      setProfile(fresh)
+      setSavedProfile(fresh)
+    }
+  }, [patient, buildProfile])
 
   // ── Records state ──
   const [records, setRecords] = useState(INITIAL_RECORDS)
@@ -64,11 +75,58 @@ export default function MyProfilePage() {
     setEditing(!editing)
   }
 
-  const handleSave = () => {
-    setSavedProfile({ ...profile })
-    setEditing(false)
-    setSaveToast(true)
-    setTimeout(() => setSaveToast(false), 3000)
+  const handleSave = async () => {
+    setSaving(true)
+    try {
+      const token = localStorage.getItem('token')
+      const nameParts = profile.fullName.trim().split(/\s+/)
+      const firstName = nameParts[0] || ''
+      const lastName = nameParts.slice(1).join(' ') || ''
+
+      const payload = {
+        firstName,
+        lastName,
+        phone: profile.phone,
+        patientProfile: {
+          age: profile.age ? parseInt(profile.age, 10) : undefined,
+          gender: profile.gender,
+          location: profile.location,
+          address: profile.address,
+          diagnosis: profile.diagnosis,
+          medications: profile.medications,
+          hba1c: profile.hba1c,
+          bmi: profile.bmi,
+          bloodGroup: profile.bloodType,
+          allergies: profile.allergies,
+        },
+      }
+
+      const res = await fetch('/api/profile/me', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
+      })
+
+      const data = await res.json()
+      if (data.ok) {
+        localStorage.setItem('user', JSON.stringify(data.user))
+        setSavedProfile({ ...profile })
+        setEditing(false)
+        setSaveToast(true)
+        setTimeout(() => setSaveToast(false), 3000)
+      } else {
+        setSaveToast('error')
+        setTimeout(() => setSaveToast(false), 3000)
+      }
+    } catch {
+      setSaveToast('error')
+      setTimeout(() => setSaveToast(false), 3000)
+    } finally {
+      setSaving(false)
+    }
   }
 
   const handleChange = (field, value) => {
@@ -141,10 +199,10 @@ export default function MyProfilePage() {
   }
 
   // Use a plain function (not a component) to avoid remounting on every render
-  const renderField = (label, field) => (
+  const renderField = (label, field, readOnly = false) => (
     <div key={field}>
       <div style={labelStyle}>{label}</div>
-      {editing ? (
+      {editing && !readOnly ? (
         <input
           key={`input-${field}`}
           value={profile[field]}
@@ -152,7 +210,7 @@ export default function MyProfilePage() {
           style={inputStyle}
         />
       ) : (
-        <div style={valueStyle}>{profile[field]}</div>
+        <div style={valueStyle}>{profile[field] || '—'}</div>
       )}
     </div>
   )
@@ -173,9 +231,9 @@ export default function MyProfilePage() {
       <AnimatePresence>
         {saveToast && (
           <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}
-            style={{ position: 'fixed', top: 80, right: 32, zIndex: 100, background: colors.green, color: '#fff', padding: `${spacing.sm} ${spacing.lg}`, borderRadius: radius.md, fontSize: fontSize.sm, fontWeight: 600, fontFamily: fonts.body, display: 'flex', alignItems: 'center', gap: spacing.sm, boxShadow: '0 4px 16px rgba(0,0,0,0.2)' }}
+            style={{ position: 'fixed', top: 80, right: 32, zIndex: 100, background: saveToast === 'error' ? (colors.red || '#EF4444') : colors.green, color: '#fff', padding: `${spacing.sm} ${spacing.lg}`, borderRadius: radius.md, fontSize: fontSize.sm, fontWeight: 600, fontFamily: fonts.body, display: 'flex', alignItems: 'center', gap: spacing.sm, boxShadow: '0 4px 16px rgba(0,0,0,0.2)' }}
           >
-            <HiOutlineCheckCircle style={{ width: 18, height: 18 }} /> Profile saved successfully!
+            <HiOutlineCheckCircle style={{ width: 18, height: 18 }} /> {saveToast === 'error' ? 'Failed to save profile!' : 'Profile saved successfully!'}
           </motion.div>
         )}
         {uploadToast && (
@@ -209,19 +267,19 @@ export default function MyProfilePage() {
           </p>
           <div style={{ marginTop: spacing.sm, display: 'flex', gap: spacing.sm, flexWrap: 'wrap' }}>
             <span style={{ fontSize: fontSize.xs, padding: '3px 10px', borderRadius: radius.full, background: colors.accentGlow, color: colors.accent, fontWeight: 600 }}>{profile.diagnosis}</span>
-            <span style={{ fontSize: fontSize.xs, padding: '3px 10px', borderRadius: radius.full, background: colors.greenGlow, color: colors.green, fontWeight: 600 }}>{PATIENT.matches} Trial Matches</span>
           </div>
         </div>
         <div style={{ display: 'flex', gap: spacing.sm, flexShrink: 0 }}>
           {editing && (
-            <button onClick={handleSave} style={{
+            <button onClick={handleSave} disabled={saving} style={{
               display: 'flex', alignItems: 'center', gap: 6,
               padding: `8px ${spacing.md}`, borderRadius: radius.sm,
               background: colors.green, color: '#fff',
               border: 'none', fontSize: fontSize.sm, fontWeight: 600,
-              fontFamily: fonts.body, cursor: 'pointer',
+              fontFamily: fonts.body, cursor: saving ? 'not-allowed' : 'pointer',
+              opacity: saving ? 0.7 : 1,
             }}>
-              <HiOutlineCheckCircle style={{ width: 16, height: 16 }} /> Save
+              <HiOutlineCheckCircle style={{ width: 16, height: 16 }} /> {saving ? 'Saving...' : 'Save'}
             </button>
           )}
           <button onClick={handleEditToggle} style={{
@@ -259,7 +317,7 @@ export default function MyProfilePage() {
             {renderField('Gender', 'gender')}
             {renderField('Location', 'location')}
             {renderField('Phone', 'phone')}
-            {renderField('Email', 'email')}
+            {renderField('Email', 'email', true)}
             {renderField('Address', 'address')}
           </div>
         </motion.div>

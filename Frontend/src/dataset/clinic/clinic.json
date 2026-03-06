@@ -429,116 +429,116 @@
             "Weight loss",
             "Low blood pressure"
         ]
+    },
+    {
+        "trial_id": "IND021",
+        "disease": "Friedreich's Ataxia",
+        "drug": "AtaxiHeal",
+        "phase": "Phase II",
+        "status": "Recruiting",
+        "location": "Bangalore",
+        "hospital": "NIMHANS Research Center",
+        "eligibility_age": "10-35",
+        "required_conditions": [
+            "Confirmed FXN gene mutation",
+            "Difficulty in coordination"
+        ],
+        "excluded_conditions": [
+            "Severe cardiomyopathy",
+            "Advanced neurological damage"
+        ],
+        "symptoms": [
+            "Poor balance",
+            "Difficulty walking",
+            "Speech problems"
+        ]
+    },
+    {
+        "trial_id": "IND022",
+        "disease": "Lambert-Eaton Myasthenic Syndrome",
+        "drug": "NeuroStim-IN",
+        "phase": "Phase II",
+        "status": "Recruiting",
+        "location": "Delhi",
+        "hospital": "AIIMS Delhi",
+        "eligibility_age": "18-65",
+        "required_conditions": [
+            "Autoimmune neuromuscular disorder confirmed"
+        ],
+        "excluded_conditions": [
+            "Active lung cancer",
+            "Severe respiratory failure"
+        ],
+        "symptoms": [
+            "Muscle weakness",
+            "Dry mouth",
+            "Difficulty climbing stairs"
+        ]
+    },
+    {
+        "trial_id": "IND023",
+        "disease": "Gitelman Syndrome",
+        "drug": "ElectroBalance",
+        "phase": "Phase I",
+        "status": "Recruiting",
+        "location": "Chennai",
+        "hospital": "Apollo Hospital Research Unit",
+        "eligibility_age": "12-50",
+        "required_conditions": [
+            "Electrolyte imbalance confirmed",
+            "Low potassium levels"
+        ],
+        "excluded_conditions": [
+            "Severe kidney failure"
+        ],
+        "symptoms": [
+            "Muscle cramps",
+            "Fatigue",
+            "Low blood pressure"
+        ]
+    },
+    {
+        "trial_id": "IND024",
+        "disease": "Multiple Endocrine Neoplasia",
+        "drug": "EndoBlock",
+        "phase": "Phase II",
+        "status": "Recruiting",
+        "location": "Mumbai",
+        "hospital": "Tata Memorial Hospital",
+        "eligibility_age": "18-60",
+        "required_conditions": [
+            "MEN1 gene mutation",
+            "Endocrine tumor diagnosis"
+        ],
+        "excluded_conditions": [
+            "Metastatic cancer stage IV"
+        ],
+        "symptoms": [
+            "Hormonal imbalance",
+            "Tumor growth",
+            "Abdominal pain"
+        ]
+    },
+    {
+        "trial_id": "IND025",
+        "disease": "Hypophosphatasia",
+        "drug": "BoneRestore-IN",
+        "phase": "Phase II",
+        "status": "Recruiting",
+        "location": "Hyderabad",
+        "hospital": "Apollo Research Institute",
+        "eligibility_age": "5-40",
+        "required_conditions": [
+            "Low alkaline phosphatase levels",
+            "Bone mineralization disorder"
+        ],
+        "excluded_conditions": [
+            "Severe skeletal deformity requiring surgery"
+        ],
+        "symptoms": [
+            "Bone weakness",
+            "Frequent fractures",
+            "Dental problems"
+        ]
     }
-[
-        {
-            "trial_id": "IND021",
-            "disease": "Friedreich's Ataxia",
-            "drug": "AtaxiHeal",
-            "phase": "Phase II",
-            "status": "Recruiting",
-            "location": "Bangalore",
-            "hospital": "NIMHANS Research Center",
-            "eligibility_age": "10-35",
-            "required_conditions": [
-                "Confirmed FXN gene mutation",
-                "Difficulty in coordination"
-            ],
-            "excluded_conditions": [
-                "Severe cardiomyopathy",
-                "Advanced neurological damage"
-            ],
-            "symptoms": [
-                "Poor balance",
-                "Difficulty walking",
-                "Speech problems"
-            ]
-        },
-        {
-            "trial_id": "IND022",
-            "disease": "Lambert-Eaton Myasthenic Syndrome",
-            "drug": "NeuroStim-IN",
-            "phase": "Phase II",
-            "status": "Recruiting",
-            "location": "Delhi",
-            "hospital": "AIIMS Delhi",
-            "eligibility_age": "18-65",
-            "required_conditions": [
-                "Autoimmune neuromuscular disorder confirmed"
-            ],
-            "excluded_conditions": [
-                "Active lung cancer",
-                "Severe respiratory failure"
-            ],
-            "symptoms": [
-                "Muscle weakness",
-                "Dry mouth",
-                "Difficulty climbing stairs"
-            ]
-        },
-        {
-            "trial_id": "IND023",
-            "disease": "Gitelman Syndrome",
-            "drug": "ElectroBalance",
-            "phase": "Phase I",
-            "status": "Recruiting",
-            "location": "Chennai",
-            "hospital": "Apollo Hospital Research Unit",
-            "eligibility_age": "12-50",
-            "required_conditions": [
-                "Electrolyte imbalance confirmed",
-                "Low potassium levels"
-            ],
-            "excluded_conditions": [
-                "Severe kidney failure"
-            ],
-            "symptoms": [
-                "Muscle cramps",
-                "Fatigue",
-                "Low blood pressure"
-            ]
-        },
-        {
-            "trial_id": "IND024",
-            "disease": "Multiple Endocrine Neoplasia",
-            "drug": "EndoBlock",
-            "phase": "Phase II",
-            "status": "Recruiting",
-            "location": "Mumbai",
-            "hospital": "Tata Memorial Hospital",
-            "eligibility_age": "18-60",
-            "required_conditions": [
-                "MEN1 gene mutation",
-                "Endocrine tumor diagnosis"
-            ],
-            "excluded_conditions": [
-                "Metastatic cancer stage IV"
-            ],
-            "symptoms": [
-                "Hormonal imbalance",
-                "Tumor growth",
-                "Abdominal pain"
-            ]
-        },
-        {
-            "trial_id": "IND025",
-            "disease": "Hypophosphatasia",
-            "drug": "BoneRestore-IN",
-            "phase": "Phase II",
-            "status": "Recruiting",
-            "location": "Hyderabad",
-            "hospital": "Apollo Research Institute",
-            "eligibility_age": "5-40",
-            "required_conditions": [
-                "Low alkaline phosphatase levels",
-                "Bone mineralization disorder"
-            ],
-            "excluded_conditions": [
-                "Severe skeletal deformity requiring surgery"
-            ],
-            "symptoms": [
-                "Bone weakness",
-                "Frequent fractures",
-                "Dental problems"
-            ]
-        }
+]

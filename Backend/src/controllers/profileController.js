@@ -32,7 +32,11 @@ async function updateMe(req, res, next) {
 
     // Patient-specific (fields are top-level on the Patient document)
     if (user.role === "patient" && req.body.patientProfile) {
-      const allowed = ["dateOfBirth", "bloodGroup", "address", "emergencyContact", "medicalHistory"];
+      const allowed = [
+        "dateOfBirth", "age", "gender", "location", "bloodGroup",
+        "address", "emergencyContact", "medicalHistory",
+        "diagnosis", "medications", "hba1c", "bmi", "allergies",
+      ];
       for (const field of allowed) {
         if (req.body.patientProfile[field] !== undefined) {
           user[field] = req.body.patientProfile[field];

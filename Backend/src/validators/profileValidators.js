@@ -26,6 +26,49 @@ const updateProfileValidation = [
     .optional()
     .isISO8601().withMessage("Date of birth must be a valid ISO date"),
 
+  body("patientProfile.age")
+    .optional()
+    .isInt({ min: 0, max: 150 }).withMessage("Age must be between 0 and 150"),
+
+  body("patientProfile.gender")
+    .optional()
+    .isIn(["Male", "Female", "Other"]).withMessage("Gender must be Male, Female, or Other"),
+
+  body("patientProfile.location")
+    .optional()
+    .trim()
+    .isLength({ max: 100 }).withMessage("Location must be at most 100 characters"),
+
+  body("patientProfile.diagnosis")
+    .optional()
+    .trim()
+    .isLength({ max: 200 }).withMessage("Diagnosis must be at most 200 characters"),
+
+  body("patientProfile.medications")
+    .optional()
+    .trim()
+    .isLength({ max: 300 }).withMessage("Medications must be at most 300 characters"),
+
+  body("patientProfile.hba1c")
+    .optional()
+    .trim()
+    .isLength({ max: 20 }).withMessage("HbA1c value must be at most 20 characters"),
+
+  body("patientProfile.bmi")
+    .optional()
+    .trim()
+    .isLength({ max: 20 }).withMessage("BMI value must be at most 20 characters"),
+
+  body("patientProfile.allergies")
+    .optional()
+    .trim()
+    .isLength({ max: 300 }).withMessage("Allergies must be at most 300 characters"),
+
+  body("patientProfile.address")
+    .optional()
+    .trim()
+    .isLength({ max: 300 }).withMessage("Address must be at most 300 characters"),
+
   // Doctor profile
   body("doctorProfile.yearsOfExperience")
     .optional()

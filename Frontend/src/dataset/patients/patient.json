@@ -2,7 +2,7 @@
   "patients": [
     {
       "patient_profile": {
-        "patient_id": "P001",
+        "anonymized_id": "ANON-A3F18B4C",
         "age": 18,
         "gender": "male",
         "location": "Pune",
@@ -15,7 +15,7 @@
     },
     {
       "patient_profile": {
-        "patient_id": "P002",
+        "anonymized_id": "ANON-B7D29E5A",
         "age": 25,
         "gender": "female",
         "location": "Mumbai",
@@ -28,7 +28,7 @@
     },
     {
       "patient_profile": {
-        "patient_id": "P003",
+        "anonymized_id": "ANON-C1E43F6D",
         "age": 40,
         "gender": "male",
         "location": "Pune",
@@ -41,7 +41,7 @@
     },
     {
       "patient_profile": {
-        "patient_id": "P004",
+        "anonymized_id": "ANON-D5A67B2E",
         "age": 52,
         "gender": "male",
         "location": "Delhi",
@@ -54,7 +54,7 @@
     },
     {
       "patient_profile": {
-        "patient_id": "P005",
+        "anonymized_id": "ANON-E9C8D1F3",
         "age": 16,
         "gender": "female",
         "location": "Pune",
@@ -67,7 +67,7 @@
     },
     {
       "patient_profile": {
-        "patient_id": "P006",
+        "anonymized_id": "ANON-F2B34A8C",
         "age": 30,
         "gender": "male",
         "location": "Bangalore",
@@ -80,7 +80,7 @@
     },
     {
       "patient_profile": {
-        "patient_id": "P007",
+        "anonymized_id": "ANON-14D5E7A9",
         "age": 14,
         "gender": "female",
         "location": "Hyderabad",
@@ -93,7 +93,7 @@
     },
     {
       "patient_profile": {
-        "patient_id": "P008",
+        "anonymized_id": "ANON-28F6C3B1",
         "age": 20,
         "gender": "male",
         "location": "Pune",
@@ -106,7 +106,7 @@
     },
     {
       "patient_profile": {
-        "patient_id": "P009",
+        "anonymized_id": "ANON-3CA91D5E",
         "age": 33,
         "gender": "female",
         "location": "Ahmedabad",
@@ -119,7 +119,7 @@
     },
     {
       "patient_profile": {
-        "patient_id": "P010",
+        "anonymized_id": "ANON-4DB72E6F",
         "age": 48,
         "gender": "male",
         "location": "Pune",
@@ -132,7 +132,7 @@
     },
     {
       "patient_profile": {
-        "patient_id": "P011",
+        "anonymized_id": "ANON-5EC83F7A",
         "age": 11,
         "gender": "male",
         "location": "Mumbai",
@@ -145,7 +145,7 @@
     },
     {
       "patient_profile": {
-        "patient_id": "P012",
+        "anonymized_id": "ANON-6FD94A8B",
         "age": 29,
         "gender": "female",
         "location": "Pune",
@@ -158,7 +158,7 @@
     },
     {
       "patient_profile": {
-        "patient_id": "P013",
+        "anonymized_id": "ANON-7AE15B9C",
         "age": 37,
         "gender": "male",
         "location": "Delhi",
@@ -171,7 +171,7 @@
     },
     {
       "patient_profile": {
-        "patient_id": "P014",
+        "anonymized_id": "ANON-8BF26CAD",
         "age": 42,
         "gender": "female",
         "location": "Kolkata",
@@ -184,7 +184,7 @@
     },
     {
       "patient_profile": {
-        "patient_id": "P015",
+        "anonymized_id": "ANON-9C137DBE",
         "age": 23,
         "gender": "male",
         "location": "Pune",
@@ -197,7 +197,7 @@
     },
     {
       "patient_profile": {
-        "patient_id": "P016",
+        "anonymized_id": "ANON-AD248ECF",
         "age": 31,
         "gender": "female",
         "location": "Chennai",
@@ -210,7 +210,7 @@
     },
     {
       "patient_profile": {
-        "patient_id": "P017",
+        "anonymized_id": "ANON-BE359FD1",
         "age": 46,
         "gender": "male",
         "location": "Pune",
@@ -223,7 +223,7 @@
     },
     {
       "patient_profile": {
-        "patient_id": "P018",
+        "anonymized_id": "ANON-CF46A1E2",
         "age": 19,
         "gender": "female",
         "location": "Nagpur",
@@ -236,7 +236,7 @@
     },
     {
       "patient_profile": {
-        "patient_id": "P019",
+        "anonymized_id": "ANON-D157B2F3",
         "age": 34,
         "gender": "male",
         "location": "Pune",
@@ -249,7 +249,7 @@
     },
     {
       "patient_profile": {
-        "patient_id": "P020",
+        "anonymized_id": "ANON-E268C3A4",
         "age": 27,
         "gender": "female",
         "location": "Surat",
@@ -262,7 +262,7 @@
     },
     {
       "patient_profile": {
-        "patient_id": "P021",
+        "anonymized_id": "ANON-F379D4B5",
         "age": 50,
         "gender": "male",
         "location": "Pune",
@@ -275,7 +275,7 @@
     },
     {
       "patient_profile": {
-        "patient_id": "P022",
+        "anonymized_id": "ANON-148AE5C6",
         "age": 15,
         "gender": "female",
         "location": "Jaipur",
@@ -288,7 +288,7 @@
     },
     {
       "patient_profile": {
-        "patient_id": "P023",
+        "anonymized_id": "ANON-259BF6D7",
         "age": 44,
         "gender": "male",
         "location": "Pune",
@@ -301,7 +301,7 @@
     },
     {
       "patient_profile": {
-        "patient_id": "P024",
+        "anonymized_id": "ANON-36AC17E8",
         "age": 21,
         "gender": "female",
         "location": "Lucknow",
@@ -314,7 +314,7 @@
     },
     {
       "patient_profile": {
-        "patient_id": "P025",
+        "anonymized_id": "ANON-47BD28F9",
         "age": 36,
         "gender": "male",
         "location": "Pune",
