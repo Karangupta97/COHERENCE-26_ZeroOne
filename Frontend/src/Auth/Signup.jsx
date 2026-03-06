@@ -212,8 +212,7 @@ export default function SignupPage() {
     const features = [
         { Icon: SparklesIcon, text: 'AI-Powered Matching', color: colors.accent },
         { Icon: ChartIcon, text: 'Real-time Analytics', color: colors.green },
-        { Icon: ShieldCheckIcon, text: 'HIPAA Compliant', color: colors.accent },
-        { Icon: GlobeIcon, text: 'Global Trial Access', color: colors.green },
+        { Icon: GlobeIcon, text: 'Global Trial Access', color: colors.accent },
     ];
 
     const stats = [
