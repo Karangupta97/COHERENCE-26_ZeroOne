@@ -4,13 +4,14 @@ import { ThemeProvider } from './theme';
 
 // ── Doctor Portal Imports ──
 import LoginPage from './Auth/LoginPage';
-import DoctorDashboard from './doctor/DoctorDashboard';
-import DoctorPatients from './doctor/DoctorPatients';
-import PatientDetail from './doctor/PatientDetail';
-import DoctorChat from './doctor/DoctorChat';
-import DoctorAlerts from './doctor/DoctorAlerts';
-import DoctorTrials from './doctor/DoctorTrials';
-import DoctorSettings from './doctor/DoctorSettings';
+import SignupPage from './Auth/Signup';
+import DoctorDashboard from './pages/doctor/DoctorDashboard';
+import DoctorPatients from './pages/doctor/DoctorPatients';
+import PatientDetail from './pages/doctor/PatientDetail';
+import DoctorChat from './pages/doctor/DoctorChat';
+import DoctorAlerts from './pages/doctor/DoctorAlerts';
+import DoctorTrials from './pages/doctor/DoctorTrials';
+import DoctorSettings from './pages/doctor/DoctorSettings';
 
 // ── Patient Portal Imports ──
 import PatientDashboard from './pages/patients/PatientDashboard';
@@ -84,7 +85,7 @@ function ClinicLayout() {
           unreadCount={unreadCount}
           onBellClick={() => setActivePage('notifications')}
         />
-        <div style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden', position: 'relative' }}>
+        <div style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden', position: 'relative', padding: '24px' }}>
           <div key={activePage} style={{ animation: 'pageTransition 0.3s ease' }}>
             {renderPage()}
           </div>
@@ -109,6 +110,7 @@ export default function App() {
         {/* Landing / Login */}
         <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
 
         {/* Doctor Portal */}
         <Route path="/doctor/dashboard" element={<DoctorDashboard />} />

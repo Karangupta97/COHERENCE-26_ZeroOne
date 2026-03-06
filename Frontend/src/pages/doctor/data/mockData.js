@@ -2,7 +2,7 @@
 //  TrialMatchAI — Extended Mock Data for Doctor Portal
 // ============================================================
 
-import { PATIENTS, TRIALS } from '../../theme';
+import { PATIENTS, TRIALS } from '../../../theme';
 
 // Re-export the shared data
 export { PATIENTS, TRIALS };
