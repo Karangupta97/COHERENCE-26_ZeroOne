@@ -51,9 +51,11 @@ const INSIGHTS = [
 
 function getGreeting() {
     const h = new Date().getHours()
+    if (h < 5) return { text: 'Good Night', emoji: '🌙' }
     if (h < 12) return { text: 'Good Morning', emoji: '🌅' }
     if (h < 17) return { text: 'Good Afternoon', emoji: '☀️' }
-    return { text: 'Good Evening', emoji: '🌙' }
+    if (h < 21) return { text: 'Good Evening', emoji: '🌇' }
+    return { text: 'Good Night', emoji: '🌙' }
 }
 
 const fadeUp = { initial: { opacity: 0, y: 20 }, animate: { opacity: 1, y: 0 } }
@@ -128,8 +130,8 @@ export default function DoctorDashboard() {
                             fontSize: '13px', fontWeight: 600, fontFamily: fonts.body, cursor: 'pointer',
                             display: 'flex', alignItems: 'center', gap: 6, transition: 'all 0.2s',
                         }}
-                        onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.3)'}
-                        onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.2)'}
+                            onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.3)'}
+                            onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.2)'}
                         >
                             <HiOutlineUserGroup style={{ width: 15, height: 15 }} /> View Patients
                         </button>
@@ -140,8 +142,8 @@ export default function DoctorDashboard() {
                             fontSize: '13px', fontWeight: 600, fontFamily: fonts.body, cursor: 'pointer',
                             display: 'flex', alignItems: 'center', gap: 6, transition: 'all 0.2s',
                         }}
-                        onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-1px)'}
-                        onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}
+                            onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-1px)'}
+                            onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}
                         >
                             <HiOutlineBellAlert style={{ width: 15, height: 15 }} /> View Alerts
                         </button>
@@ -245,8 +247,8 @@ export default function DoctorDashboard() {
                                 fontFamily: fonts.body, cursor: 'pointer',
                                 display: 'flex', alignItems: 'center', gap: 4, transition: 'all 0.2s',
                             }}
-                            onMouseEnter={e => e.currentTarget.style.background = `${colors.accent}25`}
-                            onMouseLeave={e => e.currentTarget.style.background = colors.accentGlow}
+                                onMouseEnter={e => e.currentTarget.style.background = `${colors.accent}25`}
+                                onMouseLeave={e => e.currentTarget.style.background = colors.accentGlow}
                             >
                                 View All <HiOutlineArrowRight style={{ width: 12, height: 12 }} />
                             </button>

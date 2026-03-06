@@ -298,6 +298,7 @@ export function ThemeProvider({ children }) {
         color: colors.textPrimary,
         fontFamily: fonts.body,
         minHeight: "100vh",
+        width: "100%",
         transition: "background 0.3s ease, color 0.3s ease",
       }}>
         {children}

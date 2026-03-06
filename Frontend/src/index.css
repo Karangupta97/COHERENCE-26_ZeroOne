@@ -43,8 +43,8 @@
   --radius-xl: 28px;
 
   /* Typography */
-  --font-heading: 'Outfit', sans-serif;
-  --font-body: 'Inter', system-ui, sans-serif;
+  --font-heading: 'Satoshi', sans-serif;
+  --font-body: 'Satoshi', sans-serif;
 
   /* Transitions */
   --transition-fast: 0.15s ease;
@@ -63,6 +63,7 @@
 
 html {
   scroll-behavior: smooth;
+  width: 100%;
 }
 
 body {
@@ -78,6 +79,7 @@ body {
 
 #root {
   min-height: 100vh;
+  width: 100%;
 }
 
 h1,

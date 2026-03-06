@@ -52,6 +52,8 @@ export default function PostTrial({ setPage }) {
     const [currentStep, setCurrentStep] = useState(0);
     const [phase, setPhase] = useState('form'); // form | loading | preview | success
     const [focusedField, setFocusedField] = useState(null);
+    const [errors, setErrors] = useState({});
+    const [shakeNext, setShakeNext] = useState(false);
 
     const update = (key, val) => setFormData(prev => ({ ...prev, [key]: val }));
     const toggleChip = (key, val) => setFormData(prev => ({
@@ -95,9 +97,51 @@ export default function PostTrial({ setPage }) {
         textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: '8px',
         display: 'block', fontFamily: fonts.body,
     };
+    const fieldError = (name) => errors[name] ? (
+        <span style={{ display: 'block', fontSize: '11px', color: colors.red || '#EF4444', fontFamily: fonts.body, marginTop: '4px', fontWeight: 500 }}>
+            {errors[name]}
+        </span>
+    ) : null;
+    const inputFocusStyleValidated = (name) => ({
+        ...inputBase,
+        borderColor: errors[name] ? (colors.red || '#EF4444') : focusedField === name ? colors.accent : colors.border,
+        boxShadow: errors[name] ? `0 0 0 3px ${colors.red || '#EF4444'}15` : focusedField === name ? `0 0 0 3px ${colors.accent}15` : 'none',
+    });
 
-    const nextStep = () => currentStep < STEPS.length - 1 && setCurrentStep(currentStep + 1);
-    const prevStep = () => currentStep > 0 && setCurrentStep(currentStep - 1);
+    // ── Per-step validation ───────────────────
+    const validateStep = (step) => {
+        const e = {};
+        if (step === 0) {
+            if (!formData.trialName.trim()) e.trialName = 'Trial name is required';
+            if (!formData.trialId.trim()) e.trialId = 'Trial ID is required';
+            if (!formData.phase) e.phase = 'Select a phase';
+            if (!formData.category) e.category = 'Select a category';
+        } else if (step === 1) {
+            if (!formData.ageMin) e.ageMin = 'Min age is required';
+            if (!formData.ageMax) e.ageMax = 'Max age is required';
+            if (formData.ageMin && formData.ageMax && Number(formData.ageMin) >= Number(formData.ageMax)) e.ageMax = 'Max age must be greater than min';
+            if (formData.diagnoses.length === 0) e.diagnoses = 'Select at least one diagnosis';
+        } else if (step === 2) {
+            if (!formData.slots) e.slots = 'Number of slots is required';
+            if (!formData.compensation.trim()) e.compensation = 'Compensation is required';
+            if (!formData.location.trim()) e.location = 'Location is required';
+            if (!formData.startDate) e.startDate = 'Start date is required';
+        }
+        return e;
+    };
+
+    const nextStep = () => {
+        const stepErrors = validateStep(currentStep);
+        if (Object.keys(stepErrors).length > 0) {
+            setErrors(stepErrors);
+            setShakeNext(true);
+            setTimeout(() => setShakeNext(false), 500);
+            return;
+        }
+        setErrors({});
+        if (currentStep < STEPS.length - 1) setCurrentStep(currentStep + 1);
+    };
+    const prevStep = () => { setErrors({}); currentStep > 0 && setCurrentStep(currentStep - 1); };
 
     // ── Stepper Header ────────────────────────
     const Stepper = () => (
@@ -117,13 +161,17 @@ export default function PostTrial({ setPage }) {
                     <div key={s.key} style={{ display: 'flex', alignItems: 'center', flex: i < STEPS.length - 1 ? 1 : 0 }}>
                         <motion.div
                             whileHover={{ scale: 1.05 }}
-                            onClick={() => i <= currentStep && setCurrentStep(i)}
+                            onClick={() => {
+                                if (i < currentStep) { setErrors({}); setCurrentStep(i); }
+                                else if (i === currentStep) { /* already here */ }
+                                // block clicking ahead — must use Next button
+                            }}
                             style={{
                                 display: 'flex', alignItems: 'center', gap: spacing.sm,
                                 padding: `8px 16px`, borderRadius: radius.full,
                                 background: isActive ? colors.accentGlow : isDone ? colors.greenGlow : 'transparent',
                                 border: `1.5px solid ${isActive ? colors.accent : isDone ? colors.green : colors.border}`,
-                                cursor: i <= currentStep ? 'pointer' : 'default',
+                                cursor: i < currentStep ? 'pointer' : 'default',
                                 transition: 'all 0.3s ease',
                             }}
                         >
@@ -177,31 +225,35 @@ export default function PostTrial({ setPage }) {
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: spacing.md }}>
                 <div>
                     <label style={labelStyle}>Trial Name *</label>
-                    <input style={inputFocusStyle('trialName')} placeholder="e.g. GLYCO-ADVANCE"
-                        value={formData.trialName} onChange={e => update('trialName', e.target.value)}
+                    <input style={inputFocusStyleValidated('trialName')} placeholder="e.g. GLYCO-ADVANCE"
+                        value={formData.trialName} onChange={e => { update('trialName', e.target.value); setErrors(prev => { const n = { ...prev }; delete n.trialName; return n; }); }}
                         onFocus={() => setFocusedField('trialName')} onBlur={() => setFocusedField(null)} />
+                    {fieldError('trialName')}
                 </div>
                 <div>
                     <label style={labelStyle}>Trial ID *</label>
-                    <input style={inputFocusStyle('trialId')} placeholder="e.g. CT-2024-007"
-                        value={formData.trialId} onChange={e => update('trialId', e.target.value)}
+                    <input style={inputFocusStyleValidated('trialId')} placeholder="e.g. CT-2024-007"
+                        value={formData.trialId} onChange={e => { update('trialId', e.target.value); setErrors(prev => { const n = { ...prev }; delete n.trialId; return n; }); }}
                         onFocus={() => setFocusedField('trialId')} onBlur={() => setFocusedField(null)} />
+                    {fieldError('trialId')}
                 </div>
                 <div>
                     <label style={labelStyle}>Phase *</label>
-                    <select style={inputFocusStyle('phase')} value={formData.phase} onChange={e => update('phase', e.target.value)}
+                    <select style={inputFocusStyleValidated('phase')} value={formData.phase} onChange={e => { update('phase', e.target.value); setErrors(prev => { const n = { ...prev }; delete n.phase; return n; }); }}
                         onFocus={() => setFocusedField('phase')} onBlur={() => setFocusedField(null)}>
                         <option value="">Select Phase</option>
                         {PHASES.map(p => <option key={p} value={p}>{p}</option>)}
                     </select>
+                    {fieldError('phase')}
                 </div>
                 <div>
                     <label style={labelStyle}>Medical Category *</label>
-                    <select style={inputFocusStyle('category')} value={formData.category} onChange={e => update('category', e.target.value)}
+                    <select style={inputFocusStyleValidated('category')} value={formData.category} onChange={e => { update('category', e.target.value); setErrors(prev => { const n = { ...prev }; delete n.category; return n; }); }}
                         onFocus={() => setFocusedField('category')} onBlur={() => setFocusedField(null)}>
                         <option value="">Select Category</option>
                         {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
                     </select>
+                    {fieldError('category')}
                 </div>
                 <div style={{ gridColumn: '1 / -1' }}>
                     <label style={labelStyle}>Duration</label>
@@ -239,16 +291,18 @@ export default function PostTrial({ setPage }) {
                 </label>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: spacing.md }}>
                     <div>
-                        <label style={{ ...labelStyle, fontSize: '10px' }}>Min Age</label>
-                        <input type="number" style={inputFocusStyle('ageMin')} placeholder="18"
-                            value={formData.ageMin} onChange={e => update('ageMin', e.target.value)}
+                        <label style={{ ...labelStyle, fontSize: '10px' }}>Min Age *</label>
+                        <input type="number" style={inputFocusStyleValidated('ageMin')} placeholder="18"
+                            value={formData.ageMin} onChange={e => { update('ageMin', e.target.value); setErrors(prev => { const n = { ...prev }; delete n.ageMin; return n; }); }}
                             onFocus={() => setFocusedField('ageMin')} onBlur={() => setFocusedField(null)} />
+                        {fieldError('ageMin')}
                     </div>
                     <div>
-                        <label style={{ ...labelStyle, fontSize: '10px' }}>Max Age</label>
-                        <input type="number" style={inputFocusStyle('ageMax')} placeholder="75"
-                            value={formData.ageMax} onChange={e => update('ageMax', e.target.value)}
+                        <label style={{ ...labelStyle, fontSize: '10px' }}>Max Age *</label>
+                        <input type="number" style={inputFocusStyleValidated('ageMax')} placeholder="75"
+                            value={formData.ageMax} onChange={e => { update('ageMax', e.target.value); setErrors(prev => { const n = { ...prev }; delete n.ageMax; return n; }); }}
                             onFocus={() => setFocusedField('ageMax')} onBlur={() => setFocusedField(null)} />
+                        {fieldError('ageMax')}
                     </div>
                     <div>
                         <label style={{ ...labelStyle, fontSize: '10px' }}>Gender</label>
@@ -268,15 +322,15 @@ export default function PostTrial({ setPage }) {
                 background: colors.card, border: `1px solid ${colors.border}`, borderRadius: radius.lg,
                 padding: spacing.lg,
             }}>
-                <label style={{ ...labelStyle, marginBottom: spacing.md }}>Required Diagnosis (select multiple)</label>
+                <label style={{ ...labelStyle, marginBottom: spacing.md }}>Required Diagnosis (select at least one) *</label>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: spacing.sm }}>
                     {DIAGNOSES.map(d => {
                         const sel = formData.diagnoses.includes(d);
                         return (
                             <motion.button key={d} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
-                                onClick={() => toggleChip('diagnoses', d)} style={{
+                                onClick={() => { toggleChip('diagnoses', d); setErrors(prev => { const n = { ...prev }; delete n.diagnoses; return n; }); }} style={{
                                     padding: `6px 14px`, borderRadius: radius.full,
-                                    border: `1.5px solid ${sel ? colors.accent : colors.border}`,
+                                    border: `1.5px solid ${errors.diagnoses && !sel ? (colors.red || '#EF4444') : sel ? colors.accent : colors.border}`,
                                     background: sel ? colors.accentGlow : 'transparent',
                                     color: sel ? colors.accent : colors.textSecondary,
                                     fontSize: fontSize.xs, fontWeight: sel ? 600 : 500,
@@ -289,6 +343,7 @@ export default function PostTrial({ setPage }) {
                         );
                     })}
                 </div>
+                {fieldError('diagnoses')}
             </div>
 
             {/* Exclusions */}
@@ -434,10 +489,11 @@ export default function PostTrial({ setPage }) {
                 display: 'grid', gridTemplateColumns: '1fr 1fr', gap: spacing.md,
             }}>
                 <div>
-                    <label style={labelStyle}>Available Slots</label>
-                    <input type="number" style={inputFocusStyle('slots')} placeholder="50"
-                        value={formData.slots} onChange={e => update('slots', e.target.value)}
+                    <label style={labelStyle}>Available Slots *</label>
+                    <input type="number" style={inputFocusStyleValidated('slots')} placeholder="50"
+                        value={formData.slots} onChange={e => { update('slots', e.target.value); setErrors(prev => { const n = { ...prev }; delete n.slots; return n; }); }}
                         onFocus={() => setFocusedField('slots')} onBlur={() => setFocusedField(null)} />
+                    {fieldError('slots')}
                 </div>
                 <div>
                     <label style={labelStyle}>Enrollment Target</label>
@@ -446,22 +502,25 @@ export default function PostTrial({ setPage }) {
                         onFocus={() => setFocusedField('target')} onBlur={() => setFocusedField(null)} />
                 </div>
                 <div>
-                    <label style={labelStyle}>Compensation</label>
-                    <input style={inputFocusStyle('compensation')} placeholder="₹5,000/visit"
-                        value={formData.compensation} onChange={e => update('compensation', e.target.value)}
+                    <label style={labelStyle}>Compensation *</label>
+                    <input style={inputFocusStyleValidated('compensation')} placeholder="₹5,000/visit"
+                        value={formData.compensation} onChange={e => { update('compensation', e.target.value); setErrors(prev => { const n = { ...prev }; delete n.compensation; return n; }); }}
                         onFocus={() => setFocusedField('compensation')} onBlur={() => setFocusedField(null)} />
+                    {fieldError('compensation')}
                 </div>
                 <div>
-                    <label style={labelStyle}>Location</label>
-                    <input style={inputFocusStyle('location')} placeholder="Mumbai"
-                        value={formData.location} onChange={e => update('location', e.target.value)}
+                    <label style={labelStyle}>Location *</label>
+                    <input style={inputFocusStyleValidated('location')} placeholder="Mumbai"
+                        value={formData.location} onChange={e => { update('location', e.target.value); setErrors(prev => { const n = { ...prev }; delete n.location; return n; }); }}
                         onFocus={() => setFocusedField('location')} onBlur={() => setFocusedField(null)} />
+                    {fieldError('location')}
                 </div>
                 <div>
-                    <label style={labelStyle}>Start Date</label>
-                    <input type="date" style={inputFocusStyle('startDate')}
-                        value={formData.startDate} onChange={e => update('startDate', e.target.value)}
+                    <label style={labelStyle}>Start Date *</label>
+                    <input type="date" style={inputFocusStyleValidated('startDate')}
+                        value={formData.startDate} onChange={e => { update('startDate', e.target.value); setErrors(prev => { const n = { ...prev }; delete n.startDate; return n; }); }}
                         onFocus={() => setFocusedField('startDate')} onBlur={() => setFocusedField(null)} />
+                    {fieldError('startDate')}
                 </div>
                 <div>
                     <label style={labelStyle}>End Date</label>
@@ -613,6 +672,8 @@ export default function PostTrial({ setPage }) {
 
                         {currentStep < STEPS.length - 1 ? (
                             <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
+                                animate={shakeNext ? { x: [0, -6, 6, -6, 6, 0] } : {}}
+                                transition={shakeNext ? { duration: 0.4 } : {}}
                                 onClick={nextStep}
                                 style={{
                                     padding: `10px 24px`, borderRadius: radius.md,
@@ -641,7 +702,7 @@ export default function PostTrial({ setPage }) {
                         )}
                     </div>
                 </div>
-            </div>
+            </div >
         );
     }
 
