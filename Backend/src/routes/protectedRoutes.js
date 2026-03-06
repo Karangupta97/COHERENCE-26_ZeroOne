@@ -1,100 +1,114 @@
 const express = require("express");
-const authenticate = require("../middlewares/authenticate");
-const authorize = require("../middlewares/authorize");
-const { ROLES } = require("../constants/roles");
-const supabase = require("../config/supabase");
-const asyncHandler = require("../utils/asyncHandler");
-
 const router = express.Router();
 
-// All routes below require authentication
+const { authenticate, authorize } = require("../middlewares/auth");
+
+// All protected routes require a valid JWT
 router.use(authenticate);
 
-// ─── PATIENT-ONLY ROUTES ────────────────────────────────
-router.get(
-  "/patient/dashboard",
-  authorize(ROLES.PATIENT),
-  asyncHandler(async (req, res) => {
-    res.status(200).json({
-      ok: true,
-      message: "Welcome to Patient Dashboard",
-      user: req.user,
-    });
-  })
-);
+// ─── PATIENT dashboard ───────────────────────────────────
+// GET /api/v1/patient/dashboard
+router.get("/patient/dashboard", authorize("patient"), (req, res) => {
+  res.json({
+    ok: true,
+    message: "Welcome to your Patient Dashboard",
+    data: {
+      user: {
+        id: req.user._id,
+        name: `${req.user.firstName} ${req.user.lastName}`,
+        role: req.user.role,
+      },
+      links: [
+        { label: "My Profile",       path: "/api/profile/me" },
+        { label: "Appointments",     path: "/api/v1/patient/appointments" },
+        { label: "Medical Records",  path: "/api/v1/patient/records" },
+      ],
+    },
+  });
+});
 
-// ─── DOCTOR-ONLY ROUTES ─────────────────────────────────
-router.get(
-  "/doctor/dashboard",
-  authorize(ROLES.DOCTOR),
-  asyncHandler(async (req, res) => {
-    res.status(200).json({
-      ok: true,
-      message: "Welcome to Doctor Dashboard",
-      user: req.user,
-    });
-  })
-);
+// GET /api/v1/patient/appointments  (stub — extend as needed)
+router.get("/patient/appointments", authorize("patient"), (req, res) => {
+  res.json({ ok: true, message: "Patient appointments endpoint", data: [] });
+});
 
-// Doctors can list their patients (example)
-router.get(
-  "/doctor/patients",
-  authorize(ROLES.DOCTOR),
-  asyncHandler(async (req, res) => {
-    // Placeholder – expand with actual patient-doctor relationship table
-    res.status(200).json({
-      ok: true,
-      message: "Patient list for doctor",
-      patients: [],
-    });
-  })
-);
+// GET /api/v1/patient/records  (stub)
+router.get("/patient/records", authorize("patient"), (req, res) => {
+  res.json({ ok: true, message: "Patient medical records endpoint", data: [] });
+});
 
-// ─── CLINIC-ONLY ROUTES ─────────────────────────────────
-router.get(
-  "/clinic/dashboard",
-  authorize(ROLES.CLINIC),
-  asyncHandler(async (req, res) => {
-    res.status(200).json({
-      ok: true,
-      message: "Welcome to Clinic Dashboard",
-      user: req.user,
-    });
-  })
-);
+// ─── DOCTOR dashboard ────────────────────────────────────
+// GET /api/v1/doctor/dashboard
+router.get("/doctor/dashboard", authorize("doctor"), (req, res) => {
+  res.json({
+    ok: true,
+    message: "Welcome to your Doctor Dashboard",
+    data: {
+      user: {
+        id: req.user._id,
+        name: `${req.user.firstName} ${req.user.lastName}`,
+        role: req.user.role,
+        specialization: req.user.doctorProfile?.specialization || null,
+      },
+      links: [
+        { label: "My Profile",       path: "/api/profile/me" },
+        { label: "My Patients",      path: "/api/v1/doctor/patients" },
+        { label: "Schedule",         path: "/api/v1/doctor/schedule" },
+      ],
+    },
+  });
+});
 
-// Clinics can list their doctors
-router.get(
-  "/clinic/doctors",
-  authorize(ROLES.CLINIC),
-  asyncHandler(async (req, res) => {
-    const { data: doctors, error } = await supabase
-      .from("doctor_profiles")
-      .select("*, users!inner(email, full_name, phone)")
-      .eq("clinic_id", req.user.id);
+// GET /api/v1/doctor/patients  (stub)
+router.get("/doctor/patients", authorize("doctor"), (req, res) => {
+  res.json({ ok: true, message: "Doctor patients list endpoint", data: [] });
+});
 
-    if (error) {
-      return res.status(500).json({ ok: false, message: "Failed to fetch doctors" });
-    }
+// GET /api/v1/doctor/schedule  (stub)
+router.get("/doctor/schedule", authorize("doctor"), (req, res) => {
+  res.json({ ok: true, message: "Doctor schedule endpoint", data: [] });
+});
 
-    res.status(200).json({
-      ok: true,
-      doctors: doctors || [],
-    });
-  })
-);
+// ─── CLINIC dashboard ────────────────────────────────────
+// GET /api/v1/clinic/dashboard
+router.get("/clinic/dashboard", authorize("clinic"), (req, res) => {
+  res.json({
+    ok: true,
+    message: "Welcome to your Clinic Dashboard",
+    data: {
+      user: {
+        id: req.user._id,
+        name: `${req.user.firstName} ${req.user.lastName}`,
+        role: req.user.role,
+        clinicName: req.user.clinicProfile?.clinicName || null,
+      },
+      links: [
+        { label: "My Profile",    path: "/api/profile/me" },
+        { label: "Doctors",       path: "/api/v1/clinic/doctors" },
+        { label: "Appointments",  path: "/api/v1/clinic/appointments" },
+      ],
+    },
+  });
+});
 
-// ─── DOCTOR + CLINIC SHARED ROUTE ───────────────────────
-router.get(
-  "/appointments",
-  authorize(ROLES.DOCTOR, ROLES.CLINIC),
-  asyncHandler(async (req, res) => {
-    res.status(200).json({
-      ok: true,
-      message: "Appointments list (placeholder)",
-      appointments: [],
-    });
-  })
-);
+// GET /api/v1/clinic/doctors  (stub)
+router.get("/clinic/doctors", authorize("clinic"), (req, res) => {
+  res.json({ ok: true, message: "Clinic doctors list endpoint", data: [] });
+});
+
+// GET /api/v1/clinic/appointments  (stub)
+router.get("/clinic/appointments", authorize("clinic"), (req, res) => {
+  res.json({ ok: true, message: "Clinic appointments endpoint", data: [] });
+});
+
+// ─── SHARED route accessible by all authenticated roles ──
+// GET /api/v1/me/role-info
+router.get("/me/role-info", (req, res) => {
+  res.json({
+    ok: true,
+    role: req.user.role,
+    dashboardPath: `/api/v1/${req.user.role}/dashboard`,
+  });
+});
 
 module.exports = router;

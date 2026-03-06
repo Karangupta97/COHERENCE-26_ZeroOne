@@ -3,23 +3,35 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
+const mongoose = require("mongoose");
+
+// DB
+const connectDB = require("./src/config/db");
 
 // Routes
 const authRoutes = require("./src/routes/authRoutes");
 const profileRoutes = require("./src/routes/profileRoutes");
 const protectedRoutes = require("./src/routes/protectedRoutes");
+const reportRoutes = require("./src/routes/reportRoutes");
 
 // Middleware
 const errorHandler = require("./src/middlewares/errorHandler");
+const { generalLimiter } = require("./src/middlewares/rateLimiter");
 
 const app = express();
 const PORT = Number(process.env.PORT) || 5000;
 
 // ─── GLOBAL MIDDLEWARE ──────────────────────────────────
-app.use(helmet()); // security headers
-app.use(cors({ origin: process.env.CORS_ORIGIN || "*", credentials: true }));
-app.use(express.json({ limit: "10kb" })); // body parser with size limit
+app.use(helmet());
+app.use(cors({
+  origin: process.env.CORS_ORIGIN || "*",
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+}));
+app.use(express.json({ limit: "10kb" }));
 app.use(express.urlencoded({ extended: false }));
+app.use(generalLimiter);
 
 // Handle malformed JSON
 app.use((err, _req, res, next) => {
@@ -38,6 +50,7 @@ app.get("/health", (_req, res) => {
   res.json({
     ok: true,
     status: "healthy",
+    database: mongoose.connection.readyState === 1 ? "connected" : "disconnected",
     uptime: Number(process.uptime().toFixed(2)),
     timestamp: new Date().toISOString(),
   });
@@ -47,6 +60,7 @@ app.get("/health", (_req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/profile", profileRoutes);
 app.use("/api/v1", protectedRoutes);
+app.use("/api/reports", reportRoutes);
 
 // ─── 404 HANDLER ────────────────────────────────────────
 app.use((_req, res) => {
@@ -56,22 +70,30 @@ app.use((_req, res) => {
 // ─── ERROR HANDLER ──────────────────────────────────────
 app.use(errorHandler);
 
-// ─── START SERVER ───────────────────────────────────────
-const server = app.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`);
-  console.log(`Environment: ${process.env.NODE_ENV || "development"}`);
-});
+// ─── BOOT ────────────────────────────────────────────────
+async function boot() {
+  await connectDB();
 
-// Graceful shutdown
-function shutdown(signal) {
-  console.log(`${signal} received. Closing server...`);
-  server.close(() => process.exit(0));
+  const server = app.listen(PORT, () => {
+    console.log(`Server running at http://localhost:${PORT}`);
+    console.log(`Environment : ${process.env.NODE_ENV || "development"}`);
+  });
+
+  function shutdown(signal) {
+    console.log(`\n${signal} received. Closing server...`);
+    server.close(async () => {
+      await mongoose.connection.close();
+      console.log("MongoDB connection closed.");
+      process.exit(0);
+    });
+  }
+
+  process.on("SIGINT",  () => shutdown("SIGINT"));
+  process.on("SIGTERM", () => shutdown("SIGTERM"));
+
+  return server;
 }
 
-process.on("SIGINT", shutdown.bind(null, "SIGINT"));
-process.on("SIGTERM", shutdown.bind(null, "SIGTERM"));
+boot();
 
-process.on("SIGINT", () => shutdown("SIGINT"));
-process.on("SIGTERM", () => shutdown("SIGTERM"));
-
-module.exports = server;
+module.exports = app;

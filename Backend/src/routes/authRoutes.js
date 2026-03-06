@@ -1,15 +1,15 @@
 const express = require("express");
-const { signup, login, getMe } = require("../controllers/authController");
-const authenticate = require("../middlewares/authenticate");
-const authLimiter = require("../middlewares/rateLimiter");
-
 const router = express.Router();
 
-// Public routes (rate-limited)
-router.post("/signup", authLimiter, signup);
-router.post("/login", authLimiter, login);
+const { signup, login } = require("../controllers/authController");
+const { signupValidation, loginValidation } = require("../validators/authValidators");
+const validate = require("../middlewares/validate");
+const { authLimiter } = require("../middlewares/rateLimiter");
 
-// Protected route
-router.get("/me", authenticate, getMe);
+// POST /api/auth/signup
+router.post("/signup", authLimiter, signupValidation, validate, signup);
+
+// POST /api/auth/login
+router.post("/login", authLimiter, loginValidation, validate, login);
 
 module.exports = router;
