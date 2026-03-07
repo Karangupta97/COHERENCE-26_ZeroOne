@@ -1,5 +1,5 @@
 // ============================================================
-//  TrialMatchAI — Clinic Portal Mock Data
+//  CureMatchAI — Clinic Portal Mock Data
 // ============================================================
 
 export const CLINIC = {

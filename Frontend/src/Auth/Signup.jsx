@@ -407,7 +407,7 @@ export default function SignupPage() {
                         }}>
                             Join<br />
                             <span style={{ color: colors.accent }}>
-                                TrialMatch<span style={{ color: colors.green }}>AI</span>
+                                CureMatch<span style={{ color: colors.green }}>AI</span>
                             </span>
                         </h1>
 
@@ -520,7 +520,7 @@ export default function SignupPage() {
                                 fontFamily: fonts.heading, fontSize: '20px', fontWeight: 700,
                                 color: colors.textPrimary,
                             }}>
-                                TrialMatch<span style={{ color: colors.accent }}>AI</span>
+                                CureMatch<span style={{ color: colors.accent }}>AI</span>
                             </span>
                         </div>
 
@@ -1094,7 +1094,7 @@ export default function SignupPage() {
                             textAlign: 'center', fontSize: '12px', color: colors.textSecondary,
                             fontFamily: fonts.body, marginTop: '16px', opacity: 0.5,
                         }}>
-                            &copy; {new Date().getFullYear()} TrialMatchAI. All rights reserved.
+                            &copy; {new Date().getFullYear()} CureMatchAI. All rights reserved.
                         </p>
                     </div>
                 </div>

@@ -3,6 +3,10 @@
     {
       "source": "/api/:path*",
       "destination": "https://jellyfish-app-xmlv6.ondigitalocean.app/api/:path*"
+    },
+    {
+      "source": "/((?!api/).*)",
+      "destination": "/index.html"
     }
   ]
 }

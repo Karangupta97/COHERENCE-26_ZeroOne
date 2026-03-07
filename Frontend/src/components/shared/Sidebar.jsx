@@ -116,7 +116,7 @@ export default function Sidebar({ activePage, setPage }) {
                     </span>
                     <div>
                         <div style={{ fontSize: '15px', fontWeight: 700, fontFamily: fonts.heading, color: colors.textPrimary, lineHeight: 1.2 }}>
-                            TrialMatch AI
+                            CureMatch AI
                         </div>
                         <div style={{ fontSize: '10px', color: colors.textSecondary, fontFamily: fonts.body, letterSpacing: '1.2px', textTransform: 'uppercase', fontWeight: 500 }}>
                             {portalLabel}
