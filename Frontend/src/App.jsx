@@ -1,25 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, Suspense } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import { ThemeProvider } from './theme';
+import PageLoader from './components/shared/PageLoader';
 
-// ── Public Pages ──
-import HomePage from './pages/HomePage';
-import LoginPage from './Auth/LoginPage';
-import SignupPage from './Auth/Signup';
-import DoctorDashboard from './pages/doctor/DoctorDashboard';
-import DoctorPatients from './pages/doctor/DoctorPatients';
-import PatientDetail from './pages/doctor/PatientDetail';
-import DoctorChat from './pages/doctor/DoctorChat';
-import DoctorAlerts from './pages/doctor/DoctorAlerts';
-import DoctorTrials from './pages/doctor/DoctorTrials';
-import DoctorSettings from './pages/doctor/DoctorSettings';
-import DoctorProfilePage from './pages/doctor/DoctorProfilePage';
-import AddPatientToTrial from './pages/doctor/AddPatientToTrial';
-import AddClinicalTrialDetails from './pages/doctor/AddClinicalTrialDetails';
-// ── Patient Portal Imports ──
-import PatientDashboard from './pages/patients/PatientDashboard';
+// ── Lazy-loaded Pages ──
+const HomePage = React.lazy(() => import('./pages/HomePage'));
+const LoginPage = React.lazy(() => import('./Auth/LoginPage'));
+const SignupPage = React.lazy(() => import('./Auth/Signup'));
 
-// ── Clinic Portal Imports ──
+// Doctor Portal
+const DoctorDashboard = React.lazy(() => import('./pages/doctor/DoctorDashboard'));
+const DoctorPatients = React.lazy(() => import('./pages/doctor/DoctorPatients'));
+const PatientDetail = React.lazy(() => import('./pages/doctor/PatientDetail'));
+const DoctorChat = React.lazy(() => import('./pages/doctor/DoctorChat'));
+const DoctorAlerts = React.lazy(() => import('./pages/doctor/DoctorAlerts'));
+const DoctorTrials = React.lazy(() => import('./pages/doctor/DoctorTrials'));
+const DoctorSettings = React.lazy(() => import('./pages/doctor/DoctorSettings'));
+const DoctorProfilePage = React.lazy(() => import('./pages/doctor/DoctorProfilePage'));
+const AddPatientToTrial = React.lazy(() => import('./pages/doctor/AddPatientToTrial'));
+const AddClinicalTrialDetails = React.lazy(() => import('./pages/doctor/AddClinicalTrialDetails'));
+
+// Patient Portal
+const PatientDashboard = React.lazy(() => import('./pages/patients/PatientDashboard'));
+
+// ── Clinic Portal (eager — used as a layout shell) ──
 import Sidebar from './components/shared/Sidebar';
 import NavBar from './components/shared/NavBar';
 import ClinicDashboard from './pages/clinic/ClinicDashboard';
@@ -31,6 +35,7 @@ import TrialsManagement from './pages/clinic/TrialsManagement';
 import Notifications from './pages/clinic/Notifications';
 import Settings from './pages/clinic/Settings';
 import ClinicProfilePage from './pages/clinic/ClinicProfilePage';
+import ClinicDashboardSkeleton from './components/clinic/ClinicDashboardSkeleton';
 import { NOTIFICATIONS, CANDIDATES } from './pages/clinic/data/mockData';
 import useClinic from './hooks/useClinic';
 
@@ -78,34 +83,46 @@ function ClinicLayout() {
   const { initials } = useClinic();
   const [activePage, setActivePage] = useState('dashboard');
   const [candidates, setCandidates] = useState(CANDIDATES);
+  const [loading, setLoading] = useState(false);
   const unreadCount = NOTIFICATIONS.filter(n => !n.read).length;
 
+  const handlePageChange = (page) => {
+    if (page === activePage) return;
+    setLoading(true);
+    setActivePage(page);
+    // Brief skeleton flash to give visual feedback on navigation
+    setTimeout(() => setLoading(false), 400);
+  };
+
   const renderPage = () => {
+    if (loading && activePage === 'dashboard') return <ClinicDashboardSkeleton />;
+    if (loading) return <ClinicDashboardSkeleton />;
+
     switch (activePage) {
-      case 'dashboard': return <ClinicDashboard setPage={setActivePage} />;
+      case 'dashboard': return <ClinicDashboard setPage={handlePageChange} />;
       case 'profile': return <ClinicProfilePage />;
-      case 'post-trial': return <PostTrial setPage={setActivePage} />;
+      case 'post-trial': return <PostTrial setPage={handlePageChange} />;
       case 'candidates': return <MatchedCandidates candidates={candidates} setCandidates={setCandidates} />;
       case 'workflow': return <CandidateWorkflow candidates={candidates} setCandidates={setCandidates} />;
       case 'funnel': return <EnrollmentFunnel />;
-      case 'trials': return <TrialsManagement setPage={setActivePage} />;
+      case 'trials': return <TrialsManagement setPage={handlePageChange} />;
       case 'notifications': return <Notifications />;
       case 'settings': return <Settings />;
-      default: return <ClinicDashboard setPage={setActivePage} />;
+      default: return <ClinicDashboard setPage={handlePageChange} />;
     }
   };
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh', overflow: 'hidden' }}>
-      <Sidebar activePage={activePage} setPage={setActivePage} />
+      <Sidebar activePage={activePage} setPage={handlePageChange} />
       <div style={{ flex: 1, marginLeft: 240, display: 'flex', flexDirection: 'column', minHeight: '100vh', width: 'calc(100vw - 240px)', maxWidth: 'calc(100vw - 240px)', overflow: 'hidden' }}>
         <NavBar
           titleData={PAGE_TITLES[activePage] || { text: 'Clinic Portal' }}
           unreadCount={unreadCount}
-          onBellClick={() => setActivePage('notifications')}
+          onBellClick={() => handlePageChange('notifications')}
           initials={initials}
-          onAccountProfile={() => setActivePage('profile')}
-          onSettings={() => setActivePage('settings')}
+          onAccountProfile={() => handlePageChange('profile')}
+          onSettings={() => handlePageChange('settings')}
           onSignOut={() => {
             localStorage.removeItem('token');
             localStorage.removeItem('user');
@@ -133,30 +150,32 @@ function ClinicLayout() {
 export default function App() {
   return (
     <ThemeProvider>
-      <Routes>
-        {/* Landing / Login */}
-        <Route path="/" element={<HomePage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/signup" element={<SignupPage />} />
+      <Suspense fallback={<PageLoader />}>
+        <Routes>
+          {/* Landing / Login */}
+          <Route path="/" element={<HomePage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignupPage />} />
 
-        {/* Doctor Portal */}
-        <Route path="/doctor/dashboard" element={<DoctorDashboard />} />
-        <Route path="/doctor/patients" element={<DoctorPatients />} />
-        <Route path="/doctor/patients/:id" element={<PatientDetail />} />
-        <Route path="/doctor/chat/:patientId" element={<DoctorChat />} />
-        <Route path="/doctor/alerts" element={<DoctorAlerts />} />
-        <Route path="/doctor/trials" element={<DoctorTrials />} />
-        <Route path="/doctor/profile" element={<DoctorProfilePage />} />
-        <Route path="/doctor/settings" element={<DoctorSettings />} />
-        <Route path="/doctor/add-patient-trial" element={<AddPatientToTrial />} />
-        <Route path="/doctor/clinical-details" element={<AddClinicalTrialDetails />} />
+          {/* Doctor Portal */}
+          <Route path="/doctor/dashboard" element={<DoctorDashboard />} />
+          <Route path="/doctor/patients" element={<DoctorPatients />} />
+          <Route path="/doctor/patients/:id" element={<PatientDetail />} />
+          <Route path="/doctor/chat/:patientId" element={<DoctorChat />} />
+          <Route path="/doctor/alerts" element={<DoctorAlerts />} />
+          <Route path="/doctor/trials" element={<DoctorTrials />} />
+          <Route path="/doctor/profile" element={<DoctorProfilePage />} />
+          <Route path="/doctor/settings" element={<DoctorSettings />} />
+          <Route path="/doctor/add-patient-trial" element={<AddPatientToTrial />} />
+          <Route path="/doctor/clinical-details" element={<AddClinicalTrialDetails />} />
 
-        {/* Clinic Portal */}
-        <Route path="/clinic/*" element={<ClinicLayout />} />
+          {/* Clinic Portal */}
+          <Route path="/clinic/*" element={<ClinicLayout />} />
 
-        {/* Patient Portal */}
-        <Route path="/patient/*" element={<PatientDashboard />} />
-      </Routes>
+          {/* Patient Portal */}
+          <Route path="/patient/*" element={<PatientDashboard />} />
+        </Routes>
+      </Suspense>
     </ThemeProvider>
   );
 }
