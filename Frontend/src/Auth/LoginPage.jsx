@@ -271,15 +271,14 @@ export default function LoginPage() {
                     transition: 'all 0.8s cubic-bezier(0.16, 1, 0.3, 1)',
                 }}>
                     {/* Logo mark */}
-                    <div style={{
-                        width: '56px', height: '56px', borderRadius: '14px',
-                        background: `linear-gradient(135deg, ${colors.accent}, ${colors.green})`,
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        marginBottom: '28px',
-                        boxShadow: `0 8px 32px ${colors.accentGlow}`,
-                    }}>
-                        <DnaIcon size={26} color="#fff" />
-                    </div>
+                    <img
+                        src="/logo.png"
+                        alt="CuraMatch AI"
+                        style={{
+                            width: 56, height: 56, borderRadius: '14px',
+                            objectFit: 'contain', marginBottom: '28px',
+                        }}
+                    />
 
                     <h1 style={{
                         fontFamily: fonts.heading, fontSize: '36px', fontWeight: 800,

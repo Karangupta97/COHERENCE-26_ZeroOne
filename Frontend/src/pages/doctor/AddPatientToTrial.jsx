@@ -2,7 +2,7 @@
 //  AddPatientToTrial — Doctor refers a patient to a trial
 // ============================================================
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../../theme';
 import DoctorLayout from '../../components/shared/DoctorLayout';
@@ -22,7 +22,8 @@ import {
     HiOutlineClipboardDocumentList,
 } from 'react-icons/hi2';
 
-const fadeUp = { initial: { opacity: 0, y: 16 }, animate: { opacity: 1, y: 0 } };
+const fadeUpInitial = { opacity: 0, y: 16 };
+const fadeUpAnimate = { opacity: 1, y: 0 };
 
 export default function AddPatientToTrial() {
     const { colors, fonts, radius, fontSize } = useTheme();
@@ -41,6 +42,16 @@ export default function AddPatientToTrial() {
     const [submitting, setSubmitting] = useState(false);
     const [result, setResult] = useState(null); // { ok, message }
     const [focusedField, setFocusedField] = useState(null);
+
+    // Track whether the entrance animation has already played
+    const hasAnimated = useRef(false);
+    useEffect(() => {
+        if (!loading) {
+            // Set after a tick so the first render with content gets the animation
+            const t = setTimeout(() => { hasAnimated.current = true; }, 600);
+            return () => clearTimeout(t);
+        }
+    }, [loading]);
 
     const card = {
         background: colors.surface,
@@ -199,7 +210,7 @@ export default function AddPatientToTrial() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', maxWidth: 1400 }}>
 
                 {/* Header */}
-                <motion.div {...fadeUp} transition={{ duration: 0.4 }}
+                <motion.div initial={hasAnimated.current ? false : fadeUpInitial} animate={fadeUpAnimate} transition={{ duration: 0.4 }}
                     style={{ ...card, padding: '20px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                         <div style={{
@@ -230,7 +241,7 @@ export default function AddPatientToTrial() {
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
 
                         {/* ── Left: Select Trial ────────── */}
-                        <motion.div {...fadeUp} transition={{ duration: 0.4, delay: 0.1 }}
+                        <motion.div initial={hasAnimated.current ? false : fadeUpInitial} animate={fadeUpAnimate} transition={{ duration: 0.4, delay: 0.1 }}
                             style={{ ...card, padding: '20px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                                 <HiOutlineBeaker style={{ width: 18, height: 18, color: colors.accent }} />
@@ -266,7 +277,7 @@ export default function AddPatientToTrial() {
                                     filteredTrials.map(trial => {
                                         const isSelected = selectedTrial?._id === trial._id;
                                         return (
-                                            <motion.div key={trial._id} whileHover={{ scale: 1.01 }}
+                                            <div key={trial._id}
                                                 onClick={() => setSelectedTrial(trial)}
                                                 style={{
                                                     padding: '12px 14px', borderRadius: '10px', cursor: 'pointer',
@@ -300,7 +311,7 @@ export default function AddPatientToTrial() {
                                                         {trial.slots} slots
                                                     </span>
                                                 </div>
-                                            </motion.div>
+                                            </div>
                                         );
                                     })
                                 )}
@@ -308,7 +319,7 @@ export default function AddPatientToTrial() {
                         </motion.div>
 
                         {/* ── Right: Select Patient ─────── */}
-                        <motion.div {...fadeUp} transition={{ duration: 0.4, delay: 0.2 }}
+                        <motion.div initial={hasAnimated.current ? false : fadeUpInitial} animate={fadeUpAnimate} transition={{ duration: 0.4, delay: 0.2 }}
                             style={{ ...card, padding: '20px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                                 <HiOutlineUserCircle style={{ width: 18, height: 18, color: colors.accent }} />
@@ -345,7 +356,7 @@ export default function AddPatientToTrial() {
                                         const isSelected = selectedPatient?._id === patient._id;
                                         const name = patient.anonymizedId || `${patient.firstName} ${patient.lastName}`;
                                         return (
-                                            <motion.div key={patient._id} whileHover={{ scale: 1.01 }}
+                                            <div key={patient._id}
                                                 onClick={() => setSelectedPatient(patient)}
                                                 style={{
                                                     padding: '12px 14px', borderRadius: '10px', cursor: 'pointer',
@@ -385,7 +396,7 @@ export default function AddPatientToTrial() {
                                                         </span>
                                                     )}
                                                 </div>
-                                            </motion.div>
+                                            </div>
                                         );
                                     })
                                 )}
@@ -396,7 +407,7 @@ export default function AddPatientToTrial() {
 
                 {/* ── Bottom: Notes + Submit ───────── */}
                 {!loading && (
-                    <motion.div {...fadeUp} transition={{ duration: 0.4, delay: 0.3 }}
+                    <motion.div initial={hasAnimated.current ? false : fadeUpInitial} animate={fadeUpAnimate} transition={{ duration: 0.4, delay: 0.3 }}
                         style={{ ...card, padding: '20px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
 
                         {/* Selected summary */}

@@ -352,15 +352,13 @@ export default function HomePage() {
                 }}>
                     {/* Logo */}
                     <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none' }}>
-                        <div style={{
-                            width: 36, height: 36, borderRadius: 10,
-                            background: `linear-gradient(135deg, ${colors.accent}, ${colors.green})`,
-                            display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        }}>
-                            <DnaIcon size={20} color="#fff" />
-                        </div>
+                        <img
+                            src="/logo.png"
+                            alt="CuraMatch AI"
+                            style={{ width: 36, height: 36, borderRadius: 10, objectFit: 'contain' }}
+                        />
                         <span style={{ fontFamily: fonts.heading, fontWeight: 700, fontSize: 20, color: colors.textPrimary }}>
-                            Trial<span style={{ color: colors.accent }}>Match</span><span style={{ color: colors.green }}>AI</span>
+                            Cura<span style={{ color: colors.accent }}>Match</span><span style={{ color: colors.green }}>AI</span>
                         </span>
                     </Link>
 
@@ -951,15 +949,13 @@ export default function HomePage() {
                     {/* Brand col */}
                     <div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14, justifyContent: 'inherit' }}>
-                            <div style={{
-                                width: 32, height: 32, borderRadius: 8,
-                                background: `linear-gradient(135deg, ${colors.accent}, ${colors.green})`,
-                                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            }}>
-                                <DnaIcon size={18} color="#fff" />
-                            </div>
+                            <img
+                                src="/logo.png"
+                                alt="CuraMatch AI"
+                                style={{ width: 32, height: 32, borderRadius: 8, objectFit: 'contain' }}
+                            />
                             <span style={{ fontFamily: fonts.heading, fontWeight: 700, fontSize: 18, color: colors.textPrimary }}>
-                                Trial<span style={{ color: colors.accent }}>Match</span><span style={{ color: colors.green }}>AI</span>
+                                Cura<span style={{ color: colors.accent }}>Match</span><span style={{ color: colors.green }}>AI</span>
                             </span>
                         </div>
                         <p style={{ fontSize: 13, color: colors.textSecondary, lineHeight: 1.7, maxWidth: 280 }}>
