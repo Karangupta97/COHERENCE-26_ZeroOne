@@ -88,10 +88,29 @@ export default function RecommendedTrials() {
     }
   }
 
-  const handleApply = (trial) => {
-    setAppliedTrials({ ...appliedTrials, [trial.trialId]: true })
-    setApplyToast(trial.trialName)
-    setTimeout(() => setApplyToast(null), 3000)
+  const handleApply = async (trial) => {
+    try {
+      const token = localStorage.getItem('token')
+      const res = await fetch('/api/enrollments/apply', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          trialId: trial.trialId,
+          matchScore: trial.score,
+        }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.message || 'Application failed')
+      setAppliedTrials({ ...appliedTrials, [trial.trialId]: true })
+      setApplyToast(trial.trialName)
+      setTimeout(() => setApplyToast(null), 3000)
+    } catch (err) {
+      setApplyToast(null)
+      setError(err.message)
+    }
   }
 
   const displayTrials = matches.slice(0, 6)
@@ -420,6 +439,41 @@ export default function RecommendedTrials() {
                         ))}
                       </div>
                     </div>
+
+                    {/* Apply Button */}
+                    {trial.eligible !== 'Not Eligible' && (
+                      <div style={{ marginTop: spacing.lg, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: spacing.md }}>
+                        {appliedTrials[trial.trialId] ? (
+                          <div style={{
+                            display: 'flex', alignItems: 'center', gap: spacing.sm,
+                            padding: `10px ${spacing.xl}`, borderRadius: radius.md,
+                            background: colors.greenGlow, border: `1px solid ${colors.green}40`,
+                            fontSize: fontSize.sm, fontWeight: 700, color: colors.green,
+                            fontFamily: fonts.body,
+                          }}>
+                            <HiOutlineCheckCircle style={{ width: 18, height: 18 }} /> Application Submitted
+                          </div>
+                        ) : (
+                          <button
+                            onClick={() => handleApply(trial)}
+                            style={{
+                              display: 'flex', alignItems: 'center', gap: spacing.sm,
+                              padding: `12px ${spacing.xl}`, borderRadius: radius.md,
+                              background: `linear-gradient(135deg, ${colors.accent}, ${colors.green || colors.accent}CC)`,
+                              color: '#fff', border: 'none',
+                              fontSize: fontSize.sm, fontWeight: 700,
+                              fontFamily: fonts.body, cursor: 'pointer',
+                              boxShadow: `0 4px 16px ${colors.accent}40`,
+                              transition: 'transform 0.15s, box-shadow 0.15s',
+                            }}
+                            onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-1px)'; e.currentTarget.style.boxShadow = `0 6px 24px ${colors.accent}50` }}
+                            onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = `0 4px 16px ${colors.accent}40` }}
+                          >
+                            <HiOutlinePaperAirplane style={{ width: 18, height: 18 }} /> Apply for this Trial
+                          </button>
+                        )}
+                      </div>
+                    )}
                   </motion.div>
                 )}
               </AnimatePresence>

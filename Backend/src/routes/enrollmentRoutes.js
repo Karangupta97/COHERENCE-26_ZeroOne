@@ -9,6 +9,8 @@ const {
   getTrialEnrollments,
   updateEnrollmentStatus,
   getPatientsList,
+  patientApply,
+  getMyApplications,
 } = require("../controllers/enrollmentController");
 
 const router = express.Router();
@@ -30,5 +32,11 @@ router.get("/trial/:trialId", authorize("doctor", "clinic"), getTrialEnrollments
 
 // Update enrollment status (doctor or clinic)
 router.patch("/:id/status", authorize("doctor", "clinic"), updateStatusValidation, validate, updateEnrollmentStatus);
+
+// Patient self-applies to a trial
+router.post("/apply", authorize("patient"), patientApply);
+
+// Patient views their own applications
+router.get("/my-applications", authorize("patient"), getMyApplications);
 
 module.exports = router;
