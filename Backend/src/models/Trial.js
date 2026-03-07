@@ -16,7 +16,6 @@ const trialSchema = new mongoose.Schema(
     clinicId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Clinic",
-      required: [true, "Clinic ID is required"],
       index: true,
     },
 
@@ -45,6 +44,8 @@ const trialSchema = new mongoose.Schema(
       enum: [
         "Endocrinology", "Cardiology", "Oncology", "Neurology",
         "Metabolic", "Nephrology", "Pulmonology", "Rheumatology",
+        "Genetic", "Rare Disease", "Hematology", "Immunology",
+        "Gastroenterology", "Dermatology", "Orthopedics", "Other",
       ],
     },
     duration: {
@@ -64,6 +65,10 @@ const trialSchema = new mongoose.Schema(
     diagnoses:  [{ type: String, trim: true, maxlength: 200 }],
     exclusions: [{ type: String, trim: true, maxlength: 200 }],
     labValues:  [labValueSchema],
+    symptoms:   [{ type: String, trim: true, maxlength: 200 }],
+    requiredConditions: [{ type: String, trim: true, maxlength: 200 }],
+    drug:     { type: String, trim: true, maxlength: 200 },
+    hospital: { type: String, trim: true, maxlength: 200 },
 
     // ─── Logistics (Step 3) ───────────────────────────────
     slots: {

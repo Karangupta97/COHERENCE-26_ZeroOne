@@ -18,30 +18,12 @@ import {
   HiOutlinePhoneArrowUpRight,
   HiOutlineBoltSlash,
   HiOutlineChevronDown,
+  HiOutlineExclamationTriangle,
 } from 'react-icons/hi2'
 
-const AI_RESPONSES = {
-  greeting: "Hello! I'm CuraMatch AI Assistant. I can help you with:\n\n• Finding clinical trials\n• Checking your application status\n• Understanding eligibility criteria\n• Navigating the platform\n\nHow can I help you today?",
-  trial: "Based on your profile, I found **5 matching clinical trials**. Your top match is **GLYCO-ADVANCE (94% match)** — a Phase III trial by Novo Nordisk in Mumbai, just 4.2 km away.\n\nWould you like to know more about this trial or see other matches?",
-  eligibility: "Your eligibility is assessed using AI analysis of your medical profile. Key factors include:\n\n• **Age criteria** — matches\n• **Disease stage** — eligible\n• **Current medications** — no conflicts\n• **BMI range** — within limits\n\nYour profile completeness is **85%**. Adding latest lab results could improve match accuracy by ~15%.",
-  application: "Here's your application summary:\n\n• **Total Submitted:** 5\n• **Under Review:** 3\n• **Approved:** 1\n• **Rejected:** 1\n\nGreat news — your **ONCO-TARGET** application has been approved! Next step is scheduling your screening appointment.",
-  nearby: "There are **7 trials** near your location in Mumbai:\n\n1. **GLYCO-ADVANCE** — 4.2 km (94% match)\n2. **ONCO-TARGET** — 6.5 km (88% match)\n3. **NEURO-SHIELD** — 11 km (68% match)\n4. **META-RESET** — 22 km (73% match)\n\nWould you like directions to any of these?",
-  help: "Here's what I can help you with:\n\n• **\"Find trials\"** — Search for matching clinical trials\n• **\"My applications\"** — Check application status\n• **\"Eligibility\"** — Understand your eligibility\n• **\"Nearby trials\"** — Find trials near you\n• **\"Side effects\"** — Learn about trial procedures\n• **\"Settings\"** — Manage your preferences\n\nJust type your question!",
-  sideeffects: "Clinical trial safety is our top priority. Before enrolling, you'll receive:\n\n• **Informed Consent Document** — details all procedures and risks\n• **Screening Visit** — medical evaluation to confirm eligibility\n• **Regular Monitoring** — throughout the trial duration\n• **24/7 Support Line** — for any concerns during the trial\n\nWould you like to know more about a specific trial's procedures?",
-  default: "I understand your question. Let me help you with that.\n\nHere are some things I can assist with:\n• Finding clinical trials matching your profile\n• Checking application status\n• Understanding eligibility criteria\n• Getting directions to trial locations\n\nCould you provide more details about what you need?"
-}
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000'
 
-function getAIResponse(message) {
-  const lower = message.toLowerCase()
-  if (lower.includes('trial') && (lower.includes('find') || lower.includes('search') || lower.includes('match'))) return AI_RESPONSES.trial
-  if (lower.includes('eligib') || lower.includes('criteria') || lower.includes('qualify')) return AI_RESPONSES.eligibility
-  if (lower.includes('application') || lower.includes('status') || lower.includes('submitted') || lower.includes('approved') || lower.includes('rejected')) return AI_RESPONSES.application
-  if (lower.includes('nearby') || lower.includes('near me') || lower.includes('location') || lower.includes('direction') || lower.includes('close')) return AI_RESPONSES.nearby
-  if (lower.includes('help') || lower.includes('what can') || lower.includes('how to')) return AI_RESPONSES.help
-  if (lower.includes('side effect') || lower.includes('safety') || lower.includes('risk') || lower.includes('procedure')) return AI_RESPONSES.sideeffects
-  if (lower.includes('hi') || lower.includes('hello') || lower.includes('hey')) return AI_RESPONSES.greeting
-  return AI_RESPONSES.default
-}
+const GREETING = "Hello! I'm **CuraMatch AI Assistant** powered by Gemini. I have access to your medical profile and matched clinical trials.\n\nI can help you with:\n\n• Understanding your matched trials & eligibility\n• Explaining clinical trial procedures\n• Answering health-related questions\n• Navigating the platform\n\nHow can I help you today?"
 
 function formatMessage(text) {
   return text.split('\n').map((line, i) => {
@@ -60,31 +42,69 @@ const QUICK_ACTIONS = [
 ]
 
 export default function AIChatbot() {
-  const { colors, fonts } = useTheme()
+  const { colors, fonts, mode } = useTheme()
+  const isLight = mode === 'light'
   const [open, setOpen] = useState(false)
   const [messages, setMessages] = useState([
-    { id: 1, role: 'ai', text: AI_RESPONSES.greeting, time: new Date() }
+    { id: 1, role: 'ai', text: GREETING, time: new Date() }
   ])
   const [input, setInput] = useState('')
   const [typing, setTyping] = useState(false)
+  const [error, setError] = useState(null)
   const chatEndRef = useRef(null)
+  const chatHistoryRef = useRef([]) // Gemini-format history
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages, typing])
 
-  const sendMessage = (text) => {
-    if (!text.trim()) return
+  const sendMessage = async (text) => {
+    if (!text.trim() || typing) return
     const userMsg = { id: Date.now(), role: 'user', text: text.trim(), time: new Date() }
     setMessages(prev => [...prev, userMsg])
     setInput('')
+    setError(null)
     setTyping(true)
 
-    setTimeout(() => {
-      const aiResponse = { id: Date.now() + 1, role: 'ai', text: getAIResponse(text), time: new Date() }
-      setMessages(prev => [...prev, aiResponse])
+    // Add to Gemini history
+    chatHistoryRef.current.push({ role: 'user', parts: [{ text: text.trim() }] })
+
+    try {
+      const token = localStorage.getItem('token')
+      const res = await fetch(`${API_BASE}/api/chat`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify({
+          message: text.trim(),
+          history: chatHistoryRef.current.slice(0, -1), // exclude current msg (sent separately)
+        }),
+      })
+
+      const data = await res.json()
+
+      if (!res.ok || !data.ok) {
+        throw new Error(data.message || 'Failed to get response')
+      }
+
+      const aiText = data.reply
+      chatHistoryRef.current.push({ role: 'model', parts: [{ text: aiText }] })
+
+      setMessages(prev => [...prev, {
+        id: Date.now() + 1, role: 'ai', text: aiText, time: new Date()
+      }])
+    } catch (err) {
+      setError('Unable to reach AI. Please try again.')
+      setMessages(prev => [...prev, {
+        id: Date.now() + 1, role: 'ai',
+        text: "I'm sorry, I couldn't process your request right now. Please try again in a moment.",
+        time: new Date(), isError: true,
+      }])
+    } finally {
       setTyping(false)
-    }, 800 + Math.random() * 700)
+    }
   }
 
   const handleKeyDown = (e) => {
@@ -181,13 +201,13 @@ export default function AIChatbot() {
               <div style={{ flex: 1 }}>
                 <div style={{
                   fontSize: fontSize.sm, fontWeight: 700,
-                  color: colors.textPrimary, fontFamily: fonts.heading,
+                  color: isLight ? '#111827' : colors.textPrimary, fontFamily: fonts.heading,
                   letterSpacing: '-0.01em',
                 }}>
                   CuraMatch AI
                 </div>
                 <div style={{
-                  fontSize: '11px', color: colors.textSecondary,
+                  fontSize: '11px', color: isLight ? '#4B5563' : colors.textSecondary,
                   display: 'flex', alignItems: 'center', gap: 5, marginTop: 1,
                   fontFamily: fonts.body,
                 }}>
@@ -264,12 +284,12 @@ export default function AIChatbot() {
                       : '14px 14px 14px 4px',
                     background: msg.role === 'user'
                       ? colors.accent
-                      : colors.card,
-                    color: msg.role === 'user' ? '#fff' : colors.textPrimary,
+                      : msg.isError ? `${colors.red || '#EF4444'}10` : colors.card,
+                    color: msg.role === 'user' ? '#fff' : msg.isError ? (colors.red || '#EF4444') : isLight ? '#111827' : colors.textPrimary,
                     fontSize: fontSize.sm,
                     fontFamily: fonts.body,
                     lineHeight: 1.55,
-                    border: msg.role === 'ai' ? `1px solid ${colors.border}` : 'none',
+                    border: msg.role === 'ai' ? `1px solid ${msg.isError ? (colors.red || '#EF4444') + '30' : colors.border}` : 'none',
                     boxShadow: msg.role === 'ai'
                       ? '0 1px 3px rgba(0,0,0,0.04)'
                       : `0 2px 8px ${colors.accent}25`,
@@ -277,7 +297,7 @@ export default function AIChatbot() {
                     {formatMessage(msg.text)}
                     <div style={{
                       fontSize: '10px',
-                      color: msg.role === 'user' ? 'rgba(255,255,255,0.55)' : colors.textSecondary,
+                      color: msg.role === 'user' ? 'rgba(255,255,255,0.55)' : isLight ? '#6B7280' : colors.textSecondary,
                       textAlign: msg.role === 'user' ? 'right' : 'left',
                       marginTop: 6, opacity: 0.8,
                       fontFamily: fonts.body,
@@ -338,7 +358,7 @@ export default function AIChatbot() {
                       style={{
                         padding: '6px 12px', borderRadius: 20,
                         background: colors.surface,
-                        color: colors.textPrimary,
+                        color: isLight ? '#111827' : colors.textPrimary,
                         border: `1px solid ${colors.border}`,
                         fontSize: '11px', fontWeight: 600, fontFamily: fonts.body,
                         cursor: 'pointer', transition: 'all 0.2s ease',
@@ -378,7 +398,7 @@ export default function AIChatbot() {
                 style={{
                   flex: 1, padding: '10px 16px', borderRadius: 12,
                   border: `1px solid ${colors.border}`, background: colors.card,
-                  color: colors.textPrimary, fontSize: fontSize.sm,
+                  color: isLight ? '#111827' : colors.textPrimary, fontSize: fontSize.sm,
                   fontFamily: fonts.body, outline: 'none', boxSizing: 'border-box',
                   transition: 'border-color 0.2s ease',
                 }}
@@ -387,21 +407,21 @@ export default function AIChatbot() {
               />
               <motion.button
                 onClick={() => sendMessage(input)}
-                disabled={!input.trim()}
-                whileHover={input.trim() ? { scale: 1.05 } : {}}
-                whileTap={input.trim() ? { scale: 0.95 } : {}}
+                disabled={!input.trim() || typing}
+                whileHover={input.trim() && !typing ? { scale: 1.05 } : {}}
+                whileTap={input.trim() && !typing ? { scale: 0.95 } : {}}
                 style={{
                   width: 38, height: 38, borderRadius: 10,
-                  background: input.trim()
+                  background: input.trim() && !typing
                     ? colors.accent
                     : `${colors.textSecondary}15`,
                   border: 'none',
-                  cursor: input.trim() ? 'pointer' : 'default',
+                  cursor: input.trim() && !typing ? 'pointer' : 'default',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  color: input.trim() ? '#fff' : colors.textSecondary,
+                  color: input.trim() && !typing ? '#fff' : colors.textSecondary,
                   flexShrink: 0,
                   transition: 'all 0.2s ease',
-                  boxShadow: input.trim() ? `0 2px 10px ${colors.accent}35` : 'none',
+                  boxShadow: input.trim() && !typing ? `0 2px 10px ${colors.accent}35` : 'none',
                 }}
               >
                 <HiOutlinePaperAirplane style={{ width: 16, height: 16 }} />

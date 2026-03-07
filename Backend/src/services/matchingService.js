@@ -49,22 +49,48 @@ function matchPatientToTrial(patient, trial) {
   }
 
   // ─── 2. Condition Matching (40 pts) ─────────────────────
-  if (trial.diagnoses && trial.diagnoses.length > 0) {
-    const patientConditions = gatherPatientConditions(patient);
-    let conditionMatched = false;
+  const patientConditions = gatherPatientConditions(patient);
+  const allTrialDiagnoses = [
+    ...(trial.diagnoses || []),
+    ...(trial.requiredConditions || []),
+    ...(trial.symptoms || []),
+  ];
 
-    for (const reqDiag of trial.diagnoses) {
-      const reqLower = reqDiag.toLowerCase();
-      for (const cond of patientConditions) {
-        if (
-          cond.toLowerCase().includes(reqLower) ||
-          reqLower.includes(cond.toLowerCase())
-        ) {
-          conditionMatched = true;
-          break;
+  if (allTrialDiagnoses.length > 0) {
+    let conditionMatched = false;
+    let symptomMatches = 0;
+
+    // Check diagnosis match
+    if (trial.diagnoses && trial.diagnoses.length > 0) {
+      for (const reqDiag of trial.diagnoses) {
+        const reqLower = reqDiag.toLowerCase();
+        for (const cond of patientConditions) {
+          if (
+            cond.toLowerCase().includes(reqLower) ||
+            reqLower.includes(cond.toLowerCase())
+          ) {
+            conditionMatched = true;
+            break;
+          }
+        }
+        if (conditionMatched) break;
+      }
+    }
+
+    // Check symptom overlap (adds partial score even without exact diagnosis)
+    if (trial.symptoms && trial.symptoms.length > 0) {
+      for (const symptom of trial.symptoms) {
+        const symLower = symptom.toLowerCase();
+        for (const cond of patientConditions) {
+          if (
+            cond.toLowerCase().includes(symLower) ||
+            symLower.includes(cond.toLowerCase())
+          ) {
+            symptomMatches++;
+            break;
+          }
         }
       }
-      if (conditionMatched) break;
     }
 
     if (conditionMatched) {
@@ -73,6 +99,16 @@ function matchPatientToTrial(patient, trial) {
         type: "condition",
         passed: true,
         text: "Diagnosis confirmed — matches trial requirement",
+      });
+    } else if (symptomMatches > 0) {
+      // Partial condition score based on symptom overlap
+      const symptomRatio = symptomMatches / trial.symptoms.length;
+      const partialScore = Math.round(symptomRatio * SCORE_WEIGHTS.condition);
+      score += partialScore;
+      reasons.push({
+        type: "condition",
+        passed: symptomRatio >= 0.5,
+        text: `${symptomMatches}/${trial.symptoms.length} symptoms match (partial score: ${partialScore}/${SCORE_WEIGHTS.condition})`,
       });
     } else {
       reasons.push({
@@ -282,6 +318,10 @@ async function getMatchedTrials(patientId) {
       endDate: trial.endDate,
       description: trial.description,
       status: trial.status,
+      drug: trial.drug || null,
+      hospital: trial.hospital || null,
+      symptoms: trial.symptoms || [],
+      requiredConditions: trial.requiredConditions || [],
       score: result.score,
       eligible: result.eligible,
       reasons: result.reasons,

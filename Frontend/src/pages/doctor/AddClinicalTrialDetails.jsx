@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useTheme } from '../../theme';
 import DoctorLayout from '../../components/shared/DoctorLayout';
 // eslint-disable-next-line no-unused-vars
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
     HiOutlineDocumentText,
     HiOutlineCheckCircle,
@@ -15,6 +15,11 @@ import {
     HiOutlineBeaker,
     HiOutlineHeart,
     HiOutlineShieldCheck,
+    HiOutlineSparkles,
+    HiOutlineMapPin,
+    HiOutlineEye,
+    HiOutlineXMark,
+    HiOutlineArrowPath,
 } from 'react-icons/hi2';
 
 const fadeUp = { initial: { opacity: 0, y: 16 }, animate: { opacity: 1, y: 0 } };
@@ -119,6 +124,9 @@ export default function AddClinicalTrialDetails() {
     const [submitting, setSubmitting] = useState(false);
     const [result, setResult] = useState(null);
     const [focusedField, setFocusedField] = useState(null);
+    const [matchedTrials, setMatchedTrials] = useState([]);
+    const [matchLoading, setMatchLoading] = useState(false);
+    const [expandedTrial, setExpandedTrial] = useState(null);
 
     // ── Style helpers ──────────────────────────────
     const card = {
@@ -294,6 +302,8 @@ export default function AddClinicalTrialDetails() {
             const data = await res.json();
             if (res.ok && data.ok) {
                 setResult({ ok: true, message: data.message });
+                // Fetch trial matches for this patient
+                fetchTrialMatches();
             } else {
                 setResult({ ok: false, message: data.message || 'Failed to submit details.' });
             }
@@ -312,6 +322,24 @@ export default function AddClinicalTrialDetails() {
         setCurrentStep(0);
         setResult(null);
         setVerifyError('');
+        setMatchedTrials([]);
+        setMatchLoading(false);
+        setExpandedTrial(null);
+    };
+
+    const fetchTrialMatches = async () => {
+        setMatchLoading(true);
+        try {
+            const token = localStorage.getItem('token');
+            const res = await fetch(`/api/matching/patient/${encodeURIComponent(anonymizedId)}`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            const data = await res.json();
+            if (data.ok) {
+                setMatchedTrials(data.data);
+            }
+        } catch { /* silently fail */ }
+        finally { setMatchLoading(false); }
     };
 
     // ── Field renderer ─────────────────────────────
@@ -708,39 +736,305 @@ export default function AddClinicalTrialDetails() {
 
     const stepRenderers = [renderStep0, renderStep1, renderStep2, renderStep3, renderReview];
 
-    // ── Success view ───────────────────────────────
+    // ── Success view with trial matches ─────────────────
     if (result?.ok) {
+        const scoreColor = (s) => s >= 60 ? (colors.green) : s >= 40 ? (colors.yellow || '#F59E0B') : (colors.red || '#EF4444');
+        const eligBadge = (eligible) => {
+            const cfg = {
+                Eligible: { bg: colors.greenGlow || `${colors.green}15`, color: colors.green, label: 'Eligible' },
+                'Partially Eligible': { bg: `${colors.yellow || '#F59E0B'}20`, color: colors.yellow || '#F59E0B', label: 'Partial Match' },
+                'Not Eligible': { bg: `${colors.red || '#EF4444'}20`, color: colors.red || '#EF4444', label: 'Not Eligible' },
+            };
+            const c = cfg[eligible] || cfg['Not Eligible'];
+            return (
+                <span style={{ fontSize: '11px', fontWeight: 600, padding: '2px 8px', borderRadius: '999px', background: c.bg, color: c.color, fontFamily: fonts.body }}>
+                    {c.label}
+                </span>
+            );
+        };
+
         return (
             <DoctorLayout>
-                <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
-                    style={{
-                        ...card, padding: '60px 40px', maxWidth: 600, margin: '40px auto',
-                        display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px', textAlign: 'center',
-                    }}>
-                    <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', delay: 0.2 }}
+                <div style={{ maxWidth: 900, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                    {/* Success banner */}
+                    <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
                         style={{
-                            width: 80, height: 80, borderRadius: '50%',
+                            ...card, padding: '24px 28px',
+                            display: 'flex', alignItems: 'center', gap: '16px',
+                            borderLeft: `4px solid ${colors.green}`,
+                        }}>
+                        <div style={{
+                            width: 52, height: 52, borderRadius: '50%',
                             background: colors.greenGlow || `${colors.green}15`,
-                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
                         }}>
-                        <HiOutlineCheckCircle style={{ width: 40, height: 40, color: colors.green }} />
+                            <HiOutlineCheckCircle style={{ width: 28, height: 28, color: colors.green }} />
+                        </div>
+                        <div style={{ flex: 1 }}>
+                            <h2 style={{ margin: 0, fontFamily: fonts.heading, fontSize: '18px', fontWeight: 700, color: colors.textPrimary }}>
+                                Clinical Details Submitted Successfully
+                            </h2>
+                            <p style={{ margin: '4px 0 0', fontSize: '13px', color: colors.textSecondary, fontFamily: fonts.body }}>
+                                Patient <strong style={{ color: colors.accent }}>{anonymizedId}</strong> — details recorded and AI matching initiated.
+                            </p>
+                        </div>
+                        <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
+                            onClick={resetAll}
+                            style={{
+                                padding: '8px 20px', borderRadius: radius?.md || '10px',
+                                background: 'transparent', color: colors.textSecondary,
+                                border: `1px solid ${colors.border}`,
+                                fontSize: '13px', fontWeight: 600, cursor: 'pointer', fontFamily: fonts.body,
+                            }}>
+                            + New Patient
+                        </motion.button>
                     </motion.div>
-                    <h2 style={{ margin: 0, fontFamily: fonts.heading, fontSize: '22px', fontWeight: 700, color: colors.textPrimary }}>
-                        Clinical Trial Details Submitted!
-                    </h2>
-                    <p style={{ margin: 0, fontSize: '14px', color: colors.textSecondary, maxWidth: 400 }}>
-                        Details for patient <strong>{anonymizedId}</strong> have been recorded. The patient can now view these details in their dashboard.
-                    </p>
-                    <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
-                        onClick={resetAll}
-                        style={{
-                            marginTop: '8px', padding: '10px 28px', borderRadius: radius?.md || '10px',
-                            background: colors.accent, color: '#fff', border: 'none',
-                            fontSize: '14px', fontWeight: 600, cursor: 'pointer', fontFamily: fonts.body,
-                        }}>
-                        Submit for Another Patient
-                    </motion.button>
-                </motion.div>
+
+                    {/* Trial Matches Section */}
+                    <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
+                        style={{ ...card, padding: '24px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
+                            <h3 style={{
+                                margin: 0, fontSize: '16px', fontFamily: fonts.heading, fontWeight: 700,
+                                color: colors.textPrimary, display: 'flex', alignItems: 'center', gap: '8px',
+                            }}>
+                                <HiOutlineSparkles style={{ width: 20, height: 20, color: colors.accent }} />
+                                AI Trial Match Results
+                            </h3>
+                            <button onClick={fetchTrialMatches} disabled={matchLoading}
+                                style={{
+                                    padding: '6px 14px', borderRadius: '8px',
+                                    background: colors.card || colors.surface, color: colors.textSecondary,
+                                    border: `1px solid ${colors.border}`, fontSize: '12px', fontWeight: 600,
+                                    cursor: matchLoading ? 'default' : 'pointer', fontFamily: fonts.body,
+                                    display: 'flex', alignItems: 'center', gap: '4px',
+                                }}>
+                                <HiOutlineArrowPath style={{ width: 14, height: 14, animation: matchLoading ? 'spin 1s linear infinite' : 'none' }} />
+                                Refresh
+                            </button>
+                        </div>
+
+                        {/* Loading */}
+                        {matchLoading && (
+                            <div style={{ textAlign: 'center', padding: '40px 20px', color: colors.textSecondary, fontFamily: fonts.body }}>
+                                <HiOutlineArrowPath style={{ width: 28, height: 28, animation: 'spin 1s linear infinite', marginBottom: '8px' }} />
+                                <div style={{ fontSize: '14px' }}>Analyzing patient profile against available trials...</div>
+                            </div>
+                        )}
+
+                        {/* Empty */}
+                        {!matchLoading && matchedTrials.length === 0 && (
+                            <div style={{ textAlign: 'center', padding: '40px 20px', color: colors.textSecondary, fontFamily: fonts.body }}>
+                                <div style={{ fontSize: '14px', marginBottom: '4px' }}>No matching trials found for this patient.</div>
+                                <div style={{ fontSize: '12px' }}>Matches may appear as new trials are added.</div>
+                            </div>
+                        )}
+
+                        {/* Match list */}
+                        {!matchLoading && matchedTrials.length > 0 && (
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                {matchedTrials.map((trial, i) => {
+                                    const isExpanded = expandedTrial === trial.trialId;
+                                    const sColor = scoreColor(trial.score);
+                                    const r = (20 - 2) / 2;
+                                    const circ = 2 * Math.PI * r;
+                                    const offset = circ - (trial.score / 100) * circ;
+                                    return (
+                                        <motion.div key={trial.trialId}
+                                            initial={{ opacity: 0, x: -12 }}
+                                            animate={{ opacity: 1, x: 0 }}
+                                            transition={{ delay: i * 0.05, duration: 0.3 }}>
+                                            {/* Card Row */}
+                                            <div
+                                                onClick={() => setExpandedTrial(isExpanded ? null : trial.trialId)}
+                                                style={{
+                                                    background: colors.card || colors.surface,
+                                                    border: `1px solid ${isExpanded ? colors.accent : colors.border}`,
+                                                    borderRadius: isExpanded ? '12px 12px 0 0' : '12px',
+                                                    padding: '14px 16px',
+                                                    display: 'flex', alignItems: 'center', gap: '14px',
+                                                    cursor: 'pointer', transition: 'all 0.2s',
+                                                }}
+                                            >
+                                                {/* Score mini ring */}
+                                                <div style={{ position: 'relative', width: 40, height: 40, flexShrink: 0 }}>
+                                                    <svg width={40} height={40} style={{ transform: 'rotate(-90deg)' }}>
+                                                        <circle cx={20} cy={20} r={r} fill="none" stroke={colors.border} strokeWidth={2} />
+                                                        <circle cx={20} cy={20} r={r} fill="none" stroke={sColor} strokeWidth={2}
+                                                            strokeDasharray={circ} strokeDashoffset={offset} strokeLinecap="round"
+                                                            style={{ transition: 'stroke-dashoffset 0.6s ease' }} />
+                                                    </svg>
+                                                    <span style={{
+                                                        position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                                        fontSize: '11px', fontWeight: 700, color: sColor,
+                                                    }}>{trial.score}%</span>
+                                                </div>
+
+                                                {/* Info */}
+                                                <div style={{ flex: 1, minWidth: 0 }}>
+                                                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+                                                        <span style={{ fontSize: '14px', fontWeight: 700, fontFamily: fonts.heading, color: colors.textPrimary }}>
+                                                            {trial.trialName}
+                                                        </span>
+                                                        {trial.phase && (
+                                                            <span style={{
+                                                                fontSize: '10px', fontWeight: 600, padding: '1px 7px', borderRadius: '999px',
+                                                                background: colors.greenGlow || `${colors.green}15`, color: colors.green, fontFamily: fonts.body,
+                                                            }}>{trial.phase}</span>
+                                                        )}
+                                                        {eligBadge(trial.eligible)}
+                                                    </div>
+                                                    <div style={{ fontSize: '12px', color: colors.textSecondary, marginTop: '3px', fontFamily: fonts.body, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                                        <HiOutlineMapPin style={{ width: 12, height: 12 }} />
+                                                        {trial.hospital || trial.location || 'TBD'}
+                                                        {trial.location && trial.hospital ? ` • ${trial.location}` : ''}
+                                                        {trial.drug ? ` • ${trial.drug}` : ''}
+                                                    </div>
+                                                    {/* Quick reason chips */}
+                                                    <div style={{ marginTop: '6px', display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
+                                                        {trial.reasons.filter(r => r.passed).slice(0, 2).map((r, idx) => (
+                                                            <span key={idx} style={{ fontSize: '10px', color: colors.green, fontWeight: 500, background: colors.greenGlow || `${colors.green}10`, padding: '1px 7px', borderRadius: '6px', fontFamily: fonts.body }}>
+                                                                ✓ {r.text}
+                                                            </span>
+                                                        ))}
+                                                        {trial.reasons.filter(r => !r.passed).length > 0 && (
+                                                            <span style={{ fontSize: '10px', color: colors.red || '#EF4444', fontWeight: 500, background: `${colors.red || '#EF4444'}12`, padding: '1px 7px', borderRadius: '6px', fontFamily: fonts.body }}>
+                                                                ✗ {trial.reasons.filter(r => !r.passed).length} not met
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                </div>
+
+                                                {/* Expand toggle */}
+                                                <button onClick={(e) => { e.stopPropagation(); setExpandedTrial(isExpanded ? null : trial.trialId); }}
+                                                    style={{
+                                                        display: 'flex', alignItems: 'center', gap: '4px',
+                                                        padding: '5px 12px', borderRadius: '8px',
+                                                        background: isExpanded ? colors.accent : (colors.accentGlow || `${colors.accent}10`),
+                                                        color: isExpanded ? '#fff' : colors.accent,
+                                                        border: `1px solid ${colors.accent}40`, fontSize: '11px', fontWeight: 600,
+                                                        fontFamily: fonts.body, cursor: 'pointer', flexShrink: 0,
+                                                    }}>
+                                                    <HiOutlineEye style={{ width: 13, height: 13 }} />
+                                                    {isExpanded ? 'Hide' : 'Details'}
+                                                </button>
+                                            </div>
+
+                                            {/* Expanded detail panel */}
+                                            <AnimatePresence>
+                                                {isExpanded && (
+                                                    <motion.div
+                                                        initial={{ opacity: 0, height: 0 }}
+                                                        animate={{ opacity: 1, height: 'auto' }}
+                                                        exit={{ opacity: 0, height: 0 }}
+                                                        style={{
+                                                            background: colors.card || colors.surface,
+                                                            border: `1px solid ${colors.accent}40`,
+                                                            borderTop: 'none', borderRadius: '0 0 12px 12px',
+                                                            padding: '20px', overflow: 'hidden',
+                                                        }}>
+                                                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' }}>
+                                                            <h4 style={{ margin: 0, fontSize: '14px', fontFamily: fonts.heading, fontWeight: 700, color: colors.textPrimary }}>
+                                                                {trial.trialName} — Full Details
+                                                            </h4>
+                                                            <button onClick={() => setExpandedTrial(null)}
+                                                                style={{ background: 'none', border: 'none', cursor: 'pointer', color: colors.textSecondary }}>
+                                                                <HiOutlineXMark style={{ width: 18, height: 18 }} />
+                                                            </button>
+                                                        </div>
+
+                                                        {/* Info grid */}
+                                                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px', marginBottom: '16px' }}>
+                                                            {[
+                                                                ['Trial Code', trial.trialCode],
+                                                                ['Phase', trial.phase],
+                                                                ['Category', trial.category],
+                                                                ['Location', trial.location],
+                                                                ['Hospital', trial.hospital],
+                                                                ['Drug', trial.drug],
+                                                                ['Slots', trial.slots != null ? `${trial.slots - (trial.enrolled || 0)} remaining` : 'N/A'],
+                                                                ['Match Score', `${trial.score}%`],
+                                                                ['Eligibility', trial.eligible],
+                                                            ].map(([l, v]) => (
+                                                                <div key={l}>
+                                                                    <div style={{ fontSize: '10px', color: colors.textSecondary, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.8px', fontFamily: fonts.body }}>{l}</div>
+                                                                    <div style={{ fontSize: '13px', color: colors.textPrimary, fontWeight: 500, marginTop: '2px', fontFamily: fonts.body }}>{v || '—'}</div>
+                                                                </div>
+                                                            ))}
+                                                        </div>
+
+                                                        {trial.description && (
+                                                            <div style={{ marginBottom: '16px' }}>
+                                                                <div style={{ fontSize: '10px', color: colors.textSecondary, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: '4px', fontFamily: fonts.body }}>Description</div>
+                                                                <div style={{ fontSize: '13px', color: colors.textPrimary, lineHeight: 1.6, fontFamily: fonts.body }}>{trial.description}</div>
+                                                            </div>
+                                                        )}
+
+                                                        {/* Symptoms & Required Conditions */}
+                                                        {(trial.symptoms?.length > 0 || trial.requiredConditions?.length > 0) && (
+                                                            <div style={{ marginBottom: '16px', display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+                                                                {trial.symptoms?.length > 0 && (
+                                                                    <div style={{ flex: 1, minWidth: 180 }}>
+                                                                        <div style={{ fontSize: '10px', color: colors.textSecondary, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: '6px', fontFamily: fonts.body }}>Symptoms</div>
+                                                                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
+                                                                            {trial.symptoms.map((s, idx) => (
+                                                                                <span key={idx} style={{ fontSize: '11px', padding: '2px 8px', borderRadius: '999px', background: `${colors.yellow || '#F59E0B'}15`, color: colors.yellow || '#F59E0B', fontWeight: 500, fontFamily: fonts.body }}>{s}</span>
+                                                                            ))}
+                                                                        </div>
+                                                                    </div>
+                                                                )}
+                                                                {trial.requiredConditions?.length > 0 && (
+                                                                    <div style={{ flex: 1, minWidth: 180 }}>
+                                                                        <div style={{ fontSize: '10px', color: colors.textSecondary, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: '6px', fontFamily: fonts.body }}>Required Conditions</div>
+                                                                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
+                                                                            {trial.requiredConditions.map((c, idx) => (
+                                                                                <span key={idx} style={{ fontSize: '11px', padding: '2px 8px', borderRadius: '999px', background: colors.accentGlow || `${colors.accent}10`, color: colors.accent, fontWeight: 500, fontFamily: fonts.body }}>{c}</span>
+                                                                            ))}
+                                                                        </div>
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                        )}
+
+                                                        {/* Matching Breakdown */}
+                                                        <div>
+                                                            <div style={{ fontSize: '10px', color: colors.textSecondary, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: '8px', fontFamily: fonts.body }}>Matching Breakdown</div>
+                                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                                                                {trial.reasons.map((reason, idx) => (
+                                                                    <div key={idx} style={{
+                                                                        display: 'flex', alignItems: 'center', gap: '8px',
+                                                                        padding: '6px 10px',
+                                                                        background: reason.passed ? (colors.greenGlow || `${colors.green}10`) : `${colors.red || '#EF4444'}08`,
+                                                                        borderRadius: '8px',
+                                                                        border: `1px solid ${reason.passed ? `${colors.green}25` : `${colors.red || '#EF4444'}18`}`,
+                                                                    }}>
+                                                                        <span style={{ fontSize: '13px', flexShrink: 0, width: 16, textAlign: 'center' }}>
+                                                                            {reason.passed ? '✓' : '✗'}
+                                                                        </span>
+                                                                        <span style={{
+                                                                            fontSize: '10px', fontWeight: 600,
+                                                                            color: reason.passed ? colors.green : (colors.red || '#EF4444'),
+                                                                            textTransform: 'uppercase', letterSpacing: '0.4px',
+                                                                            minWidth: 60, fontFamily: fonts.body,
+                                                                        }}>{reason.type}</span>
+                                                                        <span style={{ fontSize: '12px', color: colors.textPrimary, fontFamily: fonts.body }}>
+                                                                            {reason.text}
+                                                                        </span>
+                                                                    </div>
+                                                                ))}
+                                                            </div>
+                                                        </div>
+                                                    </motion.div>
+                                                )}
+                                            </AnimatePresence>
+                                        </motion.div>
+                                    );
+                                })}
+                            </div>
+                        )}
+                    </motion.div>
+                </div>
+                <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
             </DoctorLayout>
         );
     }

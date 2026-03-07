@@ -239,7 +239,7 @@ export default function RecommendedTrials() {
                   </div>
 
                   <div style={{ fontSize: fontSize.sm, color: colors.textSecondary, marginTop: 4, fontFamily: fonts.body, display: 'flex', alignItems: 'center', gap: spacing.xs }}>
-                    <HiOutlineMapPin style={{ width: 14, height: 14, flexShrink: 0 }} /> {trial.location || 'Location TBD'} {trial.category ? `• ${trial.category}` : ''}
+                    <HiOutlineMapPin style={{ width: 14, height: 14, flexShrink: 0 }} /> {trial.hospital || trial.location || 'Location TBD'} {trial.location && trial.hospital ? `• ${trial.location}` : ''} {trial.category ? `• ${trial.category}` : ''}
                   </div>
 
                   {/* Top eligibility reasons (passed only) */}
@@ -341,6 +341,8 @@ export default function RecommendedTrials() {
                         ['Phase', trial.phase],
                         ['Category', trial.category],
                         ['Location', trial.location],
+                        ['Hospital', trial.hospital],
+                        ['Drug', trial.drug],
                         ['Slots Left', trial.slots != null ? `${trial.slots - (trial.enrolled || 0)}` : 'N/A'],
                         ['Compensation', trial.compensation || 'N/A'],
                         ['Status', trial.status],
@@ -358,6 +360,32 @@ export default function RecommendedTrials() {
                       <div style={{ marginBottom: spacing.lg }}>
                         <div style={{ fontSize: fontSize.xs, color: colors.textSecondary, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '1px', marginBottom: spacing.xs, fontFamily: fonts.mono || fonts.body }}>Description</div>
                         <div style={{ fontSize: fontSize.sm, color: colors.textPrimary, lineHeight: 1.6, fontFamily: fonts.body }}>{trial.description}</div>
+                      </div>
+                    )}
+
+                    {/* Symptoms & Required Conditions */}
+                    {(trial.symptoms?.length > 0 || trial.requiredConditions?.length > 0) && (
+                      <div style={{ marginBottom: spacing.lg, display: 'flex', gap: spacing.lg, flexWrap: 'wrap' }}>
+                        {trial.symptoms?.length > 0 && (
+                          <div style={{ flex: 1, minWidth: 200 }}>
+                            <div style={{ fontSize: fontSize.xs, color: colors.textSecondary, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '1px', marginBottom: spacing.xs, fontFamily: fonts.mono || fonts.body }}>Symptoms</div>
+                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                              {trial.symptoms.map((s, idx) => (
+                                <span key={idx} style={{ fontSize: fontSize.xs, padding: '3px 10px', borderRadius: radius.full, background: `${colors.yellow || '#F59E0B'}15`, color: colors.yellow || '#F59E0B', fontWeight: 500, fontFamily: fonts.body }}>{s}</span>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                        {trial.requiredConditions?.length > 0 && (
+                          <div style={{ flex: 1, minWidth: 200 }}>
+                            <div style={{ fontSize: fontSize.xs, color: colors.textSecondary, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '1px', marginBottom: spacing.xs, fontFamily: fonts.mono || fonts.body }}>Required Conditions</div>
+                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                              {trial.requiredConditions.map((c, idx) => (
+                                <span key={idx} style={{ fontSize: fontSize.xs, padding: '3px 10px', borderRadius: radius.full, background: colors.accentGlow, color: colors.accent, fontWeight: 500, fontFamily: fonts.body }}>{c}</span>
+                              ))}
+                            </div>
+                          </div>
+                        )}
                       </div>
                     )}
 
