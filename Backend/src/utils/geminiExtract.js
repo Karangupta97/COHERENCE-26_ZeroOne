@@ -35,7 +35,7 @@ Return ONLY valid JSON — no markdown, no explanation, no code fences.`;
  * @returns {Promise<Object>}   Parsed extraction result matching the schema
  */
 async function extractMedicalData(fileBuffer, mimeType) {
-  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
   const filePart = {
     inlineData: {

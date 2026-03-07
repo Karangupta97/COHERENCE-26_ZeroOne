@@ -1,79 +1,61 @@
-import { useEffect, useState } from 'react'
+import { useMemo } from 'react'
+import Chart from 'react-apexcharts'
 import { useTheme, radius, spacing, fontSize } from '../../theme.jsx'
 import { motion } from 'framer-motion'
-import {
-    HiOutlineBeaker,
-} from 'react-icons/hi2'
+import { HiOutlineBeaker } from 'react-icons/hi2'
 
 const SEGMENTS = [
-    { label: 'Phase III', count: 2, color: null },
-    { label: 'Phase II', count: 2, color: null },
-    { label: 'Phase I', count: 1, color: '#F59E0B' },
-    { label: 'Completed', count: 1, color: '#64748B' },
+    { label: 'Phase III', count: 2 },
+    { label: 'Phase II', count: 2 },
+    { label: 'Phase I', count: 1 },
+    { label: 'Completed', count: 1 },
 ]
-
-function DonutChart({ segments, size = 160, strokeWidth = 28, colors }) {
-    const [anim, setAnim] = useState(0)
-    const r = (size - strokeWidth) / 2
-    const circ = 2 * Math.PI * r
-    const total = segments.reduce((s, seg) => s + seg.count, 0)
-
-    useEffect(() => { const t = setTimeout(() => setAnim(1), 200); return () => clearTimeout(t) }, [])
-
-    let cumOffset = 0
-    const arcs = segments.map((seg) => {
-        const frac = seg.count / total
-        const dash = frac * circ
-        const gap = circ - dash
-        const offset = -cumOffset
-        cumOffset += dash
-        return { ...seg, dash, gap, offset }
-    })
-
-    return (
-        <div style={{ position: 'relative', width: size, height: size }}>
-            <svg width={size} height={size} style={{ transform: 'rotate(-90deg)' }}>
-                <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke={`${colors.border}`} strokeWidth={strokeWidth} />
-                {arcs.map((arc, i) => {
-                    const color = arc.color || (i === 0 ? colors.green : colors.accent)
-                    return (
-                        <circle
-                            key={arc.label}
-                            cx={size / 2} cy={size / 2} r={r} fill="none"
-                            stroke={color} strokeWidth={strokeWidth}
-                            strokeDasharray={`${anim * arc.dash} ${circ - anim * arc.dash}`}
-                            strokeDashoffset={-arc.offset}
-                            strokeLinecap="butt"
-                            style={{ transition: 'stroke-dasharray 1.2s ease-out' }}
-                        />
-                    )
-                })}
-            </svg>
-            <div style={{
-                position: 'absolute', inset: 0,
-                display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-            }}>
-                <motion.span
-                    initial={{ scale: 0.5, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    transition={{ delay: 0.5, type: 'spring' }}
-                    style={{ fontSize: '28px', fontWeight: 800, fontFamily: "'Open Sans', sans-serif", color: colors.textPrimary, lineHeight: 1 }}
-                >
-                    {total}
-                </motion.span>
-                <span style={{ fontSize: '10px', fontWeight: 600, color: colors.textSecondary, marginTop: 2 }}>Total Trials</span>
-            </div>
-        </div>
-    )
-}
 
 export default function TrialPieChart() {
     const { colors, fonts } = useTheme()
 
-    const resolvedSegments = SEGMENTS.map((seg, i) => ({
-        ...seg,
-        color: seg.color || (i === 0 ? colors.green : i === 1 ? colors.accent : seg.color),
-    }))
+    const chartColors = [colors.green, colors.accent, '#F59E0B', '#64748B']
+    const total = SEGMENTS.reduce((s, seg) => s + seg.count, 0)
+
+    const options = useMemo(() => ({
+        chart: {
+            type: 'donut',
+            background: 'transparent',
+            fontFamily: fonts.body,
+        },
+        labels: SEGMENTS.map(s => s.label),
+        colors: chartColors,
+        stroke: { width: 3, colors: [colors.surface] },
+        dataLabels: { enabled: false },
+        plotOptions: {
+            pie: {
+                donut: {
+                    size: '68%',
+                    labels: {
+                        show: true,
+                        name: { show: true, fontSize: '12px', fontFamily: fonts.body, color: colors.textSecondary, offsetY: 20 },
+                        value: { show: true, fontSize: '28px', fontWeight: 800, fontFamily: "'Satoshi', sans-serif", color: colors.textPrimary, offsetY: -12, formatter: () => total },
+                        total: { show: true, label: 'Total Trials', fontSize: '11px', fontFamily: fonts.body, color: colors.textSecondary, formatter: () => total },
+                    },
+                },
+                expandOnClick: false,
+            },
+        },
+        legend: { show: false },
+        tooltip: {
+            enabled: true,
+            theme: 'dark',
+            fillSeriesColor: false,
+            style: { fontSize: '12px', fontFamily: fonts.body },
+            y: { formatter: (val) => `${val} trial${val !== 1 ? 's' : ''}` },
+        },
+        states: {
+            hover: { filter: { type: 'darken', value: 0.85 } },
+            active: { filter: { type: 'none' } },
+        },
+    }), [colors, fonts, total, chartColors])
+
+    const series = SEGMENTS.map(s => s.count)
 
     return (
         <motion.div
@@ -88,32 +70,47 @@ export default function TrialPieChart() {
                 padding: spacing.lg,
             }}
         >
-            <h2 style={{ margin: `0 0 ${spacing.lg}`, fontSize: fontSize.lg, fontFamily: fonts.heading, fontWeight: 700, color: colors.textPrimary, display: 'flex', alignItems: 'center', gap: spacing.sm }}>
-                <HiOutlineBeaker style={{ width: 22, height: 22, color: colors.accent }} />
+            <h2 style={{ margin: `0 0 ${spacing.md}`, fontSize: fontSize.lg, fontFamily: fonts.heading, fontWeight: 700, color: colors.textPrimary, display: 'flex', alignItems: 'center', gap: spacing.sm }}>
+                <div style={{ width: 36, height: 36, borderRadius: radius.md, background: colors.accentGlow, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <HiOutlineBeaker style={{ width: 20, height: 20, color: colors.accent }} />
+                </div>
                 Trial Phase Distribution
             </h2>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: spacing.xl }}>
-                <DonutChart segments={resolvedSegments} colors={colors} />
+            <div style={{ display: 'flex', alignItems: 'center', gap: spacing.lg }}>
+                <div style={{ flexShrink: 0 }}>
+                    <Chart options={options} series={series} type="donut" width={200} height={200} />
+                </div>
 
-                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: spacing.md }}>
-                    {resolvedSegments.map((seg, i) => (
+                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: spacing.sm }}>
+                    {SEGMENTS.map((seg, i) => (
                         <motion.div
                             key={seg.label}
                             initial={{ opacity: 0, x: 12 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: 0.4 + i * 0.1 }}
-                            style={{ display: 'flex', alignItems: 'center', gap: spacing.sm }}
+                            style={{
+                                display: 'flex', alignItems: 'center', gap: spacing.sm,
+                                padding: `${spacing.xs} ${spacing.sm}`, borderRadius: radius.md,
+                                transition: 'background 0.2s', cursor: 'default',
+                            }}
+                            onMouseEnter={e => { e.currentTarget.style.background = `${chartColors[i]}12` }}
+                            onMouseLeave={e => { e.currentTarget.style.background = 'transparent' }}
                         >
-                            <div style={{ width: 12, height: 12, borderRadius: 3, background: seg.color, flexShrink: 0 }} />
+                            <div style={{ width: 10, height: 10, borderRadius: 3, background: chartColors[i], flexShrink: 0 }} />
                             <div style={{ flex: 1 }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                     <span style={{ fontSize: fontSize.sm, fontWeight: 600, color: colors.textPrimary, fontFamily: fonts.body }}>{seg.label}</span>
-                                    <span style={{ fontSize: fontSize.sm, fontWeight: 800, fontFamily: "'Open Sans', sans-serif", color: seg.color }}>{seg.count}</span>
+                                    <span style={{ fontSize: fontSize.sm, fontWeight: 800, fontFamily: "'Satoshi', sans-serif", color: chartColors[i] }}>{seg.count}</span>
                                 </div>
-                                <span style={{ fontSize: fontSize.xs, color: colors.textSecondary }}>
-                                    {Math.round((seg.count / resolvedSegments.reduce((s, x) => s + x.count, 0)) * 100)}% of total
-                                </span>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm, marginTop: 3 }}>
+                                    <div style={{ flex: 1, height: 4, borderRadius: 2, background: colors.border, overflow: 'hidden' }}>
+                                        <div style={{ width: `${Math.round((seg.count / total) * 100)}%`, height: '100%', borderRadius: 2, background: chartColors[i], transition: 'width 0.6s ease' }} />
+                                    </div>
+                                    <span style={{ fontSize: '10px', color: colors.textSecondary, fontFamily: fonts.mono || fonts.body, minWidth: 28 }}>
+                                        {Math.round((seg.count / total) * 100)}%
+                                    </span>
+                                </div>
                             </div>
                         </motion.div>
                     ))}

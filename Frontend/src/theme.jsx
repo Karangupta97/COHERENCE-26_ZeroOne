@@ -1,5 +1,5 @@
 // ============================================================
-//  CureMatchAI — Shared Theme System
+//  CuraMatchAI — Shared Theme System
 //  Share this file with ALL teammates
 //  Import: import { useTheme, ThemeProvider, themes } from './theme'
 // ============================================================
@@ -270,21 +270,21 @@ export function ThemeProvider({ children }) {
 
   // Persist to localStorage
   useEffect(() => {
-    const savedTheme = localStorage.getItem("cureMatchTheme");
-    const savedMode = localStorage.getItem("cureMatchMode");
+    const savedTheme = localStorage.getItem("curaMatchTheme");
+    const savedMode = localStorage.getItem("curaMatchMode");
     if (savedTheme && themes[savedTheme]) setThemeKey(savedTheme);
     if (savedMode) setMode(savedMode);
   }, []);
 
   const switchTheme = (key) => {
     setThemeKey(key);
-    localStorage.setItem("cureMatchTheme", key);
+    localStorage.setItem("curaMatchTheme", key);
   };
 
   const toggleMode = () => {
     const next = mode === "dark" ? "light" : "dark";
     setMode(next);
-    localStorage.setItem("cureMatchMode", next);
+    localStorage.setItem("curaMatchMode", next);
   };
 
   const theme = themes[themeKey];

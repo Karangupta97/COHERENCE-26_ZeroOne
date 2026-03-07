@@ -19,6 +19,50 @@ import {
 
 const fadeUp = { initial: { opacity: 0, y: 16 }, animate: { opacity: 1, y: 0 } };
 
+const MEDICAL_HISTORY_OPTIONS = [
+    'Hypertension',
+    'Type 2 Diabetes Mellitus',
+    'Type 1 Diabetes Mellitus',
+    'Asthma',
+    'COPD',
+    'Coronary Artery Disease',
+    'Heart Failure',
+    'Atrial Fibrillation',
+    'Stroke',
+    'Chronic Kidney Disease',
+    'Hypothyroidism',
+    'Hyperthyroidism',
+    'Rheumatoid Arthritis',
+    'Osteoarthritis',
+    'Osteoporosis',
+    'Depression',
+    'Anxiety Disorder',
+    'Epilepsy',
+    'Migraine',
+    'GERD',
+    'Peptic Ulcer Disease',
+    'Irritable Bowel Syndrome',
+    'Crohn\'s Disease',
+    'Ulcerative Colitis',
+    'Hepatitis B',
+    'Hepatitis C',
+    'HIV/AIDS',
+    'Tuberculosis',
+    'Anemia',
+    'Deep Vein Thrombosis',
+    'Pulmonary Embolism',
+    'Sleep Apnea',
+    'Psoriasis',
+    'Eczema',
+    'Lupus (SLE)',
+    'Multiple Sclerosis',
+    'Parkinson\'s Disease',
+    'Alzheimer\'s Disease',
+    'Cancer (specify)',
+    'Obesity',
+    'Hyperlipidemia',
+];
+
 const EMPTY_FORM = {
     age: '',
     gender: '',
@@ -363,7 +407,130 @@ export default function AddClinicalTrialDetails() {
                     {renderInput('Diagnosis Date', 'diagnosisDate', { type: 'date' })}
                 </div>
                 {renderInput('Secondary Diagnoses', 'secondaryDiagnoses', { placeholder: 'Comma-separated: Hypertension, Obesity' })}
-                {renderInput('Medical History', 'medicalHistory', { placeholder: 'Comma-separated: Asthma, Migraines' })}
+                {/* Medical History — multi-select dropdown with tags */}
+                <div>
+                    <label style={labelStyle}>Medical History</label>
+                    <div style={{ position: 'relative' }}>
+                        {/* Selected tags */}
+                        <div style={{
+                            display: 'flex', flexWrap: 'wrap', gap: '6px',
+                            padding: '8px 12px', minHeight: '42px',
+                            background: colors.surface, border: `1.5px solid ${colors.border}`,
+                            borderRadius: radius?.md || '10px',
+                            cursor: 'text', alignItems: 'center',
+                        }}
+                            onClick={() => {
+                                const el = document.getElementById('mh-custom-input');
+                                if (el) el.focus();
+                            }}
+                        >
+                            {formData.medicalHistory
+                                .split(',')
+                                .map(s => s.trim())
+                                .filter(Boolean)
+                                .map((item) => (
+                                    <span key={item} style={{
+                                        display: 'inline-flex', alignItems: 'center', gap: '4px',
+                                        background: colors.accentGlow, color: colors.accent,
+                                        padding: '3px 10px', borderRadius: '999px',
+                                        fontSize: '12px', fontWeight: 600, fontFamily: fonts.body,
+                                        border: `1px solid ${colors.accent}30`,
+                                    }}>
+                                        {item}
+                                        <span
+                                            style={{ cursor: 'pointer', fontWeight: 700, fontSize: '14px', lineHeight: 1, marginLeft: '2px' }}
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                const updated = formData.medicalHistory
+                                                    .split(',')
+                                                    .map(s => s.trim())
+                                                    .filter(s => s && s !== item)
+                                                    .join(', ');
+                                                handleChange('medicalHistory', updated);
+                                            }}
+                                        >×</span>
+                                    </span>
+                                ))}
+                            <input
+                                id="mh-custom-input"
+                                type="text"
+                                placeholder={formData.medicalHistory ? 'Add more...' : 'Type or select conditions...'}
+                                style={{
+                                    border: 'none', outline: 'none', background: 'transparent',
+                                    color: colors.textPrimary, fontFamily: fonts.body, fontSize: '13px',
+                                    flex: 1, minWidth: '120px', padding: '2px 0',
+                                }}
+                                onFocus={() => setFocusedField('medicalHistory')}
+                                onBlur={() => setTimeout(() => setFocusedField(null), 200)}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' || e.key === ',') {
+                                        e.preventDefault();
+                                        const val = e.target.value.trim().replace(/,$/g, '');
+                                        if (val) {
+                                            const existing = formData.medicalHistory
+                                                .split(',')
+                                                .map(s => s.trim())
+                                                .filter(Boolean);
+                                            if (!existing.some(s => s.toLowerCase() === val.toLowerCase())) {
+                                                handleChange('medicalHistory', [...existing, val].join(', '));
+                                            }
+                                            e.target.value = '';
+                                        }
+                                    }
+                                }}
+                            />
+                        </div>
+
+                        {/* Dropdown */}
+                        {focusedField === 'medicalHistory' && (
+                            <div style={{
+                                position: 'absolute', top: '100%', left: 0, right: 0, zIndex: 50,
+                                marginTop: '4px', maxHeight: '200px', overflowY: 'auto',
+                                background: colors.surface, border: `1.5px solid ${colors.accent}40`,
+                                borderRadius: radius?.md || '10px', boxShadow: colors.shadow,
+                            }}>
+                                {MEDICAL_HISTORY_OPTIONS
+                                    .filter(opt => {
+                                        const existing = formData.medicalHistory.split(',').map(s => s.trim().toLowerCase());
+                                        return !existing.includes(opt.toLowerCase());
+                                    })
+                                    .filter(opt => {
+                                        const input = document.getElementById('mh-custom-input');
+                                        const query = (input?.value || '').toLowerCase();
+                                        return !query || opt.toLowerCase().includes(query);
+                                    })
+                                    .map(opt => (
+                                        <div
+                                            key={opt}
+                                            onMouseDown={(e) => {
+                                                e.preventDefault();
+                                                const existing = formData.medicalHistory
+                                                    .split(',')
+                                                    .map(s => s.trim())
+                                                    .filter(Boolean);
+                                                if (!existing.some(s => s.toLowerCase() === opt.toLowerCase())) {
+                                                    handleChange('medicalHistory', [...existing, opt].join(', '));
+                                                }
+                                                const input = document.getElementById('mh-custom-input');
+                                                if (input) input.value = '';
+                                            }}
+                                            style={{
+                                                padding: '8px 14px', cursor: 'pointer',
+                                                fontSize: '13px', color: colors.textPrimary,
+                                                fontFamily: fonts.body,
+                                                borderBottom: `1px solid ${colors.border}`,
+                                                transition: 'background 0.15s',
+                                            }}
+                                            onMouseEnter={(e) => e.currentTarget.style.background = colors.accentGlow}
+                                            onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                                        >
+                                            {opt}
+                                        </div>
+                                    ))}
+                            </div>
+                        )}
+                    </div>
+                </div>
                 {renderInput('Surgical History', 'surgicalHistory', { placeholder: 'Comma-separated: Appendectomy 2015, Knee Arthroscopy 2020' })}
                 {renderInput('Family History', 'familyHistory', { placeholder: 'Comma-separated: Father — Heart Disease, Mother — Diabetes' })}
                 {renderInput('Allergies', 'allergies', { placeholder: 'Comma-separated: Penicillin, Latex' })}

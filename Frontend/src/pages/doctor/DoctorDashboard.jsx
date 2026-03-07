@@ -303,7 +303,7 @@ export default function DoctorDashboard() {
                                 <h3 style={{ margin: 0, fontSize: '16px', fontFamily: fonts.heading, fontWeight: 700, color: colors.textPrimary }}>
                                     AI Insights
                                 </h3>
-                                <span style={{ fontSize: '11px', color: colors.textSecondary, fontFamily: fonts.body }}>Powered by CureMatch AI</span>
+                                <span style={{ fontSize: '11px', color: colors.textSecondary, fontFamily: fonts.body }}>Powered by CuraMatch AI</span>
                             </div>
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>

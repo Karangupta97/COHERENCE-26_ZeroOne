@@ -38,7 +38,7 @@ export default function PageLoader() {
                     color: ACCENT,
                 }}
             >
-                CureMatch AI
+                CuraMatch AI
             </motion.div>
         </div>
     )

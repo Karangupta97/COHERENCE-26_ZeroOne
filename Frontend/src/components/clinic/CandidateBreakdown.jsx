@@ -1,35 +1,81 @@
-import { useEffect, useState } from 'react'
+import { useMemo } from 'react'
+import Chart from 'react-apexcharts'
 import { useTheme, radius, spacing, fontSize } from '../../theme.jsx'
 import { motion } from 'framer-motion'
-import {
-    HiOutlineUserGroup,
-    HiOutlineCpuChip,
-    HiOutlineCheckCircle,
-    HiOutlineMagnifyingGlass,
-    HiOutlineCursorArrowRays,
-    HiOutlineXCircle,
-} from 'react-icons/hi2'
+import { HiOutlineUserGroup } from 'react-icons/hi2'
 
 const STAGES = [
-    { label: 'AI Matched', count: 12, Icon: HiOutlineCpuChip, colorType: 'accent' },
-    { label: 'Doctor Approved', count: 7, Icon: HiOutlineCheckCircle, colorType: 'green' },
-    { label: 'Screening', count: 5, Icon: HiOutlineMagnifyingGlass, colorType: 'accent' },
-    { label: 'Enrolled', count: 2, Icon: HiOutlineCursorArrowRays, colorType: 'green' },
-    { label: 'Dropped Out', count: 3, Icon: HiOutlineXCircle, colorType: 'red' },
+    { label: 'AI Matched', count: 12 },
+    { label: 'Doctor Approved', count: 7 },
+    { label: 'Screening', count: 5 },
+    { label: 'Enrolled', count: 2 },
+    { label: 'Dropped Out', count: 3 },
 ]
 
 export default function CandidateBreakdown() {
     const { colors, fonts } = useTheme()
-    const [anim, setAnim] = useState(false)
-    const maxCount = Math.max(...STAGES.map(s => s.count))
 
-    useEffect(() => { const t = setTimeout(() => setAnim(true), 300); return () => clearTimeout(t) }, [])
+    const barColors = [colors.accent, colors.green, colors.accent, colors.green, colors.red || '#EF4444']
 
-    const getColor = (colorType) => {
-        if (colorType === 'red') return colors.red || '#EF4444'
-        if (colorType === 'green') return colors.green
-        return colors.accent
-    }
+    const options = useMemo(() => ({
+        chart: {
+            type: 'bar',
+            background: 'transparent',
+            fontFamily: fonts.body,
+            toolbar: { show: false },
+            animations: { enabled: true, easing: 'easeinout', speed: 900, animateGradually: { enabled: true, delay: 120 } },
+        },
+        plotOptions: {
+            bar: {
+                horizontal: true,
+                borderRadius: 6,
+                borderRadiusApplication: 'end',
+                barHeight: '60%',
+                distributed: true,
+                dataLabels: { position: 'top' },
+            },
+        },
+        dataLabels: {
+            enabled: true,
+            textAnchor: 'start',
+            offsetX: 6,
+            style: { fontSize: '12px', fontWeight: 700, fontFamily: fonts.body, colors: [colors.textPrimary] },
+            formatter: (val) => val,
+        },
+        xaxis: {
+            categories: STAGES.map(s => s.label),
+            axisBorder: { show: false },
+            axisTicks: { show: false },
+            labels: { show: false },
+        },
+        yaxis: {
+            labels: { style: { colors: colors.textSecondary, fontSize: '12px', fontWeight: 600, fontFamily: fonts.body } },
+        },
+        grid: {
+            borderColor: `${colors.border}30`,
+            strokeDashArray: 3,
+            xaxis: { lines: { show: true } },
+            yaxis: { lines: { show: false } },
+            padding: { top: -8, bottom: -4 },
+        },
+        colors: barColors,
+        fill: {
+            type: 'gradient',
+            gradient: { shade: 'light', type: 'horizontal', shadeIntensity: 0.15, opacityFrom: 0.95, opacityTo: 0.8, stops: [0, 100] },
+        },
+        legend: { show: false },
+        tooltip: {
+            enabled: true,
+            theme: 'dark',
+            style: { fontSize: '12px', fontFamily: fonts.body },
+            y: { formatter: (val) => `${val} candidates` },
+        },
+        states: {
+            hover: { filter: { type: 'darken', value: 0.88 } },
+        },
+    }), [colors, fonts, barColors])
+
+    const series = [{ name: 'Candidates', data: STAGES.map(s => s.count) }]
 
     return (
         <motion.div
@@ -44,63 +90,18 @@ export default function CandidateBreakdown() {
                 padding: spacing.lg,
             }}
         >
-            <h2 style={{ margin: `0 0 ${spacing.lg}`, fontSize: fontSize.lg, fontFamily: fonts.heading, fontWeight: 700, color: colors.textPrimary, display: 'flex', alignItems: 'center', gap: spacing.sm }}>
-                <HiOutlineUserGroup style={{ width: 22, height: 22, color: colors.accent }} />
+            <h2 style={{ margin: `0 0 ${spacing.md}`, fontSize: fontSize.lg, fontFamily: fonts.heading, fontWeight: 700, color: colors.textPrimary, display: 'flex', alignItems: 'center', gap: spacing.sm }}>
+                <div style={{ width: 36, height: 36, borderRadius: radius.md, background: colors.accentGlow, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <HiOutlineUserGroup style={{ width: 20, height: 20, color: colors.accent }} />
+                </div>
                 Candidate Stage Breakdown
             </h2>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.md }}>
-                {STAGES.map((stage, i) => {
-                    const color = getColor(stage.colorType)
-                    const pct = Math.round((stage.count / maxCount) * 100)
-                    const StageIcon = stage.Icon
-                    return (
-                        <motion.div
-                            key={stage.label}
-                            initial={{ opacity: 0, x: -16 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: 0.3 + i * 0.08 }}
-                            style={{ display: 'flex', alignItems: 'center', gap: spacing.md }}
-                        >
-                            <div style={{
-                                width: 28, height: 28, borderRadius: radius.sm, flexShrink: 0,
-                                background: stage.colorType === 'red' ? `${color}20` : stage.colorType === 'green' ? colors.greenGlow : colors.accentGlow,
-                                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            }}>
-                                <StageIcon style={{ width: 15, height: 15, color }} />
-                            </div>
-
-                            <div style={{ flex: 1 }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
-                                    <span style={{ fontSize: fontSize.sm, fontWeight: 600, color: colors.textPrimary, fontFamily: fonts.body }}>
-                                        {stage.label}
-                                    </span>
-                                    <span style={{ fontSize: fontSize.sm, fontWeight: 800, fontFamily: "'Open Sans', sans-serif", color }}>
-                                        {stage.count}
-                                    </span>
-                                </div>
-
-                                <div style={{ height: 10, borderRadius: 5, background: `${colors.border}`, overflow: 'hidden' }}>
-                                    <motion.div
-                                        initial={{ width: 0 }}
-                                        animate={{ width: anim ? `${pct}%` : 0 }}
-                                        transition={{ delay: 0.4 + i * 0.1, duration: 0.8, ease: 'easeOut' }}
-                                        style={{
-                                            height: '100%',
-                                            borderRadius: 5,
-                                            background: `linear-gradient(90deg, ${color}, ${color}B0)`,
-                                        }}
-                                    />
-                                </div>
-                            </div>
-                        </motion.div>
-                    )
-                })}
-            </div>
+            <Chart options={options} series={series} type="bar" height={220} />
 
             {/* Summary row */}
             <div style={{
-                marginTop: spacing.lg,
+                marginTop: spacing.sm,
                 padding: spacing.md,
                 borderRadius: radius.md,
                 background: `${colors.accent}08`,
@@ -114,7 +115,7 @@ export default function CandidateBreakdown() {
                     { label: 'Avg. Days to Enroll', value: '14', color: colors.accent },
                 ].map((stat) => (
                     <div key={stat.label} style={{ textAlign: 'center' }}>
-                        <div style={{ fontSize: '20px', fontWeight: 800, fontFamily: "'Open Sans', sans-serif", color: stat.color, lineHeight: 1 }}>
+                        <div style={{ fontSize: '20px', fontWeight: 800, fontFamily: "'Satoshi', sans-serif", color: stat.color, lineHeight: 1 }}>
                             {stat.value}
                         </div>
                         <div style={{ fontSize: fontSize.xs, color: colors.textSecondary, marginTop: 4, fontFamily: fonts.body }}>

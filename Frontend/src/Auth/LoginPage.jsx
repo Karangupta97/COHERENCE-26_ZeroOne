@@ -289,7 +289,7 @@ export default function LoginPage() {
                         <span style={{
                             color: colors.accent,
                         }}>
-                            CureMatch<span style={{ color: colors.green }}>AI</span>
+                            CuraMatch<span style={{ color: colors.green }}>AI</span>
                         </span>
                     </h1>
 
@@ -500,7 +500,7 @@ export default function LoginPage() {
                                 type="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                placeholder={`${selectedRole}@curematch.ai`}
+                                placeholder={`${selectedRole}@curamatch.ai`}
                                 onFocus={() => setEmailFocused(true)}
                                 onBlur={() => setEmailFocused(false)}
                                 style={{
@@ -648,7 +648,7 @@ export default function LoginPage() {
                         textAlign: 'center', fontSize: '12px', color: colors.textSecondary,
                         fontFamily: fonts.body, marginTop: '16px', opacity: 0.5,
                     }}>
-                        &copy; {new Date().getFullYear()} CureMatchAI. All rights reserved.
+                        &copy; {new Date().getFullYear()} CuraMatchAI. All rights reserved.
                     </p>
                 </div>
             </div>

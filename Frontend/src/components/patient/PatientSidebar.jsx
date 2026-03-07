@@ -68,7 +68,7 @@ export default function PatientSidebar() {
           </span>
           <div>
             <div style={{ fontSize: fontSize.base, fontWeight: 700, fontFamily: fonts.heading, color: colors.textPrimary, lineHeight: 1.2 }}>
-              CureMatch AI
+              CuraMatch AI
             </div>
             <div style={{ fontSize: fontSize.xs, color: colors.textSecondary, fontFamily: fonts.mono || fonts.body, letterSpacing: '1.5px', textTransform: 'uppercase' }}>
               Patient Portal

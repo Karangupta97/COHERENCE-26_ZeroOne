@@ -21,7 +21,7 @@ import {
 } from 'react-icons/hi2'
 
 const AI_RESPONSES = {
-  greeting: "Hello! I'm CureMatch AI Assistant. I can help you with:\n\n• Finding clinical trials\n• Checking your application status\n• Understanding eligibility criteria\n• Navigating the platform\n\nHow can I help you today?",
+  greeting: "Hello! I'm CuraMatch AI Assistant. I can help you with:\n\n• Finding clinical trials\n• Checking your application status\n• Understanding eligibility criteria\n• Navigating the platform\n\nHow can I help you today?",
   trial: "Based on your profile, I found **5 matching clinical trials**. Your top match is **GLYCO-ADVANCE (94% match)** — a Phase III trial by Novo Nordisk in Mumbai, just 4.2 km away.\n\nWould you like to know more about this trial or see other matches?",
   eligibility: "Your eligibility is assessed using AI analysis of your medical profile. Key factors include:\n\n• **Age criteria** — matches\n• **Disease stage** — eligible\n• **Current medications** — no conflicts\n• **BMI range** — within limits\n\nYour profile completeness is **85%**. Adding latest lab results could improve match accuracy by ~15%.",
   application: "Here's your application summary:\n\n• **Total Submitted:** 5\n• **Under Review:** 3\n• **Approved:** 1\n• **Rejected:** 1\n\nGreat news — your **ONCO-TARGET** application has been approved! Next step is scheduling your screening appointment.",
@@ -184,7 +184,7 @@ export default function AIChatbot() {
                   color: colors.textPrimary, fontFamily: fonts.heading,
                   letterSpacing: '-0.01em',
                 }}>
-                  CureMatch AI
+                  CuraMatch AI
                 </div>
                 <div style={{
                   fontSize: '11px', color: colors.textSecondary,

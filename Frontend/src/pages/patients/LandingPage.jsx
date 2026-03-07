@@ -269,7 +269,7 @@ export default function LandingPage() {
                 fontFamily: fonts.body,
               }}
             >
-              CureMatch AI uses advanced machine learning to connect patients
+              CuraMatch AI uses advanced machine learning to connect patients
               with the most suitable clinical trials — faster, smarter, and
               more transparently than ever before.
             </motion.p>
@@ -383,7 +383,7 @@ export default function LandingPage() {
               Features
             </motion.span>
             <motion.h2 variants={fadeUp} custom={1} style={{ fontSize: fontSize.xxl, fontFamily: fonts.heading, fontWeight: 700, color: textPri, margin: 0 }}>
-              Why CureMatch AI?
+              Why CuraMatch AI?
             </motion.h2>
             <motion.p variants={fadeUp} custom={2} style={{ marginTop: spacing.sm, color: textSec, fontSize: fontSize.base, maxWidth: 520, marginLeft: 'auto', marginRight: 'auto', fontFamily: fonts.body }}>
               We combine cutting-edge AI with healthcare expertise to make
@@ -447,7 +447,7 @@ export default function LandingPage() {
             </h2>
             <p style={{ position: 'relative', color: 'rgba(255,255,255,0.85)', fontSize: fontSize.lg, maxWidth: 480, margin: `0 auto ${spacing.lg}`, fontFamily: fonts.body, lineHeight: 1.6 }}>
               Join thousands of patients already discovering personalized
-              clinical trials through CureMatch AI.
+              clinical trials through CuraMatch AI.
             </p>
             <button
               onClick={() => navigate('/patient/dashboard')}
@@ -492,7 +492,7 @@ export default function LandingPage() {
                   C
                 </span>
                 <span style={{ fontSize: fontSize.lg, fontWeight: 700, color: '#fff', fontFamily: fonts.heading }}>
-                  CureMatch <span style={{ fontWeight: 400, color: 'rgba(255,255,255,0.4)' }}>AI</span>
+                  CuraMatch <span style={{ fontWeight: 400, color: 'rgba(255,255,255,0.4)' }}>AI</span>
                 </span>
               </a>
               <p style={{ fontSize: fontSize.sm, color: 'rgba(255,255,255,0.4)', lineHeight: 1.6 }}>
@@ -524,7 +524,7 @@ export default function LandingPage() {
           </div>
 
           <div style={{ marginTop: spacing.xl, paddingTop: spacing.lg, borderTop: '1px solid rgba(255,255,255,0.08)', display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: spacing.md, fontSize: fontSize.xs, color: 'rgba(255,255,255,0.35)' }}>
-            <p style={{ margin: 0 }}>&copy; 2026 CureMatch AI. All rights reserved.</p>
+            <p style={{ margin: 0 }}>&copy; 2026 CuraMatch AI. All rights reserved.</p>
             <p style={{ margin: 0 }}>Made with <span style={{ color: colors.red || '#EF4444' }}>♥</span> for better healthcare</p>
           </div>
         </div>

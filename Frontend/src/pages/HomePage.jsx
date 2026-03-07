@@ -221,9 +221,9 @@ export default function HomePage() {
     ];
 
     const testimonials = [
-        { name: 'Dr. Sarah Mitchell', role: 'Oncologist', text: 'CureMatchAI cut our patient-trial matching time from weeks to minutes. The AI recommendations are remarkably accurate.' },
+        { name: 'Dr. Sarah Mitchell', role: 'Oncologist', text: 'CuraMatchAI cut our patient-trial matching time from weeks to minutes. The AI recommendations are remarkably accurate.' },
         { name: 'James Cooper', role: 'Patient', text: 'I found a clinical trial for my condition within days of signing up. The eligibility reports made everything crystal clear.' },
-        { name: 'Mayo Clinical Research', role: 'Research Clinic', text: 'Our enrollment rates increased by 40% after switching to CureMatchAI. The workflow automation is a game-changer.' },
+        { name: 'Mayo Clinical Research', role: 'Research Clinic', text: 'Our enrollment rates increased by 40% after switching to CuraMatchAI. The workflow automation is a game-changer.' },
     ];
 
     const stats = [
@@ -500,7 +500,7 @@ export default function HomePage() {
                             color: colors.textSecondary, lineHeight: 1.7, marginBottom: 36,
                             maxWidth: 520,
                         }}>
-                            CureMatchAI uses advanced AI to match patients with the right clinical trials,
+                            CuraMatchAI uses advanced AI to match patients with the right clinical trials,
                             streamline enrollment for clinics, and empower doctors with data-driven insights.
                         </p>
 
@@ -914,7 +914,7 @@ export default function HomePage() {
                         color: 'rgba(255,255,255,0.85)', fontSize: 16, lineHeight: 1.7,
                         maxWidth: 480, margin: '0 auto 32px', position: 'relative',
                     }}>
-                        Join thousands of patients, doctors, and clinics already using CureMatchAI to accelerate medical breakthroughs.
+                        Join thousands of patients, doctors, and clinics already using CuraMatchAI to accelerate medical breakthroughs.
                     </p>
                     <div className="hp-cta-buttons" style={{ display: 'flex', justifyContent: 'center', gap: 14, position: 'relative' }}>
                         <Link to="/signup" style={{
@@ -1015,7 +1015,7 @@ export default function HomePage() {
                     display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 16,
                     fontSize: 12, color: colors.textSecondary,
                 }}>
-                    <span>&copy; {new Date().getFullYear()} CureMatchAI. All rights reserved.</span>
+                    <span>&copy; {new Date().getFullYear()} CuraMatchAI. All rights reserved.</span>
                 </div>
             </footer>
         </div>

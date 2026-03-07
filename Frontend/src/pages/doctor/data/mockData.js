@@ -1,5 +1,5 @@
 // ============================================================
-//  CureMatchAI — Extended Mock Data for Doctor Portal
+//  CuraMatchAI — Extended Mock Data for Doctor Portal
 // ============================================================
 
 import { PATIENTS, TRIALS } from '../../../theme';

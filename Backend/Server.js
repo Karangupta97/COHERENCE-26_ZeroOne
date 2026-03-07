@@ -16,6 +16,7 @@ const reportRoutes = require("./src/routes/reportRoutes");
 const trialRoutes = require("./src/routes/trialRoutes");
 const enrollmentRoutes = require("./src/routes/enrollmentRoutes");
 const clinicalDetailsRoutes = require("./src/routes/clinicalDetailsRoutes");
+const matchingRoutes = require("./src/routes/matchingRoutes");
 
 // Middleware
 const errorHandler = require("./src/middlewares/errorHandler");
@@ -67,6 +68,7 @@ app.use("/api/reports", reportRoutes);
 app.use("/api/trials", trialRoutes);
 app.use("/api/enrollments", enrollmentRoutes);
 app.use("/api/clinical-details", clinicalDetailsRoutes);
+app.use("/api/matching", matchingRoutes);
 
 // ─── 404 HANDLER ────────────────────────────────────────
 app.use((_req, res) => {
