@@ -22,7 +22,6 @@ const fadeUp = { initial: { opacity: 0, y: 16 }, animate: { opacity: 1, y: 0 } }
 const EMPTY_FORM = {
     age: '',
     gender: '',
-    ethnicity: '',
     primaryDiagnosis: '',
     secondaryDiagnoses: '',
     diagnosisDate: '',
@@ -202,7 +201,7 @@ export default function AddClinicalTrialDetails() {
                 anonymizedId,
                 age: formData.age ? Number(formData.age) : undefined,
                 gender: formData.gender || undefined,
-                ethnicity: formData.ethnicity || undefined,
+                ethnicity: undefined,
                 primaryDiagnosis: formData.primaryDiagnosis || undefined,
                 secondaryDiagnoses: formData.secondaryDiagnoses ? formData.secondaryDiagnoses.split(',').map(s => s.trim()).filter(Boolean) : undefined,
                 diagnosisDate: formData.diagnosisDate || undefined,
@@ -334,7 +333,6 @@ export default function AddClinicalTrialDetails() {
                         { value: 'Other', label: 'Other' },
                     ],
                 })}
-                {renderInput('Ethnicity', 'ethnicity', { placeholder: 'e.g. Caucasian' })}
                 {renderInput('Blood Group', 'bloodGroup', {
                     options: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'].map(v => ({ value: v, label: v })),
                 })}
@@ -490,7 +488,6 @@ export default function AddClinicalTrialDetails() {
                 <Section title="Demographics">
                     <Item label="Age" value={formData.age} />
                     <Item label="Gender" value={formData.gender} />
-                    <Item label="Ethnicity" value={formData.ethnicity} />
                     <Item label="Blood Group" value={formData.bloodGroup} />
                     <Item label="Smoking" value={formData.smokingStatus} />
                     <Item label="Alcohol" value={formData.alcoholUse} />
