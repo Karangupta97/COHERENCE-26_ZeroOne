@@ -1,9 +1,9 @@
-const { GoogleGenerativeAI } = require("@google/generative-ai");
+const Groq = require("groq-sdk");
 const Patient = require("../models/Patient");
 const ClinicalTrialDetails = require("../models/ClinicalTrialDetails");
 const { getMatchedTrials } = require("../services/matchingService");
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
 const SYSTEM_PROMPT = `You are CuraMatch AI, a helpful and compassionate medical assistant for a clinical trial matching platform called CuraMatchAI.
 
@@ -49,7 +49,7 @@ function buildPatientContext(patient, clinicalDetails, matches) {
 
 /**
  * POST /api/chat
- * Body: { message: string, history: [{ role: "user"|"model", parts: [{ text }] }] }
+ * Body: { message: string, history: [{ role: "user"|"assistant", content: string }] }
  */
 async function chat(req, res, next) {
   try {
@@ -74,34 +74,40 @@ async function chat(req, res, next) {
 
     const context = buildPatientContext(patient, clinicalDetails, matches);
 
-    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
-
-    // Build chat history
-    const chatHistory = [
-      { role: "user", parts: [{ text: SYSTEM_PROMPT + "\n\n" + context }] },
-      { role: "model", parts: [{ text: "Understood. I'm CuraMatch AI, ready to help this patient with clinical trial questions using their profile context." }] },
+    // Build messages array for Groq (OpenAI-compatible format)
+    const messages = [
+      { role: "system", content: SYSTEM_PROMPT + "\n\n" + context },
     ];
 
-    // Append previous conversation turns (limit to last 20 to stay within context)
+    // Append previous conversation turns (limit to last 20)
     if (Array.isArray(history)) {
       const safeHistory = history.slice(-20);
       for (const turn of safeHistory) {
-        if (turn.role === "user" || turn.role === "model") {
-          chatHistory.push({
+        if ((turn.role === "user" || turn.role === "assistant") && turn.content && turn.content.trim()) {
+          messages.push({
             role: turn.role,
-            parts: [{ text: String(turn.parts?.[0]?.text || "").slice(0, 2000) }],
+            content: String(turn.content).slice(0, 2000),
           });
         }
       }
     }
 
-    const chatSession = model.startChat({ history: chatHistory });
-    const result = await chatSession.sendMessage(message.trim().slice(0, 2000));
-    const responseText = result.response.text();
+    // Add current user message
+    messages.push({ role: "user", content: message.trim().slice(0, 2000) });
+
+    const completion = await groq.chat.completions.create({
+      model: "llama-3.1-8b-instant",
+      messages,
+      temperature: 0.7,
+      max_tokens: 1024,
+    });
+
+    const responseText = completion.choices[0]?.message?.content || "I'm sorry, I couldn't generate a response.";
 
     return res.json({ ok: true, reply: responseText });
   } catch (err) {
-    next(err);
+    console.error("Chat error:", JSON.stringify(err?.error || err?.message || err, null, 2));
+    return res.status(502).json({ ok: false, message: "AI service temporarily unavailable. Please try again." });
   }
 }
 

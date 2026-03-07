@@ -996,6 +996,69 @@ export default function AddClinicalTrialDetails() {
                                                             </div>
                                                         )}
 
+                                                        {/* AI Explanation */}
+                                                        <div style={{
+                                                            marginBottom: '18px', padding: '14px 16px',
+                                                            background: `linear-gradient(135deg, ${colors.accent}08, ${colors.accent}04)`,
+                                                            border: `1px solid ${colors.accent}20`,
+                                                            borderRadius: '10px',
+                                                        }}>
+                                                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                                                                <HiOutlineSparkles style={{ width: 15, height: 15, color: colors.accent }} />
+                                                                <span style={{ fontSize: '11px', fontWeight: 700, color: colors.accent, textTransform: 'uppercase', letterSpacing: '0.8px', fontFamily: fonts.body }}>AI Match Explanation</span>
+                                                            </div>
+                                                            <p style={{ margin: 0, fontSize: '13px', lineHeight: 1.7, color: colors.textPrimary, fontFamily: fonts.body }}>
+                                                                {(() => {
+                                                                    const passed = trial.reasons.filter(r => r.passed);
+                                                                    const failed = trial.reasons.filter(r => !r.passed);
+                                                                    const parts = [];
+
+                                                                    if (trial.score >= 60) {
+                                                                        parts.push(`This patient is a **strong match** for **${trial.trialName}** with a **${trial.score}% compatibility score**.`);
+                                                                    } else if (trial.score >= 40) {
+                                                                        parts.push(`This patient is a **partial match** for **${trial.trialName}** with a **${trial.score}% compatibility score**.`);
+                                                                    } else {
+                                                                        parts.push(`This patient has a **low match** for **${trial.trialName}** with only a **${trial.score}% compatibility score**.`);
+                                                                    }
+
+                                                                    if (passed.length > 0) {
+                                                                        const passedTypes = [...new Set(passed.map(r => r.type))];
+                                                                        parts.push(`The patient meets the **${passedTypes.join(', ')}** criteria${passed.length > 1 ? '' : ''}.`);
+                                                                        passed.forEach(r => {
+                                                                            if (r.type === 'condition' && r.text.includes('Diagnosis confirmed')) parts.push('The primary diagnosis aligns with the trial requirements.');
+                                                                            if (r.type === 'condition' && r.text.includes('symptoms match')) parts.push(`${r.text}.`);
+                                                                            if (r.type === 'age' && r.text.includes('within range')) parts.push(`${r.text}.`);
+                                                                            if (r.type === 'location' && r.text.includes('Location match')) parts.push(`The trial is conveniently located near the patient.`);
+                                                                        });
+                                                                    }
+
+                                                                    if (failed.length > 0) {
+                                                                        const failedSummaries = failed.map(r => {
+                                                                            if (r.type === 'condition') return 'the primary diagnosis does not align with the trial conditions';
+                                                                            if (r.type === 'age') return 'the patient\'s age falls outside the required range';
+                                                                            if (r.type === 'biomarker') return `biomarker criteria not met (${r.text})`;
+                                                                            if (r.type === 'location') return 'the trial location does not match the patient\'s location';
+                                                                            if (r.type === 'exclusion') return r.text;
+                                                                            return r.text;
+                                                                        });
+                                                                        parts.push(`However, ${failedSummaries.join('; ')}.`);
+                                                                    }
+
+                                                                    if (trial.eligible === 'Eligible') {
+                                                                        parts.push('**Recommendation: This patient is eligible and can proceed with enrollment.**');
+                                                                    } else if (trial.eligible === 'Partially Eligible') {
+                                                                        parts.push('**Recommendation: Review unmet criteria with the patient before proceeding.**');
+                                                                    } else {
+                                                                        parts.push('**Recommendation: This trial is not a suitable match for the patient.**');
+                                                                    }
+
+                                                                    return parts.join(' ').split('**').map((part, i) =>
+                                                                        i % 2 === 1 ? <strong key={i}>{part}</strong> : <span key={i}>{part}</span>
+                                                                    );
+                                                                })()}
+                                                            </p>
+                                                        </div>
+
                                                         {/* Matching Breakdown */}
                                                         <div>
                                                             <div style={{ fontSize: '10px', color: colors.textSecondary, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: '8px', fontFamily: fonts.body }}>Matching Breakdown</div>

@@ -1,6 +1,6 @@
-const { GoogleGenerativeAI } = require("@google/generative-ai");
+const Groq = require("groq-sdk");
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
 const EXTRACTION_PROMPT = `You are a medical data extraction system.
 Analyze the medical report and extract structured patient medical information.
@@ -26,28 +26,43 @@ If any field is missing, return null.
 Return ONLY valid JSON — no markdown, no explanation, no code fences.`;
 
 /**
- * Sends a medical report file to Gemini and returns structured extracted data.
+ * Sends a medical report file to Groq Vision and returns structured extracted data.
  *
- * Supports PDF, JPG, and PNG via the inline-data parts API.
+ * Supports JPG and PNG via the vision model. PDFs are sent as image.
  *
  * @param {Buffer} fileBuffer   Raw file bytes
  * @param {string} mimeType     MIME type: "application/pdf" | "image/jpeg" | "image/png"
  * @returns {Promise<Object>}   Parsed extraction result matching the schema
  */
 async function extractMedicalData(fileBuffer, mimeType) {
-  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+  const base64Data = fileBuffer.toString("base64");
 
-  const filePart = {
-    inlineData: {
-      data: fileBuffer.toString("base64"),
-      mimeType,
-    },
-  };
+  // For PDFs, use image/png as a fallback mime for the vision model
+  const imageMime = mimeType === "application/pdf" ? "image/png" : mimeType;
 
-  const result = await model.generateContent([EXTRACTION_PROMPT, filePart]);
-  const rawText = result.response.text().trim();
+  const completion = await groq.chat.completions.create({
+    model: "llama-3.2-90b-vision-preview",
+    messages: [
+      {
+        role: "user",
+        content: [
+          { type: "text", text: EXTRACTION_PROMPT },
+          {
+            type: "image_url",
+            image_url: {
+              url: `data:${imageMime};base64,${base64Data}`,
+            },
+          },
+        ],
+      },
+    ],
+    temperature: 0.1,
+    max_tokens: 1024,
+  });
 
-  // Strip optional markdown code fences that Gemini sometimes adds
+  const rawText = (completion.choices[0]?.message?.content || "").trim();
+
+  // Strip optional markdown code fences
   const jsonText = rawText
     .replace(/^```(?:json)?\s*/i, "")
     .replace(/\s*```$/, "")
@@ -57,7 +72,7 @@ async function extractMedicalData(fileBuffer, mimeType) {
   try {
     parsed = JSON.parse(jsonText);
   } catch {
-    throw new Error(`Gemini returned non-JSON response: ${rawText.slice(0, 200)}`);
+    throw new Error(`Groq returned non-JSON response: ${rawText.slice(0, 200)}`);
   }
 
   return parsed;

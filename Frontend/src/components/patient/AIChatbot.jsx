@@ -66,8 +66,8 @@ export default function AIChatbot() {
     setError(null)
     setTyping(true)
 
-    // Add to Gemini history
-    chatHistoryRef.current.push({ role: 'user', parts: [{ text: text.trim() }] })
+    // Add to chat history
+    chatHistoryRef.current.push({ role: 'user', content: text.trim() })
 
     try {
       const token = localStorage.getItem('token')
@@ -90,7 +90,7 @@ export default function AIChatbot() {
       }
 
       const aiText = data.reply
-      chatHistoryRef.current.push({ role: 'model', parts: [{ text: aiText }] })
+      chatHistoryRef.current.push({ role: 'assistant', content: aiText })
 
       setMessages(prev => [...prev, {
         id: Date.now() + 1, role: 'ai', text: aiText, time: new Date()
