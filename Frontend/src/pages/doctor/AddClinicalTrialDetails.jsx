@@ -127,6 +127,8 @@ export default function AddClinicalTrialDetails() {
     const [matchedTrials, setMatchedTrials] = useState([]);
     const [matchLoading, setMatchLoading] = useState(false);
     const [expandedTrial, setExpandedTrial] = useState(null);
+    const [aiAnalyzing, setAiAnalyzing] = useState(false);
+    const [aiProgress, setAiProgress] = useState(0);
 
     // ── Style helpers ──────────────────────────────
     const card = {
@@ -302,8 +304,21 @@ export default function AddClinicalTrialDetails() {
             const data = await res.json();
             if (res.ok && data.ok) {
                 setResult({ ok: true, message: data.message });
-                // Fetch trial matches for this patient
-                fetchTrialMatches();
+                // Show AI Analysis loading, then fetch trial matches
+                setAiAnalyzing(true);
+                setAiProgress(0);
+                const analysisDuration = 3000 + Math.random() * 5000; // 3-8 seconds
+                const startTime = Date.now();
+                const progressInterval = setInterval(() => {
+                    const elapsed = Date.now() - startTime;
+                    const pct = Math.min((elapsed / analysisDuration) * 100, 98);
+                    setAiProgress(Math.round(pct));
+                }, 150);
+                await new Promise(resolve => setTimeout(resolve, analysisDuration));
+                clearInterval(progressInterval);
+                setAiProgress(100);
+                await fetchTrialMatches();
+                setAiAnalyzing(false);
             } else {
                 setResult({ ok: false, message: data.message || 'Failed to submit details.' });
             }
@@ -325,6 +340,8 @@ export default function AddClinicalTrialDetails() {
         setMatchedTrials([]);
         setMatchLoading(false);
         setExpandedTrial(null);
+        setAiAnalyzing(false);
+        setAiProgress(0);
     };
 
     const fetchTrialMatches = async () => {
@@ -341,6 +358,16 @@ export default function AddClinicalTrialDetails() {
         } catch { /* silently fail */ }
         finally { setMatchLoading(false); }
     };
+
+    // ── AI Analysis Loading Steps ───────────────────
+    const AI_STEPS = [
+        { label: 'Parsing clinical data', threshold: 10 },
+        { label: 'Extracting medical history', threshold: 25 },
+        { label: 'Analyzing lab values & vitals', threshold: 45 },
+        { label: 'Matching against trial criteria', threshold: 65 },
+        { label: 'Computing eligibility scores', threshold: 80 },
+        { label: 'Generating AI recommendations', threshold: 95 },
+    ];
 
     // ── Field renderer ─────────────────────────────
     function renderInput(label, field, opts = {}) {
@@ -737,6 +764,105 @@ export default function AddClinicalTrialDetails() {
     const stepRenderers = [renderStep0, renderStep1, renderStep2, renderStep3, renderReview];
 
     // ── Success view with trial matches ─────────────────
+    // ── AI Analyzing interstitial screen ─────────
+    if (aiAnalyzing) {
+        const currentStepIdx = AI_STEPS.findIndex(s => aiProgress < s.threshold);
+        const activeStep = currentStepIdx === -1 ? AI_STEPS.length - 1 : currentStepIdx;
+
+        return (
+            <DoctorLayout>
+                <div style={{ maxWidth: 600, margin: '80px auto', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '32px' }}>
+                    {/* Pulsing brain icon */}
+                    <motion.div
+                        animate={{ scale: [1, 1.08, 1], opacity: [0.85, 1, 0.85] }}
+                        transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+                        style={{
+                            width: 80, height: 80, borderRadius: '50%',
+                            background: `linear-gradient(135deg, ${colors.accent}25, ${colors.green || colors.accent}25)`,
+                            border: `2px solid ${colors.accent}40`,
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        }}
+                    >
+                        <HiOutlineSparkles style={{ width: 36, height: 36, color: colors.accent }} />
+                    </motion.div>
+
+                    <div style={{ textAlign: 'center' }}>
+                        <h2 style={{ margin: 0, fontSize: '22px', fontFamily: fonts.heading, fontWeight: 700, color: colors.textPrimary }}>
+                            AI Analysis in Progress
+                        </h2>
+                        <p style={{ margin: '8px 0 0', fontSize: '14px', color: colors.textSecondary, fontFamily: fonts.body, lineHeight: 1.5 }}>
+                            Analyzing clinical data for patient <strong style={{ color: colors.accent }}>{anonymizedId}</strong>
+                        </p>
+                    </div>
+
+                    {/* Progress bar */}
+                    <div style={{ width: '100%', maxWidth: 440 }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                            <span style={{ fontSize: '12px', fontWeight: 600, color: colors.textSecondary, fontFamily: fonts.body }}>
+                                {AI_STEPS[activeStep]?.label || 'Finalizing...'}
+                            </span>
+                            <span style={{ fontSize: '12px', fontWeight: 700, color: colors.accent, fontFamily: fonts.body }}>
+                                {aiProgress}%
+                            </span>
+                        </div>
+                        <div style={{
+                            width: '100%', height: 8, borderRadius: 4,
+                            background: colors.border, overflow: 'hidden',
+                        }}>
+                            <motion.div
+                                animate={{ width: `${aiProgress}%` }}
+                                transition={{ duration: 0.3, ease: 'easeOut' }}
+                                style={{
+                                    height: '100%', borderRadius: 4,
+                                    background: `linear-gradient(90deg, ${colors.accent}, ${colors.green || colors.accent})`,
+                                }}
+                            />
+                        </div>
+                    </div>
+
+                    {/* Step checklist */}
+                    <div style={{
+                        ...card, padding: '20px 24px', width: '100%', maxWidth: 440,
+                        display: 'flex', flexDirection: 'column', gap: '12px',
+                    }}>
+                        {AI_STEPS.map((step, i) => {
+                            const done = aiProgress >= step.threshold;
+                            const active = i === activeStep;
+                            return (
+                                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                    {done ? (
+                                        <HiOutlineCheckCircle style={{ width: 18, height: 18, color: colors.green, flexShrink: 0 }} />
+                                    ) : active ? (
+                                        <motion.div
+                                            animate={{ rotate: 360 }}
+                                            transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+                                            style={{
+                                                width: 18, height: 18, borderRadius: '50%', flexShrink: 0,
+                                                border: `2px solid ${colors.border}`, borderTopColor: colors.accent,
+                                            }}
+                                        />
+                                    ) : (
+                                        <div style={{
+                                            width: 18, height: 18, borderRadius: '50%', flexShrink: 0,
+                                            border: `2px solid ${colors.border}`,
+                                        }} />
+                                    )}
+                                    <span style={{
+                                        fontSize: '13px', fontFamily: fonts.body, fontWeight: active ? 600 : 400,
+                                        color: done ? colors.green : active ? colors.textPrimary : colors.textSecondary,
+                                        transition: 'color 0.3s',
+                                    }}>
+                                        {step.label}
+                                    </span>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+            </DoctorLayout>
+        );
+    }
+
     if (result?.ok) {
         const scoreColor = (s) => s >= 60 ? (colors.green) : s >= 40 ? (colors.yellow || '#F59E0B') : (colors.red || '#EF4444');
         const eligBadge = (eligible) => {
