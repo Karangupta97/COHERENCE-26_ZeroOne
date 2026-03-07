@@ -392,14 +392,14 @@ export default function SignupPage() {
                         transform: mounted ? 'translateX(0)' : 'translateX(-30px)',
                         transition: 'all 0.8s cubic-bezier(0.16, 1, 0.3, 1)',
                     }}>
-                        <div style={{
-                            width: '52px', height: '52px', borderRadius: '14px',
-                            background: `linear-gradient(135deg, ${colors.accent}, ${colors.green})`,
-                            display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            marginBottom: '24px', boxShadow: `0 8px 32px ${colors.accentGlow}`,
-                        }}>
-                            <DnaIcon size={24} color="#fff" />
-                        </div>
+                        <img
+                            src="/logo.png"
+                            alt="CuraMatch AI"
+                            style={{
+                                width: 52, height: 52, borderRadius: '14px',
+                                objectFit: 'contain', marginBottom: '24px',
+                            }}
+                        />
 
                         <h1 style={{
                             fontFamily: fonts.heading, fontSize: '34px', fontWeight: 800,
@@ -508,14 +508,14 @@ export default function SignupPage() {
                         <div className="signup-mobile-logo" style={{
                             display: 'none', alignItems: 'center', gap: '10px', marginBottom: '24px',
                         }}>
-                            <div style={{
-                                width: '40px', height: '40px', borderRadius: '10px',
-                                background: `linear-gradient(135deg, ${colors.accent}, ${colors.green})`,
-                                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                boxShadow: `0 4px 16px ${colors.accentGlow}`,
-                            }}>
-                                <DnaIcon size={20} color="#fff" />
-                            </div>
+                            <img
+                                src="/logo.png"
+                                alt="CuraMatch AI"
+                                style={{
+                                    width: 40, height: 40, borderRadius: '10px',
+                                    objectFit: 'contain',
+                                }}
+                            />
                             <span style={{
                                 fontFamily: fonts.heading, fontSize: '20px', fontWeight: 700,
                                 color: colors.textPrimary,

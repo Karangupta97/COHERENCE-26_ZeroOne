@@ -103,17 +103,14 @@ export default function Sidebar({ activePage, setPage }) {
                     style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: isClinicMode ? 'default' : 'pointer' }}
                     onClick={() => !isClinicMode && navigate('/doctor/dashboard')}
                 >
-                    <span
+                    <img
+                        src="/logo.png"
+                        alt="CuraMatch AI"
                         style={{
-                            display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
                             width: 38, height: 38, borderRadius: '10px',
-                            background: `linear-gradient(135deg, ${colors.accent}, ${colors.green || colors.accent})`,
-                            color: '#fff', fontSize: '18px', fontWeight: 800, fontFamily: fonts.heading,
-                            boxShadow: `0 2px 10px ${colors.accent}30`,
+                            objectFit: 'contain',
                         }}
-                    >
-                        C
-                    </span>
+                    />
                     <div>
                         <div style={{ fontSize: '15px', fontWeight: 700, fontFamily: fonts.heading, color: colors.textPrimary, lineHeight: 1.2 }}>
                             CuraMatch AI

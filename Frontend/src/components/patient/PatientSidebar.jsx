@@ -56,16 +56,14 @@ export default function PatientSidebar() {
       {/* ── Logo ── */}
       <div style={{ padding: `0 ${spacing.lg}`, marginBottom: spacing.xl }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm }}>
-          <span
+          <img
+            src="/logo.png"
+            alt="CuraMatch AI"
             style={{
-              display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
               width: 36, height: 36, borderRadius: radius.md,
-              background: `linear-gradient(135deg, ${colors.accent}, ${colors.green})`,
-              color: '#fff', fontSize: fontSize.lg, fontWeight: 800, fontFamily: fonts.heading,
+              objectFit: 'contain',
             }}
-          >
-            C
-          </span>
+          />
           <div>
             <div style={{ fontSize: fontSize.base, fontWeight: 700, fontFamily: fonts.heading, color: colors.textPrimary, lineHeight: 1.2 }}>
               CuraMatch AI

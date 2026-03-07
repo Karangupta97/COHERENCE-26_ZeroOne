@@ -12,13 +12,17 @@ import {
     HiOutlineBuildingOffice2,
 } from 'react-icons/hi2';
 
-const fadeUp = { initial: { opacity: 0, y: 16 }, animate: { opacity: 1, y: 0 } };
+const fadeUpInitial = { opacity: 0, y: 16 };
+const fadeUpAnimate = { opacity: 1, y: 0 };
 
 export default function MyClinicalTrialDetails() {
     const { colors, fonts } = useTheme();
     const [records, setRecords] = useState([]);
     const [loading, setLoading] = useState(() => !!localStorage.getItem('token'));
     const [expandedId, setExpandedId] = useState(null);
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => { setMounted(true); }, []);
 
     const card = {
         background: colors.surface,
@@ -83,7 +87,7 @@ export default function MyClinicalTrialDetails() {
     return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', maxWidth: 1000 }}>
             {/* Header */}
-            <motion.div {...fadeUp} transition={{ duration: 0.4 }}
+            <motion.div initial={mounted ? false : fadeUpInitial} animate={fadeUpAnimate} transition={{ duration: 0.4 }}
                 style={{ ...card, padding: '20px 24px', display: 'flex', alignItems: 'center', gap: 12 }}>
                 <div style={{
                     width: 44, height: 44, borderRadius: '12px',
@@ -112,7 +116,7 @@ export default function MyClinicalTrialDetails() {
             </div>
 
             {records.length === 0 ? (
-                <motion.div {...fadeUp} transition={{ duration: 0.4, delay: 0.1 }}
+                <motion.div initial={mounted ? false : fadeUpInitial} animate={fadeUpAnimate} transition={{ duration: 0.4, delay: 0.1 }}
                     style={{ ...card, padding: '60px 20px', textAlign: 'center' }}>
                     <HiOutlineClipboardDocumentList style={{ width: 48, height: 48, color: colors.textSecondary, margin: '0 auto 12px', display: 'block' }} />
                     <h3 style={{ margin: '0 0 6px', fontSize: '16px', fontFamily: fonts.heading, color: colors.textPrimary }}>No Records Yet</h3>
@@ -124,7 +128,7 @@ export default function MyClinicalTrialDetails() {
                 records.map((record, idx) => {
                     const isExpanded = expandedId === record._id;
                     return (
-                        <motion.div key={record._id} {...fadeUp} transition={{ duration: 0.4, delay: 0.05 * idx }}>
+                        <motion.div key={record._id} initial={mounted ? false : fadeUpInitial} animate={fadeUpAnimate} transition={{ duration: 0.4, delay: 0.05 * idx }}>
                             <div style={{ ...card, overflow: 'hidden' }}>
                                 {/* Record header */}
                                 <div

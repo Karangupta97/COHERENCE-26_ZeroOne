@@ -16,6 +16,13 @@ export default function PageLoader() {
             alignItems: 'center', justifyContent: 'center',
             gap: 20,
         }}>
+            {/* Logo */}
+            <img
+                src="/logo.png"
+                alt="CuraMatch AI"
+                style={{ width: 56, height: 56, objectFit: 'contain', marginBottom: 4 }}
+            />
+
             {/* Spinning ring */}
             <motion.div
                 animate={{ rotate: 360 }}
