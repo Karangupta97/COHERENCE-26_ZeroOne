@@ -58,14 +58,16 @@ async function uploadReport(req, res, next) {
       extractionStatus: "pending",
     });
 
-    // ── 3. Extract medical data via Gemini ────────────────────────────────────
+    // ── 3. Extract medical data via OCR + AI ────────────────────────────────
     let extractedData;
     try {
-      extractedData = await extractMedicalData(buffer, mimetype);
+      const result = await extractMedicalData(buffer, mimetype);
+      extractedData = result.extractedData;
       report.extractedData = extractedData;
+      report.ocrText = result.ocrText || null;
       report.extractionStatus = "success";
     } catch (geminiErr) {
-      console.error("[Gemini Extraction Error]", geminiErr);
+      console.error("[Extraction Error]", geminiErr);
       report.extractionStatus = "failed";
       report.extractionError = geminiErr.message || "Extraction failed";
     }

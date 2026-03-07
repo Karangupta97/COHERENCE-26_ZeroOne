@@ -498,6 +498,25 @@ function AnalyzeModal({ report, open, onClose, colors, fonts }) {
                                 <div style={{ fontSize: '14px', fontWeight: 600, color: colors.green, fontFamily: fonts.heading }}>{data.recommended_specialist}</div>
                             </div>
                         )}
+
+                        {/* OCR Extracted Text */}
+                        {report.ocrText && (
+                            <div>
+                                <div style={{ fontSize: '11px', textTransform: 'uppercase', color: colors.textSecondary, fontFamily: fonts.body, marginBottom: 6, letterSpacing: '0.5px' }}>
+                                    OCR Extracted Text
+                                </div>
+                                <div style={{
+                                    padding: '14px 16px', borderRadius: '12px',
+                                    background: colors.card, border: `1px solid ${colors.border}`,
+                                    maxHeight: 180, overflowY: 'auto',
+                                    fontSize: '12px', fontFamily: 'monospace',
+                                    color: colors.textSecondary, lineHeight: 1.6,
+                                    whiteSpace: 'pre-wrap', wordBreak: 'break-word',
+                                }}>
+                                    {report.ocrText}
+                                </div>
+                            </div>
+                        )}
                     </div>
                 )}
             </motion.div>

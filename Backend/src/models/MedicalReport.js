@@ -51,6 +51,10 @@ const medicalReportSchema = new mongoose.Schema(
       type: extractedDataSchema,
       default: null,
     },
+    ocrText: {
+      type: String,
+      default: null,
+    },
     extractionStatus: {
       type: String,
       enum: ["pending", "success", "failed"],
