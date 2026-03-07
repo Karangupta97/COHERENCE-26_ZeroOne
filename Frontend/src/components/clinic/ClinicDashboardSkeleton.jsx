@@ -132,6 +132,23 @@ export default function ClinicDashboardSkeleton() {
                 </div>
             </CardSkeleton>
 
+            {/* ── Weekly Trends Skeleton (full width) ── */}
+            <CardSkeleton>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
+                    <Bone width={200} height={18} />
+                    <Bone width={110} height={26} radius={8} />
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: spacing.sm, marginBottom: 16 }}>
+                    {[0, 1, 2, 3].map(i => (
+                        <div key={i} style={{ padding: 12, borderRadius: 8, background: `${colors.card}60` }}>
+                            <Bone width={80} height={10} style={{ marginBottom: 6 }} />
+                            <Bone width={50} height={22} />
+                        </div>
+                    ))}
+                </div>
+                <Bone width="100%" height={200} radius={10} />
+            </CardSkeleton>
+
             {/* ── Table Skeleton ── */}
             <CardSkeleton>
                 <Bone width={180} height={18} style={{ marginBottom: 20 }} />

@@ -27,7 +27,6 @@ import TrialPipeline from '../../components/clinic/TrialPipeline'
 import TrialPieChart from '../../components/clinic/TrialPieChart'
 import MonthlyEnrollmentChart from '../../components/clinic/MonthlyEnrollmentChart'
 import CandidateBreakdown from '../../components/clinic/CandidateBreakdown'
-import EnrollmentFunnelChart from '../../components/clinic/EnrollmentFunnelChart'
 import WeeklyTrendsChart from '../../components/clinic/WeeklyTrendsChart'
 import { CLINIC, CLINIC_TRIALS, CANDIDATES, RECENT_ACTIVITY, AI_INSIGHTS } from './data/mockData'
 import useClinic from '../../hooks/useClinic'
@@ -247,11 +246,8 @@ export default function ClinicDashboard({ setPage }) {
                 <CandidateBreakdown />
             </div>
 
-            {/* ── Enrollment Funnel + Weekly Trends (new ApexChart panels) ── */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: spacing.lg }}>
-                <EnrollmentFunnelChart />
-                <WeeklyTrendsChart />
-            </div>
+            {/* ── Weekly Activity Trends (full width) ── */}
+            <WeeklyTrendsChart />
 
             {/* ── Active Trials Table ── */}
             <TrialsTable trials={CLINIC_TRIALS} colors={colors} fonts={fonts} />
