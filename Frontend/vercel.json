@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "https://jellyfish-app-xmlv6.ondigitalocean.app/api/:path*"
+    }
+  ]
+}
