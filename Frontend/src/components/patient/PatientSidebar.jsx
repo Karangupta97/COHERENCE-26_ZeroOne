@@ -10,6 +10,7 @@ import {
   HiOutlineFolderOpen,
   HiOutlineBell,
   HiOutlineCog6Tooth,
+  HiOutlineClipboardDocumentList,
 } from 'react-icons/hi2'
 
 const NAV_ITEMS = [
@@ -19,6 +20,7 @@ const NAV_ITEMS = [
   { label: 'Nearby Trials', icon: HiOutlineMapPin, path: '/patient/nearby' },
   { label: 'My Applications', icon: HiOutlineDocumentText, path: '/patient/applications' },
   { label: 'Medical Reports', icon: HiOutlineFolderOpen, path: '/patient/reports' },
+  { label: 'Clinical Trial Details', icon: HiOutlineClipboardDocumentList, path: '/patient/clinical-details' },
   { label: 'Notifications', icon: HiOutlineBell, path: '/patient/notifications', badge: 3 },
   { label: 'Settings', icon: HiOutlineCog6Tooth, path: '/patient/settings' },
 ]
