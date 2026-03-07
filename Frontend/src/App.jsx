@@ -15,6 +15,7 @@ import DoctorTrials from './pages/doctor/DoctorTrials';
 import DoctorSettings from './pages/doctor/DoctorSettings';
 import DoctorProfilePage from './pages/doctor/DoctorProfilePage';
 import AddPatientToTrial from './pages/doctor/AddPatientToTrial';
+import AddClinicalTrialDetails from './pages/doctor/AddClinicalTrialDetails';
 // ── Patient Portal Imports ──
 import PatientDashboard from './pages/patients/PatientDashboard';
 
@@ -148,6 +149,7 @@ export default function App() {
         <Route path="/doctor/profile" element={<DoctorProfilePage />} />
         <Route path="/doctor/settings" element={<DoctorSettings />} />
         <Route path="/doctor/add-patient-trial" element={<AddPatientToTrial />} />
+        <Route path="/doctor/clinical-details" element={<AddClinicalTrialDetails />} />
 
         {/* Clinic Portal */}
         <Route path="/clinic/*" element={<ClinicLayout />} />

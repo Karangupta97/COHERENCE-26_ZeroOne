@@ -10,6 +10,7 @@ import MyApplicationsPage from '../../components/patient/MyApplicationsPage.jsx'
 import NotificationsPage from '../../components/patient/NotificationsPage.jsx'
 import SettingsPage from '../../components/patient/SettingsPage.jsx'
 import PatientReports from '../../components/patient/PatientReports.jsx'
+import MyClinicalTrialDetails from '../../components/patient/MyClinicalTrialDetails.jsx'
 import AIChatbot from '../../components/patient/AIChatbot.jsx'
 
 export default function PatientDashboard() {
@@ -35,6 +36,7 @@ export default function PatientDashboard() {
             <Route path="nearby" element={<NearbyTrialsPage />} />
             <Route path="applications" element={<MyApplicationsPage />} />
             <Route path="reports" element={<PatientReports />} />
+            <Route path="clinical-details" element={<MyClinicalTrialDetails />} />
             <Route path="notifications" element={<NotificationsPage />} />
             <Route path="settings" element={<SettingsPage />} />
             <Route path="*" element={<Navigate to="dashboard" replace />} />

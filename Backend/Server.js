@@ -15,6 +15,7 @@ const protectedRoutes = require("./src/routes/protectedRoutes");
 const reportRoutes = require("./src/routes/reportRoutes");
 const trialRoutes = require("./src/routes/trialRoutes");
 const enrollmentRoutes = require("./src/routes/enrollmentRoutes");
+const clinicalDetailsRoutes = require("./src/routes/clinicalDetailsRoutes");
 
 // Middleware
 const errorHandler = require("./src/middlewares/errorHandler");
@@ -65,6 +66,7 @@ app.use("/api/v1", protectedRoutes);
 app.use("/api/reports", reportRoutes);
 app.use("/api/trials", trialRoutes);
 app.use("/api/enrollments", enrollmentRoutes);
+app.use("/api/clinical-details", clinicalDetailsRoutes);
 
 // ─── 404 HANDLER ────────────────────────────────────────
 app.use((_req, res) => {
